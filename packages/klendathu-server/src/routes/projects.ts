@@ -12,33 +12,34 @@ const ajv = Ajv();
 const projectCreateValidator = ajv.compile(projectCreateSchema);
 
 // Create a new project.
-server.api.post('/projects/:owner/:project', async (req, res) => {
+server.api.post('/projects/:account/:project', async (req, res) => {
   if (!req.user) {
     return res.status(401).end();
   }
   const user = req.user as AccountRecord;
 
-  const { owner, project }: { owner: string, project: string } = req.params;
+  const { account, project }: { account: string, project: string } = req.params;
 
   // Lookup the owner name
-  const ownerRecord = await r.table('accounts').get<AccountRecord>(owner).run(server.conn);
-  if (!ownerRecord) {
+  const accountRecord = await r.table('accounts').get<AccountRecord>(account).run(server.conn);
+  if (!accountRecord) {
     res.status(500).json({ error: 'missing-name' });
-    logger.error('Attempt to create project under non-existent name:', { user: user.uname, owner });
+    logger.error(
+        'Attempt to create project under non-existent name:', { user: user.uname, account });
     return;
   }
 
-  if (ownerRecord.type === 'user') {
-    if (ownerRecord.id !== user.id) {
+  if (accountRecord.type === 'user') {
+    if (accountRecord.id !== user.id) {
       res.status(403).json({ error: 'forbidden' });
-      logger.error('You can only create projects for yourself.', { user: user.uname, owner });
+      logger.error('You can only create projects for yourself.', { user: user.uname, account });
       return;
     }
   } else {
     // TODO: Check organization role.
     res.status(500).json({ error: 'not-implemented' });
     logger.error(
-        'Creating projects for organizations not implemented yet:', { user: user.uname, owner });
+        'Creating projects for organizations not implemented yet:', { user: user.uname, account });
     return;
   }
 
@@ -51,7 +52,7 @@ server.api.post('/projects/:owner/:project', async (req, res) => {
     res.status(400).json({ error: 'schema-validation', details: projectCreateValidator.errors });
     logger.error('Schema validation failure:', req.body, projectCreateValidator.errors);
   } else {
-    const projectId = `${owner}/${project}`;
+    const projectId = `${account}/${project}`;
     const existingProject =
         await r.table('projects').get<ProjectRecord>(projectId).run(server.conn);
     if (existingProject) {
@@ -70,7 +71,7 @@ server.api.post('/projects/:owner/:project', async (req, res) => {
       id: projectId,
       title,
       description,
-      owner,
+      owner: account,
       created: now,
       updated: now,
       template: null,
@@ -78,29 +79,29 @@ server.api.post('/projects/:owner/:project', async (req, res) => {
     };
 
     await r.table('projects').insert(pr).run(server.conn);
-    logger.info('Created project:', { user: user.uname, owner, project });
+    logger.info('Created project:', { user: user.uname, account, project });
     res.end();
   }
 });
 
 // Create a project
-server.api.delete('/projects/:owner/:project', async (req, res) => {
+server.api.delete('/projects/:account/:project', async (req, res) => {
   const user = req.user as AccountRecord;
-  const { owner, project }: { owner: string, project: string } = req.params;
-  const { projectRecord, role } = await getProjectAndRole(owner, project, user);
+  const { account, project }: { account: string, project: string } = req.params;
+  const { projectRecord, role } = await getProjectAndRole(account, project, user);
   if (!projectRecord) {
-    logger.error('Project not found:', { user: user.uname, owner, project });
+    logger.error('Project not found:', { user: user.uname, account, project });
     res.status(404).json({ error: 'not-found' });
     return;
   }
 
   if (role < Role.ADMINISTRATOR) {
-    logger.error('No permission to delete project:', { user: user.uname, owner, project });
+    logger.error('No permission to delete project:', { user: user.uname, account, project });
     res.status(403).json({ error: 'forbidden' });
     return;
   }
 
-  logger.info('Deleting project:', { user: user.uname, project, owner });
+  logger.info('Deleting project:', { user: user.uname, project, account });
   await r.table('projects').get(projectRecord.id).delete().run(server.conn);
   res.end();
 });

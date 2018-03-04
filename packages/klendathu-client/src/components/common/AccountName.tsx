@@ -7,13 +7,17 @@ interface Props {
   id: string;
 }
 
+/** Component which displays the name of an account. */
 @observer
 export class AccountName extends React.Component<Props> {
   private account: Account;
 
-  constructor(props: Props) {
-    super(props);
-    this.account = accounts.byId(props.id);
+  public componentWillMount() {
+    this.account = accounts.byId(this.props.id);
+  }
+
+  public componentWillUnmount() {
+    this.account.release();
   }
 
   public render() {

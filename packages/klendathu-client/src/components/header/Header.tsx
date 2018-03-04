@@ -22,7 +22,7 @@ export function Header(props: RouteComponentProps<{}>) {
       <Switch>
         <Route path="/account" />
         <Route path="/settings" />
-        <Route path="/:owner/:project" component={NewIssueButton} />
+        <Route path="/:account/:project" component={NewIssueButton} />
       </Switch>
       <UserMenuButton {...props} />
     </header>

@@ -1,0 +1,19 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 12px;
+  padding: 1px 5px;
+  line-height: 24px;
+  font-size: 85%;
+  margin: 2px;
+  > .close {
+    > svg {
+      fill: #888;
+      width: 16px;
+      height: 16px;
+    }
+  }
+  > .title {
+    margin: 0 4px;
+  }
+}

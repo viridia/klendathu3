@@ -21,11 +21,11 @@ export class NewIssueButton extends React.Component<Props> {
   }
 
   public componentWillUnmount() {
-    this.project.release();
+    // this.project.release();
   }
 
   public render() {
-    if (this.project.value && this.project.value.role >= Role.REPORTER) {
+    if (this.project && this.project.value && this.project.value.role >= Role.REPORTER) {
       const { owner, project } = this.props.match.params;
       return (
         <LinkContainer to={`/${owner}/${project}/new`} className="header-link">

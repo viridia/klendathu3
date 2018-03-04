@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { Header } from '../header/Header';
-// import { LeftNav } from '../nav/LeftNav';
+import { LeftNav } from '../nav/LeftNav';
 import { SettingsView } from '../settings/SettingsView';
 import { ProjectListView } from '../projects/ProjectListView';
 import { SetupAccountDialog } from '../settings/SetupAccountDialog';
 // import { EmailVerificationDialog } from '../settings/EmailVerificationDialog';
 // import { ProjectContentArea } from './ProjectContentArea';
+import { AccountProvider } from '../common/AccountProvider';
 import { ToastContainer } from 'react-toastify';
 import { session } from '../../models/Session';
 import { Memberships } from '../../models/Memberships';
@@ -52,14 +53,24 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
         />
         <Header {...this.props} />
         <section className="main-body">
-          {/*<LeftNav {...this.props} />*/}
+          <LeftNav {...this.props} />
           <Switch>
             <Route path="/settings" component={SettingsView} />
             <Route
                 path="/projects"
                 render={() => (<ProjectListView memberships={this.memberships} />)}
             />
-            {/*<Route path="/:owner/:project?" component={ProjectContentArea} />*/}
+            <Route
+                path="/:account/:project?"
+                render={({ match }) => (
+                  <AccountProvider
+                      account={match.params.account}
+                      render={account => {
+                        return JSON.stringify(account, null, 2);
+                      }}
+                  />
+                )}
+            />
             <Route render={() => (<ProjectListView memberships={this.memberships} />)} />
           </Switch>
         </section>
@@ -69,3 +80,4 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
     );
   }
 }
+// return 'ProjectContentArea';

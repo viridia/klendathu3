@@ -4,12 +4,12 @@ import { server } from '../Server';
 import * as r from 'rethinkdb';
 
 export async function getProjectAndRole(
-  owner: string,
+  account: string,
   project: string,
   user: AccountRecord):
     Promise<{ projectRecord: ProjectRecord; role: Role }> {
   const projectRecord =
-      await r.table('projects').get<ProjectRecord>(`${owner}/${project}`).run(server.conn);
+      await r.table('projects').get<ProjectRecord>(`${account}/${project}`).run(server.conn);
   if (!projectRecord) {
     return { projectRecord: null, role: Role.NONE };
   }

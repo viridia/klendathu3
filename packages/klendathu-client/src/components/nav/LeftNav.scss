@@ -1,0 +1,48 @@
+@import '../../styles/colors';
+@import '../../styles/fonts';
+
+$leftNavIconSize: 24px;
+
+.kdt.left-nav {
+  display: flex;
+  flex-direction: column;
+  background-color: $leftNavBg;
+  color: $leftNavFg;
+  border-right: 1px solid darken($leftNavBg, 10%);
+  padding: 16px 8px;
+  min-width: 12em;
+
+  > a {
+    display: flex;
+    align-items: center;
+    margin: 3px;
+    text-decoration: none;
+    color: $leftNavFg;
+
+    &.active {
+      font-weight: bold;
+    }
+
+    svg {
+      margin-right: 6px;
+      width: $leftNavIconSize;
+      height: $leftNavIconSize;
+      fill: $leftNavFg;
+    }
+  }
+
+  .label-list, .filter-list, .project-list {
+    margin: 0 4px 4px;
+    padding-left: 26px;
+  }
+
+  li.label-item, li.filter-item, li.project-item {
+    margin: 4px 0;
+    > a {
+      text-decoration: none;
+      &.active {
+        font-weight: bold;
+      }
+    }
+  }
+}
