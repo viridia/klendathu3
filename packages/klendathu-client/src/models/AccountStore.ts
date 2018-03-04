@@ -17,7 +17,7 @@ export class AccountStore {
       account.acquire();
       return account;
     }
-    const record = session.connection.record.getRecord(`account/${uid}`);
+    const record = session.connection.record.getRecord(`accounts/${uid}`);
     account = new Account(record);
     this.cacheById.set(uid, account);
     return account;
@@ -39,3 +39,5 @@ export class AccountStore {
     account.release();
   }
 }
+
+export const accounts = new AccountStore();

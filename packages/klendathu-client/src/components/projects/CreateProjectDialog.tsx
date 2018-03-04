@@ -22,6 +22,7 @@ export class CreateProjectDialog extends React.Component<Props> {
   @observable private projectNameError: string = null;
   @observable private projectTitle: string = '';
   @observable private projectTitleError: string = null;
+  @observable private projectDescription: string = '';
   @observable private public: boolean = false;
   @observable private busy: boolean = false;
 
@@ -39,7 +40,7 @@ export class CreateProjectDialog extends React.Component<Props> {
           <form className="create-project-form" onSubmit={this.onCreate}>
             <AutoNavigate />
             <FormGroup
-                controlId="project_name"
+                controlId="project-name"
                 validationState={this.projectNameError ? 'error' : null}
             >
               <ControlLabel>Project Id</ControlLabel>
@@ -53,7 +54,7 @@ export class CreateProjectDialog extends React.Component<Props> {
             </FormGroup>
             <HelpBlock>{this.projectNameError}</HelpBlock>
             <FormGroup
-                controlId="project_title"
+                controlId="project-title"
                 validationState={this.projectTitleError ? 'error' : null}
             >
               <ControlLabel>Project Title</ControlLabel>
@@ -65,6 +66,16 @@ export class CreateProjectDialog extends React.Component<Props> {
               />
             </FormGroup>
             <HelpBlock>{this.projectTitleError}</HelpBlock>
+            <FormGroup controlId="project-description">
+              <ControlLabel>Project Description</ControlLabel>
+              <FormControl
+                  type="text"
+                  label="Project Description"
+                  componentClass="textarea"
+                  value={this.projectDescription}
+                  onChange={this.onChangeProjectDescription}
+              />
+            </FormGroup>
             <Checkbox checked={this.public} onChange={this.onChangePublic}>
               Public
             </Checkbox>
@@ -90,6 +101,7 @@ export class CreateProjectDialog extends React.Component<Props> {
     this.busy = true;
     request.post(`/api/projects/${session.userId}/${this.projectName}`, {
       title: this.projectTitle,
+      description: this.projectDescription,
       public: this.public,
     }).then(() => {
       this.clearForm();
@@ -139,6 +151,11 @@ export class CreateProjectDialog extends React.Component<Props> {
     this.projectTitle = e.target.value;
   }
 
+  @bind
+  private onChangeProjectDescription(e: any) {
+    this.projectDescription = e.target.value;
+  }
+
   @action.bound
   private clearForm() {
     this.busy = false;
@@ -147,5 +164,6 @@ export class CreateProjectDialog extends React.Component<Props> {
     this.projectNameError = null;
     this.projectTitle = '';
     this.projectTitleError = null;
+    this.projectDescription = '';
   }
 }

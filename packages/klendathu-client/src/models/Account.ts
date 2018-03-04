@@ -1,21 +1,19 @@
 import { Account as AccountData } from 'klendathu-json-types';
-import { observable } from 'mobx';
+import { action, Atom, observable } from 'mobx';
 
 /** Represents the displayable info for a user or organization. */
 export class Account {
-  @observable public loading = true;
   @observable public loaded = false;
-  public readonly uid: string;
 
-  @observable.ref private data: AccountData;
   private record: deepstreamIO.Record;
+  private atom: Atom;
   private refCount: number;
 
   constructor(record: deepstreamIO.Record) {
     this.refCount = 1;
     this.record = record;
-    record.subscribe(this.update);
-    this.data = record.get() as AccountData;
+    this.atom = new Atom(`Account ${this.record.get().id}`);
+    record.subscribe(this.onUpdate, true);
   }
 
   public acquire() {
@@ -27,6 +25,10 @@ export class Account {
     if (this.refCount === 0) {
       this.record.discard();
     }
+  }
+
+  get uid(): string {
+    return this.data.uid;
   }
 
   get uname(): string {
@@ -49,8 +51,14 @@ export class Account {
     return this.data.verified;
   }
 
-  public update(record: deepstreamIO.Record) {
-    this.data = record.get() as AccountData;
-    console.log('updated account:', this.data);
+  @action.bound
+  private onUpdate(record: deepstreamIO.Record) {
+    this.atom.reportChanged();
+    this.loaded = true;
+  }
+
+  private get data(): AccountData {
+    this.atom.reportObserved();
+    return this.record.get();
   }
 }

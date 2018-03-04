@@ -44,7 +44,7 @@ server.api.post('/projects/:owner/:project', async (req, res) => {
 
   if (!project || project.length < 1) {
     res.status(400).json({ error: 'name-required' });
-  } else if (!project.match(/[a-z][\w\-\._]*/)) {
+  } else if (!project.match(/^[a-z][\w\-\._]*$/)) {
     res.status(400).json({ error: 'invalid-name' });
   } else if (!projectCreateValidator(req.body)) {
     // TODO: Decode and transform into error objects.

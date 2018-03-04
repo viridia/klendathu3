@@ -17,7 +17,7 @@ export class ProjectListQuery {
   constructor() {
     this.ownedProjectsRecord = session.connection.record.getRecord(
         `projects?${qs.stringify({ owner: session.userId })}`);
-    this.ownedProjectsRecord.subscribe(this.onUpdateOwned);
+    this.ownedProjectsRecord.subscribe(this.onUpdateOwned, true);
   }
 
   public release() {

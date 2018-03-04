@@ -42,6 +42,7 @@ class ActiveQuery<RecordType extends { id?: string }, JSONType> {
 
   public close() {
     this.cursor.close();
+    // this.record.discard();
     this.record.delete();
   }
 
@@ -60,8 +61,8 @@ class ActiveQuery<RecordType extends { id?: string }, JSONType> {
 const activeQueries: Map<string, ActiveQuery<ProjectRecord, Project>> = new Map();
 
 ds.record.listen('^projects\?.*', async (eventName, isSubscribed, response) => {
-  response.accept();
   if (isSubscribed) {
+    response.accept();
     const record = ds.record.getRecord(eventName);
     const request = url.parse(eventName, true);
     const query: any = {};
@@ -77,10 +78,11 @@ ds.record.listen('^projects\?.*', async (eventName, isSubscribed, response) => {
       activeQueries.set(eventName, activeQuery);
     }
   } else {
-    console.log('not subscribed:', eventName);
+    console.log('not subscribed:', eventName, response);
     const aq = activeQueries.get(eventName);
     if (aq) {
       aq.close();
+      activeQueries.delete(eventName);
     }
   }
 });

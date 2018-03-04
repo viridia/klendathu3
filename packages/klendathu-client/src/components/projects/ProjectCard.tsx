@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { RoleName } from '../common/RoleName';
+import { AccountName } from '../common/AccountName';
 import { Project as ProjectData } from 'klendathu-json-types';
 import { Button, Modal } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
+import { Account } from '../../models/Account';
+import { accounts } from '../../models/AccountStore';
 import { request } from '../../models/Session';
 import { Memberships } from '../../models/Memberships';
 import bind from 'bind-decorator';
@@ -20,6 +23,17 @@ interface Props {
 @observer
 export class ProjectCard extends React.Component<Props> {
   @observable private showDelete = false;
+  private account: Account;
+
+  public componentWillMount() {
+    const { project } = this.props;
+    const owner = project.id.split('/', 1)[0];
+    this.account = accounts.byId(owner);
+  }
+
+  public componentWillUnmount() {
+    this.account.release();
+  }
 
   public render() {
     const { project, memberships } = this.props;
@@ -44,13 +58,13 @@ export class ProjectCard extends React.Component<Props> {
           <div className="project-name">
             <NavLink
                 className="project-link"
-                to={{ pathname: `/${project.id}/issues` }}
+                to={{ pathname: `/${this.account.uname}/${id}/issues` }}
             >
               {id}
             </NavLink>
             <span className="description"> - {project.title}</span>
             <div className="owner">
-              <span className="title">Owned by: </span> {project.owner}
+              <span className="title">Owned by: </span> <AccountName id={project.owner} />
             </div>
           </div>
           <div className="project-owner">
@@ -58,6 +72,7 @@ export class ProjectCard extends React.Component<Props> {
               <span className="title">Role: </span>
               <RoleName role={memberships.getProjectRole(project)} />
             </div>
+            <div className="description">{project.description}</div>
           </div>
           <div>
             <Button bsStyle="primary" onClick={this.onShowDelete}>Delete</Button>
