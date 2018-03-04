@@ -1,0 +1,133 @@
+{
+  "type": "object",
+  "title": "IssueInput",
+  "description": "Used to create or update an issue.",
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "description": "Issue type.",
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "description": "Issue state.",
+      "type": "string",
+      "minLength": 1
+    },
+    "summary": {
+      "description": "Issue summary.",
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "description": "Issue description.",
+      "type": "string"
+    },
+    "owner": {
+      "description": "Issue owner.",
+      "type": "string"
+    },
+    "cc": {
+      "description": "Issue watchers.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "labels": {
+      "description": "Issue label ids.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "linked": {
+      "description": "List of linked issues.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "description": "Issue to link to.",
+            "type": "number"
+          },
+          "relation": {
+            "description": "Relationship between issues.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "to",
+          "relation"
+        ]
+      }
+    },
+    "comments": {
+      "description": "Comments to post.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "attachments": {
+      "description": "List of attached files.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "description": "URL of attachment.",
+            "type": "string"
+          },
+          "filename": {
+            "description": "Filename of attachment.",
+            "type": "string"
+          },
+          "type": {
+            "description": "MIME type.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "filename",
+          "type"
+        ]
+      }
+    },
+    "custom": {
+      "description": "List of custom field values.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Custom field name.",
+            "type": "string"
+          },
+          "value": {
+            "description": "Custom field value.",
+            "oneOf": [
+              { "type": "string" },
+              { "type": "number" },
+              { "type": "boolean" }
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ]
+      }
+    },
+    "public": {
+      "description": "Whether this issue is visible to non-members.",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "type",
+    "state",
+    "summary",
+    "description"
+  ]
+}

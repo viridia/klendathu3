@@ -1,0 +1,27 @@
+@import '../../styles/colors';
+
+div.card.project-card {
+  padding: 12px;
+  margin-right: 2px;
+
+  > .project-info {
+    display: flex;
+
+    span.title {
+      font-weight: bold;
+    }
+
+    > .project-name {
+      flex: 1;
+      > .project-link {
+        font-weight: bold;
+        text-decoration: none;
+        color: $bg5;
+      }
+    }
+
+    > .project-owner {
+      flex: 1;
+    }
+  }
+}

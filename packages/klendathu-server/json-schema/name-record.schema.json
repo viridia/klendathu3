@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "title": "NameRecord",
+  "description": "Represents organization or user name.",
+  "additionalProperties": false,
+  "properties": {
+    "uid": {
+      "description": "Unique id of this user or organization.",
+      "type": "string"
+    },
+    "display": {
+      "description": "Display name of user or organization.",
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 64
+    },
+    "type": {
+      "description": "Whether this name represents a user or an organization.",
+      "type": "string",
+      "enum": ["user", "organization"]
+    }
+  },
+  "required": [
+    "display",
+    "type"
+  ]
+}

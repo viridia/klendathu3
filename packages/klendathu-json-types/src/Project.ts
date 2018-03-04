@@ -13,13 +13,10 @@ export interface Project {
   owner: string;
 
   /** When this project was created. */
-  created: Date;
+  created: string;
 
   /** When this project was last updated. */
-  updated: Date;
-
-  /** User's role with respect to this project. */
-  role: number;
+  updated: string;
 
   /** Issue template for this project. */
   template?: string;

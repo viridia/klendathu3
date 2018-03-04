@@ -2,26 +2,31 @@ import * as React from 'react';
 import { Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { Header } from '../header/Header';
 // import { LeftNav } from '../nav/LeftNav';
-// import { SettingsView } from '../settings/SettingsView';
-// import { ProjectListView } from '../projects/ProjectListView';
+import { SettingsView } from '../settings/SettingsView';
+import { ProjectListView } from '../projects/ProjectListView';
 import { SetupAccountDialog } from '../settings/SetupAccountDialog';
 // import { EmailVerificationDialog } from '../settings/EmailVerificationDialog';
 // import { ProjectContentArea } from './ProjectContentArea';
 import { ToastContainer } from 'react-toastify';
 import { session } from '../../models/Session';
+import { Memberships } from '../../models/Memberships';
 import { observer } from 'mobx-react';
 
 import './MainPage.scss';
 
 @observer
 export class MainPage extends React.Component<RouteComponentProps<{}>> {
+  private memberships: Memberships;
+
   public componentWillMount() {
+    this.memberships = new Memberships();
     if (!session.isLoggedIn) {
       session.resume(this.props.location, this.props.history);
     }
   }
 
   public componentWillUpdate() {
+    this.memberships.release();
     if (!session.isLoggedIn) {
       session.resume(this.props.location, this.props.history);
     }
@@ -49,11 +54,13 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
         <section className="main-body">
           {/*<LeftNav {...this.props} />*/}
           <Switch>
-            {/*<Route path="/settings" component={SettingsView} />
-            <Route path="/projects" component={ProjectListView} />
-            <Route path="/:owner/:project?" component={ProjectContentArea} />
-            <Route component={ProjectListView} />*/}
-            <Route />
+            <Route path="/settings" component={SettingsView} />
+            <Route
+                path="/projects"
+                render={() => (<ProjectListView memberships={this.memberships} />)}
+            />
+            {/*<Route path="/:owner/:project?" component={ProjectContentArea} />*/}
+            <Route render={() => (<ProjectListView memberships={this.memberships} />)} />
           </Switch>
         </section>
         {/*{showEmailVerification && <EmailVerificationDialog />}*/}

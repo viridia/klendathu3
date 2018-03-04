@@ -11,6 +11,7 @@ ds.record.listen('^accounts/.*', (eventName, isSubscribed, response) => {
     // const params = url.parse(eventName);
     // console.log(params);
     const account: Account = {
+      uid: '0',
       uname: 'example',
       display: 'display',
       type: 'user',

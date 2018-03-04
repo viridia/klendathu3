@@ -1,0 +1,14 @@
+@import '../../styles/colors';
+@import '../../styles/fonts';
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.no-projects {
+  padding: 16px;
+  font-style: italic;
+}

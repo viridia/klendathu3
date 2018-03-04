@@ -11,6 +11,7 @@ server.api.get('/accounts/me', (req, res) => {
     res.status(404).json({});
   }
   const account: Account = {
+    uid: ar.id,
     type: ar.type,
     uname: ar.uname,
     display: ar.display,

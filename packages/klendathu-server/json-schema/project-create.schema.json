@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "title": "ProjectCreate",
+  "description": "Parameters for creating a project.",
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "description": "Title of this project.",
+      "type": "string"
+    },
+    "description": {
+      "description": "Longer description of this project.",
+      "type": "string"
+    },
+    "public": {
+      "description": "Whether this project is visible to non-members.",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

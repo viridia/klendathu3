@@ -26,13 +26,16 @@ export class Session {
     return !!this.account;
   }
 
+  get userId(): string {
+    return this.account ? this.account.uid : null;
+  }
+
   public resume(location: Location, history: History) {
     this.token = localStorage.getItem('token');
     if (!this.token) {
       const query = qs.parse(location.search.slice(1));
       if (query.token) {
         this.token = query.token;
-        // history.push(location.pathname);
       } else {
         history.replace('/account/login');
         return;
@@ -55,15 +58,17 @@ export class Session {
   }
 
   public login(username: string, password: string): Promise<Account> {
-    // this.token = token;
-    localStorage.setItem('token', this.token);
-    this.request.get('/api/accounts/me').then(resp => {
-      return connect(this.token).then(connection => {
-        this.connection = connection;
-        this.account = resp.data;
+    // TODO: Untested.
+    this.request.post('/api/accounts/login').then(loginResp => {
+      this.token = loginResp.data.token;
+      localStorage.setItem('token', this.token);
+      this.request.get('/api/accounts/me').then(resp => {
+        return connect(this.token).then(connection => {
+          this.connection = connection;
+          this.account = resp.data;
+        });
       });
     });
-    // axios.get(`/api/accounts)
     return null;
   }
 

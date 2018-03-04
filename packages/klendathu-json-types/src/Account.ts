@@ -1,7 +1,10 @@
 /** Information about a user or organization. */
 export interface Account {
   /** Unique name of this user or organization. */
-  uname?: string;
+  uname: string;
+
+  /** Database id this user or organization. */
+  uid: string;
 
   /** Display name of this user or organization. */
   display: string;
