@@ -32,6 +32,7 @@ export class Session {
       const query = qs.parse(location.search.slice(1));
       if (query.token) {
         this.token = query.token;
+        // history.push(location.pathname);
       } else {
         history.replace('/account/login');
         return;
@@ -42,6 +43,9 @@ export class Session {
         return connect(this.token).then(connection => {
           this.connection = connection;
           this.account = resp.data;
+          localStorage.setItem('token', this.token);
+          //  TODO: Preserve query params, except for token.
+          history.push(location.pathname);
         });
       }, error => {
         console.error(error.response);

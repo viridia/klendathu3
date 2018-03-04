@@ -19,7 +19,6 @@ export class AccountStore {
     }
     const record = session.connection.record.getRecord(`account/${uid}`);
     account = new Account(record);
-    // TODO: create deepstream object.
     this.cacheById.set(uid, account);
     return account;
   }
@@ -32,7 +31,6 @@ export class AccountStore {
     }
     const record = session.connection.record.getRecord(`names/${name}`);
     account = new Account(record);
-    // TODO: create deepstream object.
     this.cacheByName.set(name, account);
     return account;
   }
