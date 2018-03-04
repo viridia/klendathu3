@@ -71,7 +71,7 @@ ds.record.listen('^accounts/.*', async (eventName, isSubscribed, response) => {
       activeQueries.set(eventName, activeQuery);
     }
   } else {
-    console.log('not subscribed:', eventName);
+    // console.log('not subscribed:', eventName);
     const aq = activeQueries.get(eventName);
     if (aq) {
       aq.close();

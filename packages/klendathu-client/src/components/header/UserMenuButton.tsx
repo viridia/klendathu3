@@ -2,7 +2,7 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { session } from '../../models/Session';
+import { session } from '../../models';
 import bind from 'bind-decorator';
 import { observer} from 'mobx-react';
 

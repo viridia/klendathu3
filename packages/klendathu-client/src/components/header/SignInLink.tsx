@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Button } from 'react-bootstrap';
 import { RouteComponentProps } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
-import { session } from '../../models/Session';
+import { session } from '../../models';
 import { observer} from 'mobx-react';
 import * as qs from 'qs';
 

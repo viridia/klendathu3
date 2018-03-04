@@ -33,7 +33,7 @@ export interface IssueBase {
   cc: string[];
 
   /** Labels associated with this issue. */
-  labels: number[];
+  labels: string[];
 
   /** List of issues linked to this one. */
   linked: IssueLink[];

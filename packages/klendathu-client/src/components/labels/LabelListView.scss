@@ -1,0 +1,51 @@
+@import '../../styles/colors';
+
+.kdt.label-list {
+  flex: 1;
+  overflow-y: auto;
+
+  .no-labels {
+    margin: 1rem 2rem;
+    font-style: italic;
+  }
+
+  table {
+    tbody {
+      border-bottom: 3px solid transparent;
+    }
+
+    th.visible, th.label-id {
+      padding: 0 1rem;
+    }
+
+    td.label-id {
+      padding: 0 1rem;
+    }
+
+    td.visible {
+      padding: 3px 8px 0 8px;
+    }
+
+    td {
+      vertical-align: middle;
+    }
+
+    .name {
+      padding: 4px 8px;
+    }
+
+    .actions {
+      width: 1%;
+      white-space: nowrap;
+      button {
+        margin: 3px;
+        &:first-child {
+          margin-left: 0;
+        }
+        &:last-child {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+}

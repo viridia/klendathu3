@@ -1,0 +1,10 @@
+@import '../../styles/colors';
+
+.label-name {
+  display: inline-block;
+  font-size: 80%;
+  margin: 0 3px;
+  padding: 2px 9px 3px 9px;
+  border-radius: 9px;
+  color: $labelText;
+}

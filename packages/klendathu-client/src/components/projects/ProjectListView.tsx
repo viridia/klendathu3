@@ -4,10 +4,8 @@ import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import bind from 'bind-decorator';
 import { ProjectList } from './ProjectList';
-import { Memberships } from '../../models/Memberships';
+import { Memberships, session } from '../../models';
 import { CreateProjectDialog } from './CreateProjectDialog';
-import { session } from '../../models/Session';
-// import { authModel } from '../../models/AuthModel';
 
 import AddBoxIcon from '../../../icons/ic_add_box.svg';
 

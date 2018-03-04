@@ -5,7 +5,7 @@ import {
 } from 'react-bootstrap';
 import { AutoNavigate } from '../common/AutoNavigate';
 import { AxiosError } from 'axios';
-import { session, request } from '../../models/Session';
+import { session, request } from '../../models';
 import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';
 

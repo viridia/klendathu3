@@ -6,11 +6,10 @@ import { SettingsView } from '../settings/SettingsView';
 import { ProjectListView } from '../projects/ProjectListView';
 import { SetupAccountDialog } from '../settings/SetupAccountDialog';
 // import { EmailVerificationDialog } from '../settings/EmailVerificationDialog';
-// import { ProjectContentArea } from './ProjectContentArea';
+import { ProjectContentArea } from './ProjectContentArea';
 import { AccountProvider } from '../common/AccountProvider';
 import { ToastContainer } from 'react-toastify';
-import { session } from '../../models/Session';
-import { Memberships } from '../../models/Memberships';
+import { Memberships, session } from '../../models';
 import { observer } from 'mobx-react';
 
 import './MainPage.scss';
@@ -51,7 +50,7 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
             hideProgressBar={true}
             newestOnTop={false}
         />
-        <Header {...this.props} />
+        <Header {...this.props} memberships={this.memberships} />
         <section className="main-body">
           <LeftNav {...this.props} />
           <Switch>
@@ -61,13 +60,17 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
                 render={() => (<ProjectListView memberships={this.memberships} />)}
             />
             <Route
-                path="/:account/:project?"
+                path="/:account/:project"
                 render={({ match }) => (
                   <AccountProvider
                       account={match.params.account}
-                      render={account => {
-                        return JSON.stringify(account, null, 2);
-                      }}
+                      render={account => (
+                        <ProjectContentArea
+                            account={account.uid}
+                            project={match.params.project}
+                            memberships={this.memberships}
+                        />
+                      )}
                   />
                 )}
             />

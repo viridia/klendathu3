@@ -3,7 +3,7 @@ import { Button, ControlLabel, Form, FormControl, FormGroup, Modal } from 'react
 import { UsernameEditor } from './UsernameEditor';
 import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { session, request } from '../../models/Session';
+import { session, request } from '../../models';
 
 const noop: () => void = () => null;
 

@@ -1,34 +1,36 @@
 import * as React from 'react';
-// import { Project } from '../../models/Project';
-import { RouteComponentProps } from 'react-router-dom';
+import { Memberships, Project, projects } from '../../models';
 import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Role } from 'klendathu-json-types';
+import { Account as AccountData, Role } from 'klendathu-json-types';
 import { observer } from 'mobx-react';
 
 import AddBoxIcon from '../../../icons/ic_add_box.svg';
 
-type Props = RouteComponentProps<{ owner: string, project: string }>;
+interface Props {
+  account: AccountData;
+  project: string;
+  memberships: Memberships;
+}
 
 @observer
 export class NewIssueButton extends React.Component<Props> {
-  // private project: Project;
-  private project: any;
+  private project: Project;
 
   public componentWillMount() {
-    // const { owner, project } = this.props.match.params;
-    // this.project = new Project(owner, project);
+    const { memberships, account, project } = this.props;
+    this.project = projects.get(account.uid, project, memberships);
   }
 
   public componentWillUnmount() {
-    // this.project.release();
+    this.project.release();
   }
 
   public render() {
-    if (this.project && this.project.value && this.project.value.role >= Role.REPORTER) {
-      const { owner, project } = this.props.match.params;
+    if (this.project && this.project.loaded && this.project.role >= Role.REPORTER) {
+      const { account, project } = this.props;
       return (
-        <LinkContainer to={`/${owner}/${project}/new`} className="header-link">
+        <LinkContainer to={`/${account.uname}/${project}/new`} className="header-link">
           <Button bsStyle="primary">
             <AddBoxIcon />
             <span>New Issue</span>

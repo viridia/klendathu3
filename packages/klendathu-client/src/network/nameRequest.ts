@@ -1,5 +1,5 @@
 import { Account as AccountData } from 'klendathu-json-types';
-import { request } from '../models/Session';
+import { request } from '../models';
 
 export function lookupName(name: string): Promise<AccountData> {
   if (!name) {

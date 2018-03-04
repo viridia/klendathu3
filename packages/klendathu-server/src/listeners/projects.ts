@@ -27,58 +27,93 @@ function encodeProject(record: ProjectRecord): Project {
 
 class ActiveQuery<RecordType extends { id?: string }, JSONType> {
   private cursor: r.Cursor;
-  private record: deepstreamIO.Record;
+  private recordName: string;
   private encoder: (record: RecordType) => JSONType;
+  private single: boolean;
 
   constructor(
       cursor: r.Cursor,
-      record: deepstreamIO.Record,
-      encoder: (record: RecordType) => JSONType) {
+      recordName: string,
+      encoder: (record: RecordType) => JSONType,
+      single = false) {
     this.cursor = cursor;
-    this.record = record;
+    this.recordName = recordName;
     this.encoder = encoder;
+    this.single = single;
     this.cursor.each(this.onChange);
   }
 
   public close() {
     this.cursor.close();
-    // this.record.discard();
-    this.record.delete();
   }
 
   @bind
   private onChange(err: Error, change: Change<RecordType>) {
     if (change) {
-      if (change.old_val && !change.new_val) {
-        this.record.set(change.old_val.id, null);
+      if (this.single) {
+        // console.log('project change:', change);
+        if (change.new_val) {
+          (ds.record as any).setData(this.recordName, change.new_val);
+        } else {
+          (ds.record as any).setData(this.recordName, {});
+        }
+      } else if (change.old_val && !change.new_val) {
+        (ds.record as any).setData(this.recordName, change.old_val.id, null);
       } else {
-        this.record.set(change.new_val.id, this.encoder(change.new_val));
+        (ds.record as any).setData(
+            this.recordName, change.new_val.id, this.encoder(change.new_val));
       }
+    } else {
+      console.log('error change:', err);
     }
   }
 }
 
 const activeQueries: Map<string, ActiveQuery<ProjectRecord, Project>> = new Map();
 
-ds.record.listen('^projects\?.*', async (eventName, isSubscribed, response) => {
+ds.record.listen('^projects', async (eventName, isSubscribed, response) => {
   if (isSubscribed) {
     response.accept();
-    const record = ds.record.getRecord(eventName);
     const request = url.parse(eventName, true);
     const query: any = {};
     if (request.query.owner) {
       query.owner = request.query.owner;
     }
+    // console.log('requesting project list:', eventName);
     const projectsCursor = await r.table('projects')
         .filter(query)
         .changes({ includeInitial: true, squash: true } as any)
         .run(server.conn);
     if (!activeQueries.get(eventName)) {
-      const activeQuery = new ActiveQuery(projectsCursor, record, encodeProject);
+      const activeQuery = new ActiveQuery(projectsCursor, eventName, encodeProject);
       activeQueries.set(eventName, activeQuery);
     }
   } else {
-    console.log('not subscribed:', eventName, response);
+    // console.log('not subscribed:', eventName);
+    const aq = activeQueries.get(eventName);
+    if (aq) {
+      aq.close();
+      activeQueries.delete(eventName);
+    }
+  }
+});
+
+ds.record.listen('^project/.*', async (eventName, isSubscribed, response) => {
+  if (isSubscribed) {
+    response.accept();
+    const [, account, uname] = eventName.split('/', 3);
+    const pid = `${account}/${uname}`;
+    // console.log('requesting project', pid);
+    const projectCursor = await r.table('projects')
+        .filter({ id: pid })
+        .changes({ includeInitial: true, squash: true } as any)
+        .run(server.conn);
+    if (!activeQueries.get(eventName)) {
+      const activeQuery = new ActiveQuery(projectCursor, eventName, encodeProject, true);
+      activeQueries.set(eventName, activeQuery);
+    }
+  } else {
+    // console.log('not subscribed:', eventName);
     const aq = activeQueries.get(eventName);
     if (aq) {
       aq.close();

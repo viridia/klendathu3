@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { LabelName } from '../common/LabelName';
-import { ProjectQuery } from '../../models/ProjectQuery';
+import { Project } from '../../models';
 import { LabelListQuery } from '../../models/LabelListQuery';
 import { NavLink } from 'react-router-dom';
 import * as qs from 'qs';
@@ -9,7 +9,7 @@ import * as qs from 'qs';
 import './LeftNav.scss';
 
 interface Props {
-  project: ProjectQuery;
+  project: Project;
 }
 
 @observer

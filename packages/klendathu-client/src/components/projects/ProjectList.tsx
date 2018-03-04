@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { ProjectListQuery } from '../../models/ProjectListQuery';
-import { Memberships } from '../../models/Memberships';
+import { Memberships, ProjectListQuery } from '../../models';
 import { ProjectCard } from './ProjectCard';
 
 import './ProjectList.scss';

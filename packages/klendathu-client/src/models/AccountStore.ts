@@ -1,7 +1,7 @@
 import * as LRU from 'lru-cache';
 import { Account as AccountData } from 'klendathu-json-types';
 import { Account } from './Account';
-import { session } from '../models/Session';
+import { session } from '../models';
 
 export class AccountStore {
   private cacheById: LRU.Cache<string, Account>;

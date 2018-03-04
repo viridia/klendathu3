@@ -15,8 +15,9 @@ export class Memberships {
     return [];
   }
 
-  public getProjectRole(project: ProjectData) {
-    if (project.owner === session.userId) {
+  public getProjectRole(projectId: string, projectOwner: string) {
+    // console.log('project role:', project, session.userId);
+    if (projectOwner === session.userId) {
       return Role.OWNER;
     }
     return Role.NONE;

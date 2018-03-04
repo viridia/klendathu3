@@ -12,6 +12,7 @@ export function connect(authToken: string): Promise<deepstreamIO.Client> {
     if (connectionState === 'OPEN') {
       console.info('Deepstream connection open.');
     }
+    // console.info('Deepstream connection state:', connectionState);
   });
   connection.on('error', (error, event, topic) => {
     console.error('Deepstream connection error:', error, event, topic);

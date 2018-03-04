@@ -1,0 +1,17 @@
+@import '../../styles/colors';
+
+.issue-links {
+  margin: 0 0 0 24px;
+  padding: 8px;
+}
+
+.issue-link {
+  > .relation {
+    font-weight: bold;
+    color: lighten($textDarkAccent, 25%);
+    margin-right: 5px;
+  }
+  > .issue > .id {
+    font-weight: bold;
+  }
+}

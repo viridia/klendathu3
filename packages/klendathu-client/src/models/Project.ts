@@ -1,79 +1,58 @@
 import { Project as ProjectData, Role } from 'klendathu-json-types';
 import { Memberships } from './Memberships';
 import { session } from './Session';
-import { Atom, computed } from 'mobx';
-import bind from 'bind-decorator';
+import { action, computed, observable } from 'mobx';
 
 /** Metadata about a project. */
 export class Project {
+  public readonly account: string;
+  public readonly uname: string;
+  @observable public title = '';
+  @observable public description = '';
+  @observable public owner: string = null;
+  @observable public isPublic = false;
+  @observable public created = new Date();
+  @observable public updated = new Date();
+  @observable public loaded = false;
+  @observable public template: string | null = null;
+
   private record: deepstreamIO.Record;
   private memberships: Memberships;
-  private atom: Atom;
 
   constructor(record: deepstreamIO.Record, memberships: Memberships) {
     this.record = record;
     this.memberships = memberships;
-    this.atom = new Atom(`Project ${this.record.get().id}`);
+
+    const [account, uname] = record.name.split('/', 2);
+    this.account = account;
+    this.uname = uname;
     this.record.subscribe(this.onUpdate);
   }
 
   public release() {
     this.record.unsubscribe(this.onUpdate);
-  }
-
-  get id(): string {
-    return this.data.id;
-  }
-
-  get title(): string {
-    return this.data.title;
-  }
-
-  get description(): string {
-    return this.data.description;
-  }
-
-  get owner(): string {
-    return this.data.owner;
-  }
-
-  get template(): string | null {
-    return this.data.template;
-  }
-
-  get public(): boolean {
-    return this.data.isPublic;
-  }
-
-  @computed
-  get created(): Date {
-    return new Date(this.data.created);
-  }
-
-  @computed
-  get updated(): Date {
-    return new Date(this.record.get().data.updated);
+    this.record.discard();
   }
 
   @computed
   get role(): Role {
-    const owner = this.data.owner;
-    if (session.userId === owner) {
+    if (session.userId === this.owner) {
       return Role.OWNER;
     }
-    const role = this.memberships.getProjectRole(this.record.get().id);
-    const orgRole = this.memberships.getOrganizationRole(owner);
+    const role = this.memberships.getProjectRole(`${this.account}/${this.uname}`, this.owner);
+    const orgRole = this.memberships.getOrganizationRole(this.owner);
     return Math.max(role, orgRole);
   }
 
-  private get data(): ProjectData {
-    this.atom.reportObserved();
-    return this.record.get();
-  }
-
-  @bind
-  private onUpdate(record: deepstreamIO.Record) {
-    console.log('Project updated', this.record.get());
-    this.atom.reportChanged();
+  @action.bound
+  private onUpdate(data: ProjectData) {
+    this.title = data.title;
+    this.description = data.description;
+    this.owner = data.owner;
+    this.template = data.template;
+    this.isPublic = data.isPublic;
+    this.created = new Date(data.created);
+    this.updated = new Date(data.updated);
+    this.loaded = true;
   }
 }

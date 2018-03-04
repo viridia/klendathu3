@@ -12,7 +12,7 @@ export class Account {
   constructor(record: deepstreamIO.Record) {
     this.refCount = 1;
     this.record = record;
-    this.atom = new Atom(`Account ${this.record.get().id}`);
+    this.atom = new Atom(this.record.name);
     record.subscribe(this.onUpdate, true);
   }
 
@@ -23,6 +23,7 @@ export class Account {
   public release() {
     this.refCount -= 1;
     if (this.refCount === 0) {
+      this.record.unsubscribe(this.onUpdate);
       this.record.discard();
     }
   }

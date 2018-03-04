@@ -1,12 +1,18 @@
 import * as React from 'react';
 import { SignInLink } from './SignInLink';
+import { AccountProvider } from '../common/AccountProvider';
 import { UserMenuButton } from './UserMenuButton';
 import { NewIssueButton } from './NewIssueButton';
+import { Memberships } from '../../models';
 import { RouteComponentProps, Route, Switch } from 'react-router-dom';
 
 import './Header.scss';
 
-export function Header(props: RouteComponentProps<{}>) {
+interface Props extends RouteComponentProps<{}> {
+  memberships: Memberships;
+}
+
+export function Header(props: Props) {
   return (
     <header className="kdt header">
       <span className="title">Klendathu</span>
@@ -22,7 +28,21 @@ export function Header(props: RouteComponentProps<{}>) {
       <Switch>
         <Route path="/account" />
         <Route path="/settings" />
-        <Route path="/:account/:project" component={NewIssueButton} />
+        <Route
+            path="/:account/:project"
+            render={p => (
+              <AccountProvider
+                  account={p.match.params.account}
+                  render={account => (
+                    account && <NewIssueButton
+                        account={account}
+                        project={p.match.params.project}
+                        memberships={props.memberships}
+                    />
+                  )}
+              />
+            )}
+        />
       </Switch>
       <UserMenuButton {...props} />
     </header>

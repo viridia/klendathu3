@@ -1,0 +1,156 @@
+@import '../../styles/colors';
+@import '../../styles/fonts';
+
+.kdt.issue-list {
+  flex: 1;
+  overflow-y: auto;
+
+  .card {
+    margin: 0;
+
+    > .no-issues {
+      margin: 1rem 2rem;
+      font-style: italic;
+    }
+
+    > .issue {
+      width: 100%;
+
+      th {
+        font-size: 90%;
+      }
+
+      td, th {
+        a {
+          padding: 5px 7px;
+          display: block;
+          text-decoration: none;
+          color: $textDark;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      td.pad {
+        padding: 8px 7px;
+      }
+
+      td.id {
+        padding-top: 3px;
+      }
+
+      td.type {
+        > span {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 3px;
+          padding: 4px 9px 5px 9px;
+          margin: 3px;
+          vertical-align: middle;
+          line-height: 1.2em;
+        }
+      }
+
+      th {
+        padding: 0;
+        vertical-align: middle;
+        position: relative;
+        button {
+          margin: 0;
+          width: 100%;
+          background-color: transparent;
+          border: none;
+          outline: none;
+          > .sort {
+            color: desaturate(lighten($bg6, 25%), 20%);
+          }
+        }
+      }
+
+      th.summary {
+        > section {
+          display: flex;
+        }
+
+        li {
+          padding-left: 16px;
+          position: relative;
+          > a {
+            text-decoration: none;
+          }
+          &.disabled {
+            > a {
+              color: lighten($textDark, 30%);
+            }
+          }
+          &.checked:before {
+            position: absolute;
+            left: 9px;
+            top: 6px;
+            content: "\2713";
+          }
+        }
+      }
+
+      .selected, .id, .type, .state, .owner, .created, .updated {
+        text-align: center;
+      }
+
+      .date {
+        white-space: nowrap;
+      }
+
+      .selected {
+        padding: 0;
+        > label {
+          padding: 9px 8px 0 8px;
+          > input {
+            padding: 0;
+          }
+        }
+      }
+
+      .custom, .title {
+        text-align: left;
+      }
+
+      .title {
+        font-weight: bold;
+        > a.child {
+          position: relative;
+        }
+        > a.child:before {
+          position: absolute;
+          left: -14px;
+          content: "\21D2";
+          color: lighten($textDarkDisabled, 20%);
+        }
+      }
+
+      .unassigned {
+        font-style: italic;
+        color: lighten($textDarkDisabled, 20%);
+      }
+
+      .title {
+        width: 80%;
+
+        > a {
+          padding-top: 8px;
+
+          > .tag {
+            display: inline-block;
+            font-size: 80%;
+            margin: 0 3px;
+            padding: px 9px;
+            background-color: $bg1;
+            border-radius: 9px;
+            color: $bg9;
+          }
+        }
+      }
+    }
+  }
+}

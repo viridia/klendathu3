@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { observer } from 'mobx-react';
-// import { authModel } from '../../models/AuthModel';
-import { session } from '../../models/Session';
+import { session } from '../../models';
 // import { toast } from 'react-toastify';
 import bind from 'bind-decorator';
 

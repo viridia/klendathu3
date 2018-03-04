@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { accounts } from '../../models/AccountStore';
+import { accounts } from '../../models';
 import { Account as AccountData } from 'klendathu-json-types';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';

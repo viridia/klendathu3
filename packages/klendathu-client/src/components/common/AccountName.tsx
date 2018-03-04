@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { accounts } from '../../models/AccountStore';
-import { Account } from '../../models/Account';
+import { Account, accounts } from '../../models';
 import { observer } from 'mobx-react';
 
 interface Props {

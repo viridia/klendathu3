@@ -1,0 +1,78 @@
+import * as React from 'react';
+import { Issue as IssueData } from 'klendathu-json-types';
+import { IssueListQuery, Project } from '../../../models';
+import { Autocomplete, SearchCallback } from '../../ac/Autocomplete';
+// import { searchIssues } from '../../../requests/issues';
+import bind from 'bind-decorator';
+
+import '../../ac/Chip.scss';
+
+interface Props {
+  className?: string;
+  placeholder?: string;
+  project: Project;
+  issues: IssueListQuery;
+  exclude?: number;
+  selection: IssueData | IssueData[];
+  onSelectionChange: (selection: IssueData | IssueData[] | null) => void;
+}
+
+export class IssueSelector extends React.Component<Props> {
+  // private token: string;
+
+  public render() {
+    return (
+      <Autocomplete
+          {...this.props}
+          onSearch={this.onSearch}
+          onGetValue={this.onGetValue}
+          onGetSortKey={this.onGetSortKey}
+          onRenderSuggestion={this.onRenderSuggestion}
+          onRenderSelection={this.onRenderSelection}
+      />
+    );
+  }
+
+  @bind
+  private onSearch(token: string, callback: SearchCallback<IssueData>) {
+    if (token.length < 1) {
+      callback([]);
+    } else {
+      // const { issues } = this.props;
+      // // this.token = token;
+      // const searchResults = issues.search(token);
+      // callback(searchResults.filter(issue => issue.id !== this.props.exclude));
+      // // searchIssues(project.owner, project.id, token).then(issues => {
+      // //   if (this.token === token) {
+      // //     callback(issues.filter(issue => issue.id !== this.props.exclude));
+      // //   }
+      // // });
+    }
+  }
+
+  @bind
+  private onRenderSuggestion(issue: IssueData) {
+    return (
+      <span className="issue-ref">
+        <span className="id">#{issue.id}: </span>
+        <span className="summary">{issue.summary}</span>
+      </span>
+    );
+  }
+
+  @bind
+  private onRenderSelection(issue: IssueData) {
+    return this.onRenderSuggestion(issue);
+  }
+
+  @bind
+  private onGetValue(issue: IssueData) {
+    return issue.id;
+  }
+
+  @bind
+  private onGetSortKey(issue: IssueData) {
+    return issue.summary;
+    // return -issue.score;
+  }
+}
