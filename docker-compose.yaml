@@ -1,0 +1,48 @@
+version: '3.2'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: server
+    ports:
+      - 8181:8181
+    environment:
+      SERVER_PORT: 8181
+      DEEPSTREAM_URL: "ws://deepstream:6020"
+      RETHINKDB_URL: "rethinkdb://db:28015"
+      NODE_ENV: development
+      DB_NAME: klendathu
+      LOG_LEVEL: debug
+    depends_on:
+      - db
+      - deepstream
+    volumes:
+      - type: volume
+        source: .
+        target: /usr/src/klendathu
+  deepstream:
+    image: deepstreamio/deepstream.io:latest
+    container_name: deepstream
+    ports:
+      - 6020:6020
+    volumes:
+      - type: volume
+        source: ./packages/klendathu-deepstream
+        target: /etc/deepstream
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://deepstream/health-check"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+  db:
+    image: rethinkdb:2.3.6
+    container_name: rethinkdb
+    ports:
+      - 8080:8080   # Admin
+      - 28015:28015 # Driver
+      - 29015:29015 # Cluster
+    volumes:
+      - type: volume
+        source: ./data
+        target: /data

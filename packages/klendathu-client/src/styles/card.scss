@@ -1,0 +1,107 @@
+@import './colors';
+
+$cardBg: lighten($bg0, 5%);
+$cardShadow: rgba(0,0,0,0.14);
+$cardHeaderDividerColor: darken($bg1, 5%);
+$cardFooterDividerColor: darken($bg1, 5%);
+
+$accentedCardHeaderBg: $bg2;
+
+$internalCardBg: lighten($bg0, 15%);
+$internalCardBorder: lighten($cardBorder, 10%);
+
+.card {
+  background: $cardBg;
+  border: 1px solid $cardBorder;
+  box-shadow: 0px 2px 3px 0 $cardShadow;
+  margin: 8px;
+
+  &.settings {
+    margin: 0;
+    padding: 8px;
+  }
+
+  &.internal {
+    background: $internalCardBg;
+    border: 1px solid $internalCardBorder;
+    box-shadow: 0px 1px 2px 0 $cardShadow;
+    margin: 0 0 8px 0;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    > .title {
+      margin: 0 8px;
+    }
+  }
+
+  > header {
+    background-color: $cardHeaderBg;
+    border-bottom: 1px solid $cardHeaderDividerColor;
+    box-shadow: 0px 2px 2px 0 $cardShadow;
+    padding: 5px 7px;
+    font-weight: bold;
+  }
+
+  > footer {
+    background-color: $cardHeaderBg;
+    border-top: 1px solid $cardFooterDividerColor;
+    padding: 8px;
+    align-items: center;
+  }
+
+  &.accented > header {
+    padding: 8px;
+    background-color: $cardHeaderBg;
+    color: $textDarkAccent;
+  }
+
+  > .body {
+    padding: 8px;
+  }
+
+  // TODO: Move this. Maybe even don't use tables?
+  thead {
+    background-color: $cardHeaderBg;
+    border-bottom: 1px solid $cardHeaderDividerColor;
+    box-shadow: 0px 3px 2px 0 $cardShadow;
+  }
+}
+
+// TODO: Move this.
+// $cardReportColumnDividerColor: lighten($cardBorder, 12%);
+// $cardReportAltRowBg: lighten($bg0, 2%);
+//
+// .card.report {
+//   // .no-issues {
+//   //   padding: 8px;
+//   //   text-align: center;
+//   //   font-style: italic;
+//   // }
+//
+//   > table {
+//     width: 100%;
+//
+//     td, th {
+//       border-right: 1px solid $cardReportColumnDividerColor;
+//       border-collapse: collapse;
+//       vertical-align: top;
+//       &:last-child {
+//         border-right: none;
+//       }
+//     }
+//
+//     th {
+//       padding: 5px 7px;
+//     }
+//
+//     tr:nth-child(even) {
+//       background: $cardReportAltRowBg;
+//     }
+//
+//     .center {
+//       text-align: center;
+//     }
+//   }
+// }

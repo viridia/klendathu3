@@ -1,0 +1,30 @@
+/** Table representing a fillable form. */
+.form-table {
+  th {
+    text-align: right;
+  }
+
+  th, td {
+    vertical-align: top;
+    padding: 2px 4px;
+  }
+
+  th {
+    text-align: right;
+    line-height: 1.9em;
+    white-space: nowrap;
+  }
+
+  td {
+    width: 80%;
+  }
+
+  textarea {
+    resize: none;
+  }
+
+  // A form field that contains a single line of static text.
+  td.single-static {
+    line-height: 1.9em;
+  }
+}

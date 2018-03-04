@@ -1,0 +1,7 @@
+showLogo: false
+auth:
+  type: http
+  options:
+    endpointUrl: http://server:8181/auth-user
+    permittedStatusCodes: [ 200 ]
+    requestTimeout: 2000

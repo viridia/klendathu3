@@ -1,0 +1,19 @@
+{
+  "devDependencies": {
+    "lerna": "^2.9.0",
+    "tslint": "^5.9.1",
+    "tslint-react": "^3.5.1"
+  },
+  "dependencies": {
+    "typescript": "^2.7.2"
+  },
+  "name": "klendathu3",
+  "version": "0.0.1",
+  "description": "Flexible bug-tracking and project management system.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Talin",
+  "license": "Apache-2.0"
+}

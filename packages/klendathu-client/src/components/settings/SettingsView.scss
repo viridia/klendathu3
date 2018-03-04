@@ -1,0 +1,12 @@
+@import '../../styles/colors';
+@import '../../styles/fonts';
+
+.settings-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  .card.settings {
+    flex: 1;
+  }
+}

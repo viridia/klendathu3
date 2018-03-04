@@ -1,0 +1,109 @@
+@import 'colors';
+@import 'fonts';
+
+// Default button
+$btn-default-color: $buttonDefaultColor;
+$btn-default-bg: $buttonDefaultBg;
+$btn-default-border: $buttonDefaultBorder;
+
+// Primary button
+$btn-primary-color: $buttonPrimaryColor;
+$btn-primary-bg: $buttonPrimaryBg;
+$btn-primary-border: $buttonPrimaryBorder;
+
+// Info button
+$btn-info-color: $buttonInfoColor;
+$btn-info-bg: $buttonInfoBg;
+$btn-info-border: $buttonInfoBorder;
+
+// Change appearance of navigation tabs
+$nav-tabs-active-link-hover-border-color: $cardBorder;
+$nav-tabs-active-link-hover-bg: $cardBg;
+$nav-link-hover-bg: $cardBgAlt;
+
+// Change menu highlight colors
+$dropdown-link-active-color: $textDarkAccent;
+$dropdown-link-active-bg: $dropdownLinkActiveBg;
+
+// Include bootstrap styles that we are using.
+@import '../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap-sprockets';
+@import '../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap';
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  font: $buttonFont;
+  text-decoration: none;
+  &.btn-sm {
+    font-size: 80%;
+  }
+  svg {
+    width: 19px;
+    height: 19px;
+    margin-right: 4px;
+    margin-left: 4px;
+    &:first-child {
+      margin-left: 0;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  .caret {
+    margin-left: 6px;
+  }
+
+  // Need more transparency for disabled buttons.
+  &.disabled,
+  &[disabled],
+  fieldset[disabled] & {
+    @include opacity(.35);
+  }
+
+  &.bare {
+    border: none;
+    background: none;
+    outline: none;
+    padding: 1px;
+  }
+
+  &.light {
+    > svg {
+      fill: lighten($textDark, 40%);
+    }
+    &:hover {
+      > svg {
+        fill: $textDark;
+      }
+    }
+  }
+}
+
+.btn-primary > svg {
+  fill: $bg0;
+}
+
+.nav.nav-tabs {
+  margin-top: 4px;
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+  a {
+    outline: none;
+  }
+}
+
+.nav.nav-tabs > li > a {
+  text-decoration: none;
+}
+
+a[role=menuitem] {
+  text-decoration: none;
+}
+
+.modal-dialog {
+  display: flex;
+}
+
+div.radio.disabled > label {
+  opacity: .5;
+}

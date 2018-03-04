@@ -1,0 +1,12 @@
+{
+  "name": "klendathu-json-types",
+  "version": "0.0.1",
+  "description": "TypeScript type definitions for Klendathu.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -d",
+    "postinstall": "tsc -d"
+  },
+  "author": "Talin",
+  "license": "Apache-2.0"
+}

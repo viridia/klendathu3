@@ -1,0 +1,52 @@
+{
+  "name": "klendathu-server",
+  "version": "0.0.1",
+  "description": "Server component for Klendathu.",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "nodemon --ext ts,graphql --exec ts-node -- ./src/index.ts",
+    "start-ds": "docker run --rm --name klendathu-ds -p 6020:6020 deepstreamio/deepstream.io:latest",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Talin",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "ajv": "^6.2.0",
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "deepstream.io-client-js": "^2.3.0",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.2",
+    "jwt-simple": "^0.5.1",
+    "klendathu-json-types": "^0.0.1",
+    "nodemon": "^1.17.1",
+    "passport": "^0.4.0",
+    "passport-anonymous": "^1.0.1",
+    "passport-facebook": "^2.1.1",
+    "passport-github": "^1.1.0",
+    "passport-google-oauth": "^1.0.0",
+    "passport-jwt": "^3.0.1",
+    "qs": "^6.5.1",
+    "rethinkdb": "^2.3.3",
+    "ts-node": "^5.0.0",
+    "webpack-dev-middleware": "^2.0.6",
+    "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/ajv": "^1.0.0",
+    "@types/body-parser": "^1.16.8",
+    "@types/cors": "^2.8.3",
+    "@types/dotenv": "^4.0.2",
+    "@types/express": "^4.11.1",
+    "@types/jwt-simple": "^0.5.33",
+    "@types/passport": "^0.4.3",
+    "@types/passport-anonymous": "^1.0.2",
+    "@types/passport-facebook": "^2.1.7",
+    "@types/passport-github": "^1.1.2",
+    "@types/passport-google-oauth": "^1.0.37",
+    "@types/passport-jwt": "^3.0.1",
+    "@types/qs": "^6.5.1",
+    "@types/rethinkdb": "^2.3.8",
+    "@types/winston": "^2.3.8"
+  }
+}

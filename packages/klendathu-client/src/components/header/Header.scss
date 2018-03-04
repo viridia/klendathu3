@@ -1,0 +1,32 @@
+@import '../../styles/colors';
+@import '../../styles/fonts';
+
+$headerBg: $bg6;
+$headerTitleColor: $bg0;
+$headerSubtitleColor: $bg1;
+$headerLinkColor: $bg1;
+
+.kdt.header {
+  display: flex;
+  align-items: center;
+  background-color: $headerBg;
+  padding: 5px 4px 5px 8px;
+  height: 4rem;
+
+  > .title {
+    font: $titleFont;
+    font-size: 2rem;
+    color: $headerTitleColor;
+    margin-right: .4rem;
+  }
+
+  > .subtitle {
+    color: $headerSubtitleColor;
+    flex: 1;
+  }
+
+  .header-link {
+    margin-right: 3px;
+    color: $headerLinkColor;
+  }
+}

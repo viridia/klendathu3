@@ -1,0 +1,59 @@
+// Text colors
+$textLight: #ddd;
+$textDark: #444;
+$textDarkDisabled: #777;
+$textDarkAccent: #482848;
+
+// Background colors
+$bg0: #f3e5f5;
+$bg1: #e1bee7;
+$bg2: #ce93d8;
+$bg3: #ba68c8;
+$bg4: #ab47bc;
+$bg5: #9c27b0;
+$bg6: #8e24aa;
+$bg7: #7b1fa2;
+$bg8: #6a1b9a;
+$bg9: #4a148c;
+
+$leftNavBg: #D2BDD6;
+$leftNavFg: #482848;
+
+$contentBg: #E9DBEB;
+
+$cardBg: #fcf7fc;
+$cardBgAlt: #f6ecf8;
+$cardBorder: #C3A1C9;
+$cardHeaderBg: lighten($bg1, 10%);
+
+$massEditBg: #c7b8e6;
+
+// Default button
+$buttonDefaultColor: #482848;
+$buttonDefaultBg: lighten($bg2, 20%);
+$buttonDefaultBorder: darken($buttonDefaultBg, 10%);
+
+// Primary button
+$buttonPrimaryColor: #f3e5f5;
+$buttonPrimaryBg: #ab47bc;
+$buttonPrimaryBorder: darken($buttonPrimaryBg, 10%);
+
+// Info button
+$buttonInfoColor: lighten(#f3e5f5, 5%);
+$buttonInfoBg: #9d8de8;
+$buttonInfoBorder: darken($buttonInfoBg, 10%);
+
+// Menus
+$dropdownLinkActiveBg: $bg1;
+
+// Scrollbars
+$scrollbarThumbColor: rgba($bg7, .5);
+$scrollbarInactiveThumbColor: rgba($bg7, .3);
+
+// Social login buttons
+$buttonLoginGoogleBg: #dd4b39;
+$buttonLoginGitHubBg: #464646;
+$buttonLoginFacebookBg: #3b5998;
+
+// Labels
+$labelText: #222;

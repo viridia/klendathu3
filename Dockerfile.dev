@@ -1,0 +1,22 @@
+# A simple docker file that merely maps the entire project directory into it.
+# Used for interactive development.
+FROM node:8.9-alpine
+RUN apk add --no-cache \
+  bash \
+  coreutils \
+  git \
+  grep \
+  sed
+
+ARG NODE_ENV
+ENV NODE_ENV $NODE_ENV
+
+ENV SRC=/usr/src/klendathu/packages/klendathu-server
+RUN mkdir -p ${SRC}
+
+WORKDIR ${SRC}
+
+RUN cd ${SRC}
+
+ENTRYPOINT ["npm"]
+CMD ["start"]

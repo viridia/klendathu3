@@ -1,0 +1,21 @@
+@import './colors';
+
+::-webkit-scrollbar {
+  background-color: transparent;
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: none;
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: $scrollbarThumbColor;
+  -webkit-box-shadow: none;
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+  background: $scrollbarInactiveThumbColor;
+}
