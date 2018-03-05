@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon --ext ts,graphql --exec ts-node -- ./src/index.ts",
     "start-ds": "docker run --rm --name klendathu-ds -p 6020:6020 deepstreamio/deepstream.io:latest",
+    "upload": "ts-node ./src/script/upload-template.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Talin",

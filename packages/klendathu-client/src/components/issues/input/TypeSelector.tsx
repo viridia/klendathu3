@@ -1,7 +1,8 @@
 import bind from 'bind-decorator';
-import { Template } from '../../../../../types/json';
+import { Template } from '../../../models';
 import * as React from 'react';
 import { Radio } from 'react-bootstrap';
+import { observer } from 'mobx-react';
 
 interface Props {
   value: string;
@@ -10,6 +11,7 @@ interface Props {
 }
 
 /** Selects the type of the issue. */
+@observer
 export class TypeSelector extends React.Component<Props> {
   public render() {
     const { template, value } = this.props;

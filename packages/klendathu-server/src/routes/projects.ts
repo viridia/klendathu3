@@ -1,7 +1,7 @@
 import { server } from '../Server';
 import { Role } from 'klendathu-json-types';
 import { AccountRecord, ProjectRecord } from '../db/types';
-import { getProjectAndRole } from '../db/projectRole';
+import { getProjectAndRole } from '../db/userRole';
 import { logger } from '../logger';
 import * as Ajv from 'ajv';
 import * as r from 'rethinkdb';

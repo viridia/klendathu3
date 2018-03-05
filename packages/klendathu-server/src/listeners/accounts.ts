@@ -62,11 +62,11 @@ ds.record.listen('^accounts/.*', async (eventName, isSubscribed, response) => {
     response.accept();
     const record = ds.record.getRecord(eventName);
     const id = eventName.split('/', 2)[1];
-    const projectsCursor = await r.table('accounts')
-        .filter({ id })
-        .changes({ includeInitial: true, squash: true } as any)
-        .run(server.conn);
     if (!activeQueries.get(eventName)) {
+      const projectsCursor = await r.table('accounts')
+          .filter({ id })
+          .changes({ includeInitial: true, squash: true } as any)
+          .run(server.conn);
       const activeQuery = new ActiveQuery(projectsCursor, record, encodeAccount);
       activeQueries.set(eventName, activeQuery);
     }

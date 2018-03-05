@@ -226,7 +226,7 @@ export class IssueListView extends React.Component<Props> {
     columnRenderers.set('owner', new UserColumnRenderer('Owner', 'ownerName', 'owner pad'));
     columnRenderers.set('created', new DateColumnRenderer('Created', 'created', 'created pad'));
     columnRenderers.set('updated', new DateColumnRenderer('Updated', 'updated', 'updated pad'));
-    const template = project.template;
+    const template = project.templateId;
     if (template && template.value) {
       columnRenderers.set('type', new TypeColumnRenderer(template.value));
       for (const type of template.value.types) {

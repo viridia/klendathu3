@@ -9,7 +9,9 @@ import './routes/accounts';
 import './routes/names';
 import './routes/projects';
 import './routes/version';
+import './routes/templates';
 import './listeners/accounts';
 import './listeners/projects';
+import './listeners/templates';
 
 server.start();

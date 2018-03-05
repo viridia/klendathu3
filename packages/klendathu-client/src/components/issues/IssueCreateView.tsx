@@ -19,7 +19,7 @@ export class IssueCreateView extends React.Component<Props> {
 
   @bind
   private onSave(input: IssueInput): Promise<any> {
-    // const { project } = this.props;
+    const { project } = this.props;
     // return createIssue(project.owner, project.id, input);
     return null;
   }

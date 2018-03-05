@@ -7,7 +7,6 @@ export class ProjectStore {
       response to database mutations. */
   public get(account: string, name: string, memberships: Memberships): Project {
     // Rely on deepstream to do the cacheing instead of building our own cacheing layer.
-    // console.log('requesting project:', account, name);
     const record = session.connection.record.getRecord(`project/${account}/${name}`);
     return new Project(record, memberships);
   }

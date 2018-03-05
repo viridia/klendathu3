@@ -1,7 +1,9 @@
 import * as React from 'react';
 import bind from 'bind-decorator';
-import { Template, Workflow, WorkflowState } from '../../../../../types/json';
+import { Workflow, WorkflowState } from 'klendathu-json-types';
+import { Template } from '../../../models';
 import { ControlLabel, FormGroup, Radio } from 'react-bootstrap';
+import { observer } from 'mobx-react';
 
 interface Props {
   state: string;
@@ -23,25 +25,13 @@ function caption(state: WorkflowState) {
 }
 
 /** Selects the state of the issue. */
+@observer
 export class StateSelector extends React.Component<Props> {
-  private stateMap: Map<string, WorkflowState>;
-
-  constructor(props: Props) {
-    super(props);
-    this.stateMap =
-        new Map(props.template.states.map(st => [st.id, st] as [string, WorkflowState]));
-  }
-
-  public componentDidUpdate() {
-    this.stateMap =
-        new Map(this.props.template.states.map(st => [st.id, st] as [string, WorkflowState]));
-  }
-
   public render() {
     const { workflow, state, prevState } = this.props;
     const nextState = state; // State we're going to
     const currState = prevState || state;
-    const currStateInfo = this.stateMap.get(currState);
+    const currStateInfo = this.props.template.getState(currState);
     let transitions: string[];
     if (prevState && currStateInfo) {
       transitions = currStateInfo.transitions;
@@ -76,7 +66,7 @@ export class StateSelector extends React.Component<Props> {
           {caption(currStateInfo)}
         </Radio>}
         {transitions.map(s => {
-          const toState = this.stateMap.get(s);
+          const toState = this.props.template.getState(s);
           return (
             <Radio
               key={toState.id}

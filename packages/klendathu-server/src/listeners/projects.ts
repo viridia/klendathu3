@@ -53,7 +53,7 @@ class ActiveQuery<RecordType extends { id?: string }, JSONType> {
       if (this.single) {
         // console.log('project change:', change);
         if (change.new_val) {
-          (ds.record as any).setData(this.recordName, change.new_val);
+          (ds.record as any).setData(this.recordName, this.encoder(change.new_val));
         } else {
           (ds.record as any).setData(this.recordName, {});
         }
@@ -80,11 +80,11 @@ ds.record.listen('^projects', async (eventName, isSubscribed, response) => {
       query.owner = request.query.owner;
     }
     // console.log('requesting project list:', eventName);
-    const projectsCursor = await r.table('projects')
-        .filter(query)
-        .changes({ includeInitial: true, squash: true } as any)
-        .run(server.conn);
     if (!activeQueries.get(eventName)) {
+      const projectsCursor = await r.table('projects')
+          .filter(query)
+          .changes({ includeInitial: true, squash: true } as any)
+          .run(server.conn);
       const activeQuery = new ActiveQuery(projectsCursor, eventName, encodeProject);
       activeQueries.set(eventName, activeQuery);
     }
@@ -104,11 +104,11 @@ ds.record.listen('^project/.*', async (eventName, isSubscribed, response) => {
     const [, account, uname] = eventName.split('/', 3);
     const pid = `${account}/${uname}`;
     // console.log('requesting project', pid);
-    const projectCursor = await r.table('projects')
-        .filter({ id: pid })
-        .changes({ includeInitial: true, squash: true } as any)
-        .run(server.conn);
     if (!activeQueries.get(eventName)) {
+      const projectCursor = await r.table('projects')
+          .filter({ id: pid })
+          .changes({ includeInitial: true, squash: true } as any)
+          .run(server.conn);
       const activeQuery = new ActiveQuery(projectCursor, eventName, encodeProject, true);
       activeQueries.set(eventName, activeQuery);
     }

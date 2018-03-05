@@ -3,6 +3,7 @@ import { AccountRecord, ProjectRecord } from './types';
 import { server } from '../Server';
 import * as r from 'rethinkdb';
 
+/** Lookup the project record and compute the user's effective role with respect to that project. */
 export async function getProjectAndRole(
   account: string,
   project: string,
@@ -24,4 +25,12 @@ export async function getProjectAndRole(
     return { projectRecord, role: Role.VIEWER };
   }
   return { projectRecord, role: Role.NONE };
+}
+
+/** Compute the user's effective role with respect to an account. */
+export async function getAccountAndRole(account: string, user: AccountRecord): Promise<Role> {
+  if (user.id === account) {
+    return Role.OWNER;
+  }
+  return Role.NONE;
 }

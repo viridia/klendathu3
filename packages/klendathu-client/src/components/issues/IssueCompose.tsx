@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Account, IssueListQuery, Project, session } from '../../models';
+import { Account, IssueListQuery, Project, session, Template } from '../../models';
 import { StateSelector } from './input/StateSelector';
 import { TypeSelector } from './input/TypeSelector';
 import { LabelSelector } from './input/LabelSelector';
@@ -27,7 +27,6 @@ import {
   IssueType,
   Label,
   Relation,
-  Template,
   Workflow,
 } from 'klendathu-json-types';
 
@@ -85,7 +84,7 @@ export class IssueCompose extends React.Component<Props> {
           <header>
             {issue
               ? <span>Edit Issue #{issue.id}</span>
-              : <span>New Issue: {this.props.project.id}</span>}
+              : <span>New Issue: {this.props.project.uname}</span>}
           </header>
           <form
               name="lastpass-disable-search"
@@ -400,41 +399,40 @@ export class IssueCompose extends React.Component<Props> {
       const defaultType = this.template.types.find(t => !t.abstract);
       if (defaultType) {
         this.type = defaultType.id;
-        const workflow = this.workflow;
-        if (workflow) {
-          this.issueState = (workflow.start && workflow.start[0]) ||
-            (workflow.states && workflow.states[0]) || '';
-        } else {
-          this.issueState = '';
-        }
       } else {
         this.type = '';
         this.issueState = '';
       }
     }
+    if (this.type && !this.issueState) {
+      const workflow = this.workflow;
+      if (workflow) {
+        this.issueState =
+          (workflow.start && workflow.start[0]) ||
+          (workflow.states && workflow.states[0]) || '';
+      } else {
+        this.issueState = '';
+      }
+    }
   }
 
-  @computed
   get template(): Template {
-    const { project } = this.props;
-    // return project.template && project.template.value;
-    return null;
+    return this.props.project.template;
   }
 
   @computed
   get issueType(): IssueType {
     const { project } = this.props;
-    // return project.template && project.template.getInheritedIssueType(this.type);
-    return null;
+    return project.template && project.template.getInheritedIssueType(this.type);
   }
 
   @computed
   get workflow(): Workflow {
     const { project } = this.props;
     const iType = this.issueType;
-    // if (project.template && iType && iType.workflow) {
-    //   return project.template.getWorkflow(iType.workflow);
-    // }
+    if (project.template && iType && iType.workflow) {
+      return project.template.getWorkflow(iType.workflow);
+    }
     return null;
   }
 }
