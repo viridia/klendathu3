@@ -32,7 +32,7 @@ export class LabelSelector extends React.Component<Props> {
       <div className="label-selector">
         {this.showModal && (
           <LabelDialog
-              projectRef={this.props.project}
+              project={this.props.project}
               onHide={this.onCloseModal}
               onInsertLabel={this.onInsertLabel}
           />)}
@@ -54,7 +54,7 @@ export class LabelSelector extends React.Component<Props> {
   private onSearchLabels(token: string, callback: SearchCallback<Label>) {
     const newLabelOption = {
       name: <span>New&hellip;</span>,
-      id: -1,
+      id: '*new*',
     };
     if (token.length === 0) {
       callback([], [newLabelOption]);
@@ -71,10 +71,10 @@ export class LabelSelector extends React.Component<Props> {
 
   @action.bound
   private onChooseSuggestion(label: Label) {
-    // if (label.id === -1) {
-    //   this.showModal = true;
-    //   return true;
-    // }
+    if (label.id === '*new*' && !label.project) {
+      this.showModal = true;
+      return true;
+    }
     return false;
   }
 

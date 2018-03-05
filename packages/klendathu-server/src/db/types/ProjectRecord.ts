@@ -25,4 +25,10 @@ export interface ProjectRecord {
 
   /** True if this is soft deleted. */
   deleted?: boolean;
+
+  /** Next issue id. */
+  issueIdCounter: number;
+
+  /** Next label id. */
+  labelIdCounter: number;
 }

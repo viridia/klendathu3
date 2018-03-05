@@ -4,7 +4,7 @@ export { Change, CustomFieldChange, LinkChange } from './Change';
 export { Comment } from './Comment';
 export { CustomField, Issue, IssueInput } from './Issue';
 export { IssueLink } from './IssueLink';
-export { Label } from './Label';
+export { Label, LabelInput } from './Label';
 export { Membership } from './Membership';
 export { Predicate } from './Predicate';
 export { Project } from './Project';

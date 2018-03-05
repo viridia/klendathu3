@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { Project } from '../../models';
-import { NameDisplay } from '../common/NameDisplay';
+import { AccountName } from '../common/AccountName';
 import { LabelListQuery } from '../../models/LabelListQuery';
 import { Label, Role } from 'klendathu-json-types';
 import * as dateFormat from 'dateformat';
 import { Button, Checkbox, Modal } from 'react-bootstrap';
 // import ErrorDisplay from '../debug/ErrorDisplay';
 import { LabelDialog } from './LabelDialog';
-// import { deleteLabel } from '../../requests/labels';
+import { deleteLabel } from '../../network/labelRequest';
 import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { toast } from 'react-toastify';
@@ -15,13 +15,10 @@ import { toast } from 'react-toastify';
 import './LabelListView.scss';
 import '../common/LabelName.scss';
 
-// interface Data {
-//   labels: Label[];
-//   projectPrefs: ProjectPrefs;
-// }
-
 interface Props {
   project: Project;
+  //   labels: Label[];
+  //   projectPrefs: ProjectPrefs;
 }
 
 @observer
@@ -29,8 +26,8 @@ export class LabelListView extends React.Component<Props> {
   @observable private showCreate = false;
   @observable private showDelete = false;
   @observable private labelToDelete?: Label = null;
-  @observable private labelToUpdate: number = null;
-  @observable private visible = new Map<number, boolean>();
+  @observable private labelToUpdate: Label = null;
+  @observable private visible = new Map<string, boolean>();
   @observable private busy = false;
   private query: LabelListQuery;
 
@@ -58,9 +55,9 @@ export class LabelListView extends React.Component<Props> {
       <section className="kdt content label-list">
         {this.showCreate && (
           <LabelDialog
-              projectRef={project}
-              labelId={this.labelToUpdate}
-              visible={this.visible.has(this.labelToUpdate)}
+              project={project}
+              label={this.labelToUpdate}
+              visible={this.labelToUpdate && this.visible.has(this.labelToUpdate.id)}
               onHide={this.onHideCreate}
               onInsertLabel={this.onCreateLabel}
           />)}
@@ -82,7 +79,7 @@ export class LabelListView extends React.Component<Props> {
         )}
         <header>
           <span className="title">Labels</span>
-          {project.value.role >= Role.DEVELOPER &&
+          {project.role >= Role.DEVELOPER &&
               <Button bsStyle="primary" onClick={this.onShowCreate}>New Label</Button>}
         </header>
         {this.renderLabels()}
@@ -109,7 +106,7 @@ export class LabelListView extends React.Component<Props> {
               <th className="name center">Label</th>
               <th className="owner center">Creator</th>
               <th className="created center">Created</th>
-              {project.value.role >= Role.DEVELOPER && <th className="actions">Actions</th>}
+              {project.role >= Role.DEVELOPER && <th className="actions">Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -138,9 +135,9 @@ export class LabelListView extends React.Component<Props> {
             {label.name}
           </span>
         </td>
-        <td className="creator center"><NameDisplay id={label.creator} /></td>
+        <td className="creator center"><AccountName id={label.creator} /></td>
         <td className="created center">{dateFormat(label.created, 'mmm dS, yyyy h:MM TT')}</td>
-        {project.value.role >= Role.DEVELOPER && (<td className="actions center">
+        {project.role >= Role.DEVELOPER && (<td className="actions center">
           <Button bsSize="small" data-label={label.id} onClick={e => this.onShowUpdate(label)}>
             Edit
           </Button>

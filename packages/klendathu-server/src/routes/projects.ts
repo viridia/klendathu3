@@ -75,6 +75,8 @@ server.api.post('/projects/:account/:project', async (req, res) => {
       created: now,
       updated: now,
       template: null,
+      issueIdCounter: 0,
+      labelIdCounter: 0,
       isPublic,
     };
 

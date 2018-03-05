@@ -5,12 +5,14 @@ import { logger } from '../logger';
 import * as r from 'rethinkdb';
 
 // Look up a user or organization by their unique name.
+// TODO: This can be better done via RPC.
 server.api.get('/names/:name', (req, res) => {
   r.table('accounts').filter({ name: req.params.name }).run(server.conn).then(cursor => {
     cursor.toArray().then(accounts => {
       if (accounts.length === 1) {
         const ar: AccountRecord = accounts[0];
         const account: Account = {
+          uid: ar.id,
           type: ar.type,
           uname: ar.uname,
           display: ar.display,

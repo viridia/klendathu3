@@ -1,4 +1,13 @@
 /** A label which can be attached to an issue. */
+export interface LabelInput {
+  /** Text of the label. */
+  name: string;
+
+  /** CSS color of the label. */
+  color: string;
+}
+
+/** A label which can be attached to an issue. */
 export interface Label {
   /** Database id for this label [account/project/id]. */
   id: string;

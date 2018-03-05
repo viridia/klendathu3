@@ -11,7 +11,7 @@ import {
   FormGroup,
   Modal,
 } from 'react-bootstrap';
-// import { createLabel, updateLabel, getLabel } from '../../requests/labels';
+import { createLabel, updateLabel } from '../../network/labelRequest';
 import LABEL_COLORS from '../common/labelColors'; // tslint:disable-line
 import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';
@@ -21,8 +21,8 @@ import '../ac/Chip.scss';
 import './LabelDialog.scss';
 
 interface Props {
-  projectRef: Project;
-  labelId?: number;
+  project: Project;
+  label?: Label;
   onHide: () => void;
   onInsertLabel: (label: Label) => void;
   visible?: boolean;
@@ -36,19 +36,23 @@ export class LabelDialog extends React.Component<Props> {
   @observable private busy: boolean = false;
 
   public componentWillMount() {
-    if (this.props.labelId) {
-      this.getLabelInfo(this.props.labelId);
+    const { label } = this.props;
+    if (this.props.label) {
+      this.labelName = label.name;
+      this.color = label.color;
     }
   }
 
   public componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.labelId && !this.props.labelId) {
-      this.getLabelInfo(nextProps.labelId);
+    if (nextProps.label && !this.props.label) {
+      const { label } = nextProps;
+      this.labelName = label.name;
+      this.color = label.color;
     }
   }
 
   public render() {
-    const { labelId, onHide } = this.props;
+    const { label, onHide } = this.props;
     return (
       <Modal
           show={true}
@@ -56,7 +60,7 @@ export class LabelDialog extends React.Component<Props> {
           dialogClassName="create-label"
       >
         <Modal.Header closeButton={true}>
-          {labelId
+          {label
               ? <Modal.Title>Edit Label</Modal.Title>
               : <Modal.Title>Create Label</Modal.Title>}
         </Modal.Header>
@@ -116,7 +120,7 @@ export class LabelDialog extends React.Component<Props> {
               disabled={this.labelName.length < 3 || this.busy}
               bsStyle="primary"
           >
-            {labelId ? 'Save' : 'Create'}
+            {label ? 'Save' : 'Create'}
           </Button>
         </Modal.Footer>
       </Modal>);
@@ -140,22 +144,22 @@ export class LabelDialog extends React.Component<Props> {
 
   @action.bound
   private onSubmit() {
-    const { labelId, projectRef: project } = this.props;
+    const { label, project: project } = this.props;
     if (this.labelName.length < 3) {
       return;
     }
     const labelInput = { color: this.color, name: this.labelName };
     this.busy = true;
-    const result: Promise<Label> = null;
-    // if (labelId) {
-    //   result = updateLabel(project.owner, project.id, labelId, labelInput).then(resp => {
-    //     return resp;
-    //   });
-    // } else {
-    //   result = createLabel(project.owner, project.id, labelInput).then(resp => {
-    //     return resp;
-    //   });
-    // }
+    let result: Promise<Label>;
+    if (label) {
+      result = updateLabel(label.id, labelInput).then(resp => {
+        return resp;
+      });
+    } else {
+      result = createLabel(project.account, project.uname, labelInput).then(resp => {
+        return resp;
+      });
+    }
 
     result.then(updatedLabel => {
       this.busy = false;
@@ -197,16 +201,5 @@ export class LabelDialog extends React.Component<Props> {
       this.setState({ busy: false });
       this.props.onHide();
     });
-  }
-
-  private getLabelInfo(labelId: number) {
-    const { projectRef } = this.props;
-    // getLabel(projectRef.owner, projectRef.id, labelId).then(label => {
-    //   if (label) {
-    //     this.labelName = label.name;
-    //     this.color = label.color;
-    //     // TODO: How to handle visible?
-    //   }
-    // });
   }
 }
