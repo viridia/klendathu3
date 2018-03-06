@@ -16,7 +16,6 @@ import '../common/LabelName.scss';
 
 interface Props {
   project: Project;
-  //   labels: Label[];
   //   projectPrefs: ProjectPrefs;
 }
 

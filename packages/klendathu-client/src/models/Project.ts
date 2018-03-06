@@ -28,7 +28,7 @@ export class Project {
     const [, account, uname] = record.name.split('/', 3);
     this.account = account;
     this.uname = uname;
-    this.record.subscribe(this.onUpdate);
+    this.record.subscribe(this.onUpdate, true);
   }
 
   public release() {

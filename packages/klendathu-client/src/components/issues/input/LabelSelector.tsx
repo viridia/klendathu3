@@ -7,7 +7,7 @@ import { Autocomplete, SearchCallback } from '../../ac/Autocomplete';
 import { Chip } from '../../ac/Chip';
 import { LabelDialog  } from '../../labels/LabelDialog';
 import { action, observable } from 'mobx';
-// import { getLabels } from '../../../requests/labels';
+import { searchLabels } from '../../../network/labelRequest';
 import { observer } from 'mobx-react';
 
 import '../../ac/Chip.scss';
@@ -61,11 +61,11 @@ export class LabelSelector extends React.Component<Props> {
     } else {
       const { project } = this.props;
       this.token = token;
-      // getLabels(project.owner, project.id, token).then(labels => {
-      //   if (this.token === token) {
-      //     callback(labels.slice(0, 5), [newLabelOption]);
-      //   }
-      // });
+      searchLabels(project.account, project.uname, token, labels => {
+        if (this.token === token) {
+          callback(labels.slice(0, 5), [newLabelOption]);
+        }
+      });
     }
   }
 

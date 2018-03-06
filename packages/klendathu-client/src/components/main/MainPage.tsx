@@ -6,8 +6,13 @@ import { SettingsView } from '../settings/SettingsView';
 import { ProjectListView } from '../projects/ProjectListView';
 import { SetupAccountDialog } from '../settings/SetupAccountDialog';
 // import { EmailVerificationDialog } from '../settings/EmailVerificationDialog';
-import { ProjectContentArea } from './ProjectContentArea';
+import { IssueCreateView } from '../issues/IssueCreateView';
+import { IssueEditView } from '../issues/IssueEditView';
+// import { IssueListView } from '../issues/IssueListView';
+import { IssueDetailsView } from '../issues/IssueDetailsView';
+import { LabelListView } from '../labels/LabelListView';
 import { AccountProvider } from '../common/AccountProvider';
+import { ProjectProvider } from '../common/ProjectProvider';
 import { ToastContainer } from 'react-toastify';
 import { Memberships, session } from '../../models';
 import { observer } from 'mobx-react';
@@ -57,24 +62,58 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
             <Route path="/settings" component={SettingsView} />
             <Route
                 path="/projects"
-                render={() => (<ProjectListView memberships={this.memberships} />)}
+                render={() => <ProjectListView memberships={this.memberships} />}
             />
             <Route
                 path="/:account/:project"
                 render={({ match }) => (
-                  <AccountProvider
-                      account={match.params.account}
-                      render={account => (
-                        <ProjectContentArea
-                            account={account.uid}
-                            project={match.params.project}
-                            memberships={this.memberships}
-                        />
-                      )}
-                  />
+                  <AccountProvider account={match.params.account}>
+                    {account => (
+                      <ProjectProvider
+                          account={account}
+                          project={match.params.project}
+                          memberships={this.memberships}
+                      >
+                        {models => (
+                          <Switch>
+                            <Route
+                                path="/:account/:project/new"
+                                render={() => <IssueCreateView {...models} />}
+                            />
+                            <Route
+                                path="/:account/:project/edit/:id"
+                                render={props => <IssueEditView {...props} {...models} />}
+                            />
+                            <Route
+                                path="/:account/:project/issues/:id"
+                                render={props => (<IssueDetailsView {...props} {...models} />)}
+                            />
+                            <Route
+                                path="/:account/:project/issues"
+                                exact={true}
+                                render={() => (
+                                  false
+                                  // <IssueListView
+                                  //     {...this.props}
+                                  //     project={this.project}
+                                  //     issues={this.issues}
+                                  //     prefs={this.prefs}
+                                  // />
+                                )}
+                            />
+                            <Route
+                                path="/:account/:project/labels"
+                                exact={true}
+                                render={() => (<LabelListView {...models} />)}
+                            />
+                          </Switch>
+                        )}
+                      </ProjectProvider>
+                    )}
+                  </AccountProvider>
                 )}
             />
-            <Route render={() => (<ProjectListView memberships={this.memberships} />)} />
+            <Route render={() => <ProjectListView memberships={this.memberships} />} />
           </Switch>
         </section>
         {/*{showEmailVerification && <EmailVerificationDialog />}*/}
@@ -83,4 +122,3 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
     );
   }
 }
-// return 'ProjectContentArea';

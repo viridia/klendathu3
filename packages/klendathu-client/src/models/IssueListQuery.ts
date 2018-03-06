@@ -54,6 +54,10 @@ export class IssueListQuery {
     // this.unsubscribe();
   }
 
+  public get length(): number {
+    return this.issues.length;
+  }
+
   public get list(): Issue[] {
     return this.issues;
   }

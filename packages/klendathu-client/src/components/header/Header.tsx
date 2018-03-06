@@ -31,16 +31,15 @@ export function Header(props: Props) {
         <Route
             path="/:account/:project"
             render={p => (
-              <AccountProvider
-                  account={p.match.params.account}
-                  render={account => (
-                    account && <NewIssueButton
-                        account={account}
-                        project={p.match.params.project}
-                        memberships={props.memberships}
-                    />
-                  )}
-              />
+              <AccountProvider account={p.match.params.account}>
+                {account => (
+                  <NewIssueButton
+                      account={account}
+                      project={p.match.params.project}
+                      memberships={props.memberships}
+                  />
+                )}
+              </AccountProvider>
             )}
         />
       </Switch>

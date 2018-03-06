@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Issue as IssueData, Role } from 'klendathu-json-types';
 import { IssueListQuery, Project } from '../../models';
-import { ProjectPrefsQuery } from '../../models/ProjectPrefsQuery';
+// import { ProjectPrefsQuery } from '../../models/ProjectPrefsQuery';
 import { ColumnSort } from '../common/ColumnSort';
 import { NavLink, RouteComponentProps } from 'react-router-dom';
 import {
@@ -24,7 +24,8 @@ import './IssueListView.scss';
 
 interface Props extends RouteComponentProps<{}> {
   project: Project;
-  prefs: ProjectPrefsQuery;
+  prefs: any;
+  // prefs: ProjectPrefsQuery;
   issues: IssueListQuery;
 }
 
@@ -34,7 +35,7 @@ interface QueryParams { [param: string]: string; }
 export class IssueListView extends React.Component<Props> {
   private queryParams: QueryParams = {};
   private selectAllEl: HTMLInputElement;
-  @observable private selection = new Map<number, boolean>();
+  @observable private selection = new Map<string, boolean>();
 
   public componentWillMount() {
     const { location } = this.props;
@@ -57,7 +58,7 @@ export class IssueListView extends React.Component<Props> {
           </div>
         </section>
       );
-    } else if (issues.size === 0) {
+    } else if (issues.length === 0) {
       return (
         <section className="kdt content issue-list">
           <div className="card issue">
@@ -133,13 +134,13 @@ export class IssueListView extends React.Component<Props> {
   }
 
   private renderRows(): JSX.Element[] {
-    return this.props.issues.sorted.map(i => this.renderIssue(i));
+    return this.props.issues.list.map(i => this.renderIssue(i));
   }
 
   private renderIssue(issue: IssueData, level: number = 0): JSX.Element {
     const { project, prefs } = this.props;
     const linkTarget = {
-      pathname: `/${project.owner}/${project.id}/issues/${issue.id}`,
+      pathname: `/${project.account}/${project.uname}/issues/${issue.id}`,
       state: {
         back: this.props.location,
         // idList: this.issueIds,
@@ -198,7 +199,7 @@ export class IssueListView extends React.Component<Props> {
 
   @action.bound
   private onChangeSelection(e: any) {
-    const id = parseInt(e.target.dataset.id, 10);
+    const id = e.target.dataset.id;
     if (e.target.checked) {
       this.selection.set(id, true);
     } else {
@@ -226,10 +227,10 @@ export class IssueListView extends React.Component<Props> {
     columnRenderers.set('owner', new UserColumnRenderer('Owner', 'ownerName', 'owner pad'));
     columnRenderers.set('created', new DateColumnRenderer('Created', 'created', 'created pad'));
     columnRenderers.set('updated', new DateColumnRenderer('Updated', 'updated', 'updated pad'));
-    const template = project.templateId;
-    if (template && template.value) {
-      columnRenderers.set('type', new TypeColumnRenderer(template.value));
-      for (const type of template.value.types) {
+    const template = project.template;
+    if (template && template.loaded) {
+      columnRenderers.set('type', new TypeColumnRenderer(template));
+      for (const type of template.types) {
         if (type.fields) {
           for (const field of type.fields) {
             columnRenderers.set(`custom.${field.id}`, new CustomColumnRenderer(field));

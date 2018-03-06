@@ -26,7 +26,6 @@ server.deepstream.record.listen('^labels/.*', async (eventName, isSubscribed, re
   if (isSubscribed) {
     response.accept();
     const [, account, project] = eventName.split('/', 3);
-    console.log('requesting labels:', eventName);
     labelListWatcher.subscribe(
       eventName,
       r.table('labels').filter({ project: `${account}/${project}` }));

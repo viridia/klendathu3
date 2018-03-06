@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 
 interface Props {
   account: string;
-  render: (accont: AccountData) => React.ReactNode;
+  children: (account: AccountData) => React.ReactNode;
 }
 
 /** Component which looks up an account by name and provides the account id to children. */
@@ -29,7 +29,7 @@ export class AccountProvider extends React.Component<Props> {
   }
 
   public render() {
-    const { render } = this.props;
-    return this.account ? render(this.account) : null;
+    const { children } = this.props;
+    return this.account ? children(this.account) : null;
   }
 }
