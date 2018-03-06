@@ -12,7 +12,7 @@
   "author": "Talin",
   "license": "Apache-2.0",
   "dependencies": {
-    "ajv": "^6.2.0",
+    "ajv": "^6.2.1",
     "bind-decorator": "^1.0.11",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
@@ -31,7 +31,6 @@
     "qs": "^6.5.1",
     "rethinkdb": "^2.3.3",
     "ts-node": "^5.0.0",
-    "webpack-dev-middleware": "^2.0.6",
     "winston": "^2.4.0"
   },
   "devDependencies": {

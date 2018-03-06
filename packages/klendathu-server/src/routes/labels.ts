@@ -98,7 +98,7 @@ server.api.patch('/labels/:account/:project/:label', async (req, res) => {
       .update(record, { returnChanges: true })
       .run(server.conn);
     if (resp.replaced === 1) {
-      return (resp as any).changes[0].new_val;
+      res.json((resp as any).changes[0].new_val);
     } else {
       logger.error('Error updating non-existent label', details);
       res.status(404).json({ error: 'not-found' });
@@ -127,31 +127,30 @@ server.api.delete('/labels/:account/:project/:label', async (req, res) => {
     logger.error(`create label: user has insufficient privileges.`, details);
     res.status(403).json({ error: 'forbidden' });
   } else {
-    // TODO: Implement.
+    const projectId = `${account}/${project}`;
     const labelId = `${account}/${project}/${label}`;
     console.log('delete', labelId);
 
-    //   // Delete all instances of that label from issues
-    //   await r.table('issues').filter({ project: project.id }).update({
-    //     labels: (r.row('labels') as any).filter((id: number) => id !== args.id),
-    //   }).run(context.conn);
-    //
+    // Delete all instances of that label from issues
+    await r.table('issues').filter({ project: projectId }).update({
+      labels: (r.row('labels') as any).filter((id: string) => id !== labelId),
+    }).run(server.conn);
+
+    // TODO: Implement.
     //   // Delete all instances of that label from project prefs
     //   await r.table('projectPrefs').filter({ project: project.id }).update({
     //     labels: (r.row('labels') as any).filter((id: number) => id !== args.id),
     //   }).run(context.conn);
-    //
-    //   // Delete the label record
-    //   const resp = await r.table('labels')
-    //       .get([args.project, args.id] as any)
-    //       .delete()
-    //       .run(context.conn);
-    //   if (resp.deleted !== 1) {
-    //     throw new NotFound({ notFound: 'label' });
-    //   }
-    //
-    //   // Return the id of the deleted label
-    //   return args.id;
-    res.end();
+
+    // Delete the label record
+    const resp = await r.table('labels')
+        .get(labelId)
+        .delete()
+        .run(server.conn);
+    if (resp.deleted !== 1) {
+      res.status(404).json({ error: 'not-found' });
+    } else {
+      res.json(labelId);
+    }
   }
 });

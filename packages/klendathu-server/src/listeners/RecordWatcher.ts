@@ -8,8 +8,8 @@ export interface Change<T> {
 
 /** Class which manages lists of active changefeeds which publish changes to deepstream records. */
 export class RecordWatcher<RecordType extends { id?: string }, JSONType> {
+  protected encoder: (record: RecordType) => JSONType;
   private queries: Map<string, r.Cursor> = new Map();
-  private encoder: (record: RecordType) => JSONType;
 
   constructor(encoder: (record: RecordType) => JSONType) {
     this.encoder = encoder;
@@ -26,13 +26,9 @@ export class RecordWatcher<RecordType extends { id?: string }, JSONType> {
           this.queries.set(recordName, cursor);
           cursor.each((err: Error, change: Change<RecordType>) => {
             if (change) {
-              // console.log('record change:', change);
-              if (change.new_val) {
-                (server.deepstream.record as any).setData(recordName, this.encoder(change.new_val));
-              } else {
-                (server.deepstream.record as any).setData(recordName, {});
-              }
+              this.updateRecord(recordName, change);
             } else {
+              // TODO: Figure out how to handle the error.
               console.log('error change:', err);
             }
           });
@@ -49,6 +45,14 @@ export class RecordWatcher<RecordType extends { id?: string }, JSONType> {
     if (query) {
       query.close();
       this.queries.delete(recordName);
+    }
+  }
+
+  protected updateRecord(recordName: string, change: Change<RecordType>): void {
+    if (change.new_val) {
+      (server.deepstream.record as any).setData(recordName, this.encoder(change.new_val));
+    } else {
+      (server.deepstream.record as any).setData(recordName, {});
     }
   }
 }

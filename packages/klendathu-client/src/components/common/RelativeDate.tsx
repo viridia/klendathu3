@@ -1,7 +1,7 @@
 import * as dateFormat from 'dateformat';
 import * as React from 'react';
 
-function humanAge(date: Date, brief = false): string {
+export function humanAge(date: Date, brief = false): string {
   if (!date) {
     return 'a while ago';
   }
@@ -61,10 +61,12 @@ function humanAge(date: Date, brief = false): string {
   return dateFormat(date, 'isoDate');
 }
 
-export default function RelativeDate({ date, brief = false }: { date: Date, brief?: boolean }) {
+export function RelativeDate(
+    { date, brief = false }: { date: Date | string, brief?: boolean }) {
+  const d = typeof date === 'string' ? new Date(date) : date;
   return (
     <span className="date" title={dateFormat(date, 'mmm dS, yyyy h:MM TT')}>
-      {humanAge(date, brief)}
+      {humanAge(d, brief)}
     </span>
   );
 }

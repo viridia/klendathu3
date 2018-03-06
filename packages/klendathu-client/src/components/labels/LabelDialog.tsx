@@ -162,10 +162,7 @@ export class LabelDialog extends React.Component<Props> {
     }
 
     result.then(updatedLabel => {
-      this.busy = false;
-      this.props.onHide();
-      this.props.onInsertLabel(updatedLabel);
-      // if (!label || this.props.visible !== this.visible) {
+      if (!label || this.props.visible !== this.visible) {
       //   const update: { labelsToAdd?: number[]; labelsToRemove?: number[]; } = {};
       //   if (this.visible) {
       //     update.labelsToAdd = [updatedLabel.id];
@@ -178,11 +175,14 @@ export class LabelDialog extends React.Component<Props> {
       //     this.setState({ busy: false });
       //     this.props.onHide();
       //   });
-      // } else {
-      //   this.props.onInsertLabel(updatedLabel);
-      //   this.setState({ busy: false });
-      //   this.props.onHide();
-      // }
+        this.busy = false;
+        this.props.onHide();
+        this.props.onInsertLabel(updatedLabel);
+      } else {
+        this.busy = false;
+        this.props.onHide();
+        this.props.onInsertLabel(updatedLabel);
+      }
     }, error => {
       console.error(error);
       if (error.response && error.response.data && error.response.data.err) {

@@ -12,6 +12,8 @@
 * IssueEditView
 * IssueCreateView
 * ProjectContentArea
+* LabelDialog
+* LabelListView
 
 ## Routes:
 

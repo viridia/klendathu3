@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { Project } from '../../models';
 import { AccountName } from '../common/AccountName';
+import { RelativeDate } from '../common/RelativeDate';
 import { LabelListQuery } from '../../models/LabelListQuery';
 import { Label, Role } from 'klendathu-json-types';
-import * as dateFormat from 'dateformat';
 import { Button, Checkbox, Modal } from 'react-bootstrap';
-// import ErrorDisplay from '../debug/ErrorDisplay';
 import { LabelDialog } from './LabelDialog';
 import { deleteLabel } from '../../network/labelRequest';
 import { action, observable } from 'mobx';
@@ -32,13 +31,15 @@ export class LabelListView extends React.Component<Props> {
   private query: LabelListQuery;
 
   public componentWillMount() {
-    this.query = new LabelListQuery(this.props.project);
+    const { project } = this.props;
+    this.query = new LabelListQuery(project.account, project.uname);
   }
 
   public componentWillReceiveProps(nextProps: Props) {
     if (nextProps.project !== this.props.project) {
+      const { project } = nextProps;
       this.query.release();
-      this.query = new LabelListQuery(nextProps.project);
+      this.query = new LabelListQuery(project.account, project.uname);
     }
   }
 
@@ -89,10 +90,10 @@ export class LabelListView extends React.Component<Props> {
 
   private renderLabels() {
     const { project } = this.props;
-    if (this.query.list.length === 0) {
+    if (this.query.length === 0) {
       return (
         <div className="card internal">
-          {!this.query.loading && <div className="no-labels">No labels defined</div>}
+          {this.query.loaded && <div className="no-labels">No labels defined</div>}
         </div>
       );
     }
@@ -110,7 +111,7 @@ export class LabelListView extends React.Component<Props> {
             </tr>
           </thead>
           <tbody>
-            {this.query.list.map(i => this.renderLabel(i))}
+            {this.query.asList.map(i => this.renderLabel(i))}
           </tbody>
         </table>
       </div>
@@ -119,9 +120,10 @@ export class LabelListView extends React.Component<Props> {
 
   private renderLabel(label: Label) {
     const { project } = this.props;
+    const id = label.id.split('/', 3)[2];
     return (
       <tr key={label.id}>
-        <td className="label-id center">{label.id}</td>
+        <td className="label-id center">{id}</td>
         <td className="visible center">
           <Checkbox
               bsClass="cbox"
@@ -136,7 +138,7 @@ export class LabelListView extends React.Component<Props> {
           </span>
         </td>
         <td className="creator center"><AccountName id={label.creator} /></td>
-        <td className="created center">{dateFormat(label.created, 'mmm dS, yyyy h:MM TT')}</td>
+        <td className="created center"><RelativeDate date={label.created} /></td>
         {project.role >= Role.DEVELOPER && (<td className="actions center">
           <Button bsSize="small" data-label={label.id} onClick={e => this.onShowUpdate(label)}>
             Edit
@@ -161,7 +163,8 @@ export class LabelListView extends React.Component<Props> {
 
   @action.bound
   private onCreateLabel() {
-    //
+    console.log('on create');
+    this.showCreate = false;
   }
 
   @action.bound
@@ -178,8 +181,7 @@ export class LabelListView extends React.Component<Props> {
   @action.bound
   private onDeleteLabel() {
     this.busy = true;
-    const { project } = this.props;
-    deleteLabel(project.owner, project.id, this.labelToDelete.id).then(() => {
+    deleteLabel(this.labelToDelete.id).then(() => {
       this.showDelete = false;
       this.busy = false;
     }, (error: any) => {
@@ -197,7 +199,7 @@ export class LabelListView extends React.Component<Props> {
   @action.bound
   private onShowUpdate(label: Label) {
     this.showCreate = true;
-    this.labelToUpdate = label.id;
+    this.labelToUpdate = label;
   }
 
   @action.bound
