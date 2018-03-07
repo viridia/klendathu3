@@ -6,6 +6,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 import { server } from './Server';
 import './routes/auth';
 import './routes/accounts';
+import './routes/issues';
 import './routes/labels';
 // import './routes/names';
 import './routes/projects';

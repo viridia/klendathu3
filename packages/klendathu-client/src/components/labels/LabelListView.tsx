@@ -6,7 +6,7 @@ import { LabelListQuery } from '../../models/LabelListQuery';
 import { Label, Role } from 'klendathu-json-types';
 import { Button, Checkbox, Modal } from 'react-bootstrap';
 import { LabelDialog } from './LabelDialog';
-import { deleteLabel } from '../../network/labelRequest';
+import { deleteLabel } from '../../network/requests';
 import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { toast } from 'react-toastify';

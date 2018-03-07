@@ -1,5 +1,4 @@
 import * as React from 'react';
-// import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { Account as AccountData } from 'klendathu-json-types';
 import { IssueListQuery, Memberships, Project, projects } from '../../models';
@@ -21,7 +20,6 @@ interface Props {
 /** Component which provides project and issue objects to it's children. */
 @observer
 export class ProjectProvider extends React.Component<Props> {
-  // @observable.ref private account: AccountData = null;
   private project: Project = null;
   private issues: IssueListQuery = null;
   // private prefs: ProjectPrefsQuery;

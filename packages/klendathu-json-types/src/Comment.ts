@@ -3,6 +3,9 @@ export interface Comment {
   /** Comment ID. */
   id?: number;
 
+  /** Issue this comment is attached to. */
+  issue: string;
+
   /** User that created this comment. */
   author?: string;
 

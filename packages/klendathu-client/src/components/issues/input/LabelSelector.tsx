@@ -7,7 +7,7 @@ import { Autocomplete, SearchCallback } from '../../ac/Autocomplete';
 import { Chip } from '../../ac/Chip';
 import { LabelDialog  } from '../../labels/LabelDialog';
 import { action, observable } from 'mobx';
-import { searchLabels } from '../../../network/labelRequest';
+import { searchLabels } from '../../../network/requests';
 import { observer } from 'mobx-react';
 
 import '../../ac/Chip.scss';

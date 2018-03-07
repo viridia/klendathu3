@@ -35,7 +35,7 @@ export class LabelLinks extends React.Component<Props> {
           <li className="label-item" key={label.id}>
             <NavLink
                 to={{
-                  pathname: `/${project.owner}/${project.id}/issues`,
+                  pathname: `/${project.account}/${project.uname}/issues`,
                   search: `?${qs.stringify({ label: label.id })}` }}
             >
               <LabelName project={project} label={label.id} />

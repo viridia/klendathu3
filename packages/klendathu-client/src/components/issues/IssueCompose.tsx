@@ -144,7 +144,7 @@ export class IssueCompose extends React.Component<Props> {
                           selection={this.owner}
                           onSelectionChange={this.onChangeOwner}
                       />
-                      <a className="assign-to-me">Assign to me</a>
+                      <a className="assign-to-me action-link">Assign to me</a>
                     </td>
                   </tr>
                   <tr>

@@ -11,27 +11,18 @@ export interface ScalarChange {
 }
 
 /** A change to a string list field. */
-export interface ListChange {
+export interface ListChange<T> {
   /** List of entries that were added to the field. */
-  added?: string[];
+  added?: T[];
 
   /** List of entries that were removed from the field. */
-  removed?: string[];
-}
-
-/** A change to a string list field */
-export interface IntListChange {
-  /** List of entries that were added to the field. */
-  added?: number[];
-
-  /** List of entries that were removed from the field. */
-  removed?: number[];
+  removed?: T[];
 }
 
 /** A change to a linked issue. */
 export interface LinkChange {
   /** ID of the issue being linked to. */
-  to: number;
+  to: string;
 
   /** Relationship before the change. */
   before?: Relation;
@@ -76,13 +67,13 @@ export interface Change {
   owner?: ScalarChange;
 
   /** Changes to the issue cc list. */
-  cc?: ListChange;
+  cc?: ListChange<string>;
 
   /** Changes to the list of issue labels. */
-  labels?: IntListChange;
+  labels?: ListChange<string>;
 
   /** Changes to the issue attachment list. */
-  attachments?: ListChange;
+  attachments?: ListChange<string>;
 
   /** Changes to the list of custom fields. */
   custom?: CustomFieldChange[];

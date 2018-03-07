@@ -42,7 +42,7 @@ export class IssueSelector extends React.Component<Props> {
       // // this.token = token;
       // const searchResults = issues.search(token);
       // callback(searchResults.filter(issue => issue.id !== this.props.exclude));
-      // // searchIssues(project.owner, project.id, token).then(issues => {
+      // // searchIssues(project.account, project.uname, token).then(issues => {
       // //   if (this.token === token) {
       // //     callback(issues.filter(issue => issue.id !== this.props.exclude));
       // //   }

@@ -1,10 +1,16 @@
 /** Information about a file attachment to an issue. */
 export interface Attachment {
+  /** Unique ID of this attachment. */
+  id: string;
+
   /** Name of the attached file. */
   filename: string;
 
-  /** Unique ID of this attachment. */
-  id: string;
+  /** ID of issue this is attached to. */
+  issue?: string;
+
+  /** ID of comment this is attached to. */
+  comment?: string;
 
   /** URL to download the attachment. */
   url: string;

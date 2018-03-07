@@ -1,5 +1,3 @@
-import { Label } from './Label';
-
 /** One of the user's saved filters. */
 export interface Filter {
   /** Name of this filter. */
@@ -11,14 +9,14 @@ export interface Filter {
 
 /** Stores the project-specific settings for a user: role, prefs, etc. */
 export interface ProjectPrefs {
+  /** Database id of this prefs record: account/project/user */
+  id?: string;
+
   /** List of columns to display in the issue list. */
   columns?: string[];
 
   /** List of label names to display in the issue summary list. */
-  labels?: number[];
-
-  /** List of labels to display in the issue summary list. */
-  labelProps: Label[];
+  labels?: string[];
 
   /** List of saved queries. */
   filters: Filter[];

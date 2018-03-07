@@ -11,7 +11,7 @@ import {
   FormGroup,
   Modal,
 } from 'react-bootstrap';
-import { createLabel, updateLabel } from '../../network/labelRequest';
+import { createLabel, updateLabel } from '../../network/requests';
 import LABEL_COLORS from '../common/labelColors'; // tslint:disable-line
 import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';

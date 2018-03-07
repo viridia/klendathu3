@@ -1,6 +1,12 @@
 export { Account } from './Account';
 export { Attachment } from './Attachment';
-export { Change, CustomFieldChange, LinkChange } from './Change';
+export {
+  Change,
+  CustomFieldChange,
+  LinkChange,
+  ListChange,
+  ScalarChange,
+} from './Change';
 export { Comment } from './Comment';
 export { CustomField, Issue, IssueInput } from './Issue';
 export { IssueLink } from './IssueLink';

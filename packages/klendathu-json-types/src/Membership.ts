@@ -1,12 +1,15 @@
 /** Stores the project-specific settings for a user: role, prefs, etc. */
 export interface Membership {
-  /** User name of project member. */
+  /** Database id of this record. */
+  id?: string;
+
+  /** User id of project member. */
   user: string;
 
-  /** Project scope of membership. */
+  /** If this is a project membership, id of project. */
   project?: string;
 
-  /** Organization scope of membership. */
+  /** If this is an organization membership, id of organization. */
   organization?: string;
 
   /** Access level for the this user (direct as project member). */
@@ -17,7 +20,4 @@ export interface Membership {
 
   /** When the membership was last changed. */
   updated: Date;
-
-  /** Access level for the this user (indirect as organization member). */
-  // inheritedRole: number;
 }
