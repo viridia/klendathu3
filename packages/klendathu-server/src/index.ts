@@ -13,6 +13,7 @@ import './routes/projects';
 import './routes/version';
 import './routes/templates';
 import './listeners/accounts';
+import './listeners/issues';
 import './listeners/labels';
 import './listeners/projects';
 import './listeners/templates';

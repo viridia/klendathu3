@@ -1,11 +1,9 @@
-// Database representation of custom field values
-export interface CustomValues {
-  [name: string]: string | number | boolean;
-}
+import { CustomValues } from 'klendathu-json-types';
 
 // Database representation of an issue
 export interface IssueRecord {
   id: string; // account/project/index
+  project: string;
   type: string;
   state: string;
   summary: string;

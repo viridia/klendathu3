@@ -21,5 +21,6 @@ export class IssueEditView extends React.Component<Props> {
   private onSave(input: IssueInput): Promise<any> {
     const { project } = this.props;
     // return updateIssue(project.account, project.uname, 0, input);
+    return null;
   }
 }

@@ -1,9 +1,13 @@
 export { Account } from './Account';
 export { AccountStore, accounts } from './AccountStore';
+export { Issue } from './Issue';
 export { IssueListQuery } from './IssueListQuery';
+export { IssueStore, issues } from './IssueStore';
 export { Memberships } from './Memberships';
+export { LabelListQuery } from './LabelListQuery';
 export { Project } from './Project';
 export { ProjectListQuery } from './ProjectListQuery';
+export { ProjectPrefs } from './ProjectPrefs';
 export { ProjectStore, projects } from './ProjectStore';
 export { Session, session, request } from './Session';
 export { Template } from './Template';

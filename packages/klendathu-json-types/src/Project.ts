@@ -21,9 +21,6 @@ export interface Project {
   /** Issue template for this project. */
   template?: string;
 
-  /** Workflow configuration for this project. */
-  workflow?: string;
-
   /** If true, indicates that this project is visible to the public. */
-  isPublic?: boolean;
+  isPublic: boolean;
 }

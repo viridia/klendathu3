@@ -15,19 +15,19 @@ interface Props {
 @observer
 export class LabelName extends React.Component<Props> {
   @observable.ref private label: Label = null;
-  private unsubscribe: () => void;
+  // private unsubscribe: () => void;
 
   public componentWillMount() {
     const { project, label } = this.props;
-    this.unsubscribe = db
-        .collection('database').doc(project.owner)
-        .collection('projects').doc(project.id)
-        .collection('labels').doc(String(label))
-        .onSnapshot({ next: this.onNext, error: this.onError });
+    // this.unsubscribe = db
+    //     .collection('database').doc(project.owner)
+    //     .collection('projects').doc(project.id)
+    //     .collection('labels').doc(String(label))
+    //     .onSnapshot({ next: this.onNext, error: this.onError });
   }
 
   public componentWillUnmount() {
-    this.unsubscribe();
+    // this.unsubscribe();
   }
 
   public render() {
@@ -43,14 +43,14 @@ export class LabelName extends React.Component<Props> {
     }
   }
 
-  @action.bound
-  private onNext(record: firebase.firestore.DocumentSnapshot) {
-    this.label = record.exists ? record.data() as Label : null;
-  }
+  // @action.bound
+  // private onNext(record: firebase.firestore.DocumentSnapshot) {
+  //   this.label = record.exists ? record.data() as Label : null;
+  // }
 
   @action.bound
   private onError(error: Error) {
-    this.label = null;
-    console.error('Error loading label:', error);
+    // this.label = null;
+    // console.error('Error loading label:', error);
   }
 }

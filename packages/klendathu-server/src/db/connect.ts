@@ -24,6 +24,7 @@ export async function connect(): Promise<r.Connection> {
     'accounts',
   ]);
   await ensureIndicesExist(connection, process.env.DB_NAME, {
+    issues: ['created', 'updated', 'type', 'state', 'summary'],
     projects: ['name'],
     accounts: ['uname'],
     labels: ['project'],
@@ -33,6 +34,3 @@ export async function connect(): Promise<r.Connection> {
 
   return connection;
 }
-// function
-
-// export const connection: r.Connection = ;

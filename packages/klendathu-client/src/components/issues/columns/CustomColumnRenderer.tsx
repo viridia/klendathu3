@@ -1,5 +1,6 @@
 import * as classNames from 'classnames';
-import { IssueRecord, FieldType } from '../../../../../types/json';
+import { Issue } from '../../../models/Issue';
+import { FieldType } from 'klendathu-json-types';
 import * as React from 'react';
 import { ColumnSort } from '../../common/ColumnSort';
 import { ColumnRenderer } from './ColumnRenderer';
@@ -37,19 +38,9 @@ export class CustomColumnRenderer implements ColumnRenderer {
     );
   }
 
-  public render(issue: IssueRecord) {
-    if (issue.custom) {
-      for (const customField of issue.custom) {
-        if (customField.name === this.field.id) {
-          return (
-            <td
-                className={this.className}
-                key={`custom.${this.field.id}`}
-            >
-              {customField.value}
-            </td>);
-        }
-      }
+  public render(issue: Issue) {
+    if (issue.custom && this.field.id in issue.custom) {
+      return <td className={this.className}>{issue.custom[this.field.id]}</td>;
     }
     return <td className="custom" key={this.field.id} />;
   }

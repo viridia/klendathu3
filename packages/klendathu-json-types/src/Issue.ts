@@ -1,12 +1,9 @@
-import { Change } from './Change';
+// import { Change } from './Change';
 import { IssueLink } from './IssueLink';
 
 /** Data for a custom field. */
-export interface CustomField {
-  name: string;
-
-  /** Value of the custom field. */
-  value: string | number | boolean;
+export interface CustomValues {
+  [name: string]: string | number | boolean;
 }
 
 /** An issue. */
@@ -32,11 +29,8 @@ export interface IssueBase {
   /** Labels associated with this issue. */
   labels: string[];
 
-  /** List of issues linked to this one. */
-  linked: IssueLink[];
-
   /** List of custom fields for this issue. */
-  custom: CustomField[];
+  custom: CustomValues;
 
   /** Whether this issue should be visible to non-members of the project. */
   isPublic?: boolean;
@@ -53,17 +47,20 @@ export interface Issue extends IssueBase {
   reporter: string;
 
   /** History of changes for this issue. */
-  changes?: Change[];
+  // changes?: Change[];
 
   /** Date and time when the issue was created. */
-  created: Date;
+  created: string;
 
   /** Date and time when the issue was last changed. */
-  updated: Date;
+  updated: string;
 }
 
 /** An issue. */
 export interface IssueInput extends IssueBase {
+  /** List of issues linked to this one. */
+  linked: IssueLink[];
+
   /** List of attachments. */
   attachments: string[];
 

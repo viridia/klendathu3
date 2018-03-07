@@ -345,7 +345,7 @@ export class IssueCompose extends React.Component<Props> {
       cc: this.cc.map(cc => cc.uid),
       labels: this.labels.map(label => label.id),
       linked: [],
-      custom: [],
+      custom: {},
       comments: [],
       attachments: [],
     };

@@ -1,4 +1,4 @@
-import { IssueRecord } from '../../../../../types/json';
+import { Issue } from '../../../models/Issue';
 import * as React from 'react';
 import { ColumnSort } from '../../common/ColumnSort';
 import { ColumnRenderer } from './ColumnRenderer';
@@ -32,5 +32,5 @@ export abstract class AbstractColumnRenderer implements ColumnRenderer {
     );
   }
 
-  public abstract render(issue: IssueRecord): JSX.Element;
+  public abstract render(issue: Issue): JSX.Element;
 }

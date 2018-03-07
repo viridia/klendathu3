@@ -1,8 +1,7 @@
 import { server } from '../Server';
-import { CustomField, IssueInput, Relation, Role } from 'klendathu-json-types';
+import { IssueInput, Relation, Role } from 'klendathu-json-types';
 import {
   AccountRecord,
-  CustomValues,
   IssueChangeRecord,
   IssueLinkRecord,
   IssueRecord,
@@ -28,13 +27,7 @@ function inverseRelation(relation: Relation): Relation {
   }
 }
 
-function customArrayToMap(custom: CustomField[]): CustomValues {
-  const result: CustomValues = {};
-  custom.forEach(({ name, value }) => { result[name] = value; });
-  return result;
-}
-
-// Create a new label.
+// Create a new issue.
 server.api.post('/issues/:account/:project', async (req, res) => {
   if (!req.user) {
     return res.status(401).end();
@@ -46,13 +39,13 @@ server.api.post('/issues/:account/:project', async (req, res) => {
 
   if (!projectRecord || (!projectRecord.isPublic && role < Role.VIEWER)) {
     if (project) {
-      logger.error(`create label: project ${project} not visible.`, details);
+      logger.error(`create issue: project ${project} not visible.`, details);
     } else {
-      logger.error(`create label: project ${project} not found.`, details);
+      logger.error(`create issue: project ${project} not found.`, details);
     }
     res.status(404).json({ error: 'not-found' });
   } else if (role < Role.REPORTER) {
-    logger.error(`create label: user has insufficient privileges.`, details);
+    logger.error(`create issue: user has insufficient privileges.`, details);
     res.status(403).json({ error: 'forbidden' });
   } else if (!issueInputValidator(req.body)) {
     // TODO: Decode and transform into error objects.
@@ -62,7 +55,7 @@ server.api.post('/issues/:account/:project', async (req, res) => {
     // Increment the issue id counter.
     const projectId = `${account}/${project}`;
     const resp: any = await r.table('projects').get(projectId).update({
-      issueIdCounter: r.row('labelIdCounter').default(0).add(1),
+      issueIdCounter: r.row('issueIdCounter').default(0).add(1),
     }, {
       returnChanges: true,
     }).run(server.conn);
@@ -73,6 +66,7 @@ server.api.post('/issues/:account/:project', async (req, res) => {
 
     const record: IssueRecord = {
       id: issueId,
+      project: projectId,
       type: input.type,
       state: input.state,
       summary: input.summary,
@@ -83,18 +77,18 @@ server.api.post('/issues/:account/:project', async (req, res) => {
       updated: now,
       cc: (input.cc || []),
       labels: input.labels || [],
-      // linked: (args.issue.linked || []).map(convertLink),
-      custom: input.custom ? customArrayToMap(input.custom) : {},
-      // attachments: input.attachments || [],
+      custom: input.custom,
       isPublic: !!input.isPublic,
-      // comments: (args.input.comments || []).map((comment, index) => ({
-      //   id: index,
-      //   body: comment.body,
-      //   author: context.user.id,
-      //   created: now,
-      //   updated: now,
-      // })),
     };
+
+    // attachments: input.attachments || [],
+    // comments: (args.input.comments || []).map((comment, index) => ({
+    //   id: index,
+    //   body: comment.body,
+    //   author: context.user.id,
+    //   created: now,
+    //   updated: now,
+    // })),
 
     // TODO: Insert comments
     // TODO: Insert attachments

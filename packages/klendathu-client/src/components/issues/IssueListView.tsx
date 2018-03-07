@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Issue as IssueData, Role } from 'klendathu-json-types';
-import { IssueListQuery, Project } from '../../models';
-// import { ProjectPrefsQuery } from '../../models/ProjectPrefsQuery';
+import { Role } from 'klendathu-json-types';
+import { Account, IssueListQuery, Project, ProjectPrefs } from '../../models';
 import { ColumnSort } from '../common/ColumnSort';
-import { NavLink, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
+import { IssueListEntry } from './IssueListEntry';
 import {
   ColumnRenderer,
   CustomColumnRenderer,
@@ -12,20 +12,18 @@ import {
   TypeColumnRenderer,
   UserColumnRenderer,
 } from './columns';
-
 import { Checkbox } from 'react-bootstrap';
 import { action, computed, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import bind from 'bind-decorator';
-import * as classNames from 'classnames';
 import * as qs from 'qs';
 
 import './IssueListView.scss';
 
 interface Props extends RouteComponentProps<{}> {
+  account: Account;
   project: Project;
-  prefs: any;
-  // prefs: ProjectPrefsQuery;
+  prefs: ProjectPrefs;
   issues: IssueListQuery;
 }
 
@@ -41,6 +39,7 @@ export class IssueListView extends React.Component<Props> {
     const { location } = this.props;
     this.queryParams = qs.parse(location.search.slice(1));
     this.updateQuery();
+    this.updateSelectAll();
   }
 
   public componentWillReceiveProps(nextProps: Props) {
@@ -48,9 +47,13 @@ export class IssueListView extends React.Component<Props> {
     this.updateQuery();
   }
 
+  public componentDidUpdate() {
+    this.updateSelectAll();
+  }
+
   public render() {
     const { issues } = this.props;
-    if (issues.loading) {
+    if (!issues.loaded) {
       return (
         <section className="kdt content issue-list">
           <div className="card issue">
@@ -73,7 +76,14 @@ export class IssueListView extends React.Component<Props> {
             <table className="issue">
               {this.renderHeader()}
               <tbody>
-                {this.renderRows()}
+                {issues.asList.map(i => (
+                  <IssueListEntry
+                      {...this.props}
+                      key={i}
+                      issueId={i}
+                      columnRenderers={this.columnRenderers}
+                      selection={this.selection}
+                  />))}
               </tbody>
             </table>
           </div>
@@ -133,60 +143,6 @@ export class IssueListView extends React.Component<Props> {
     );
   }
 
-  private renderRows(): JSX.Element[] {
-    return this.props.issues.list.map(i => this.renderIssue(i));
-  }
-
-  private renderIssue(issue: IssueData, level: number = 0): JSX.Element {
-    const { project, prefs } = this.props;
-    const linkTarget = {
-      pathname: `/${project.account}/${project.uname}/issues/${issue.id}`,
-      state: {
-        back: this.props.location,
-        // idList: this.issueIds,
-      },
-    };
-    const issueId = `issue-${issue.id}`;
-    const style: any = {};
-    if (level > 0) {
-      style.marginLeft = `${level * 32}px`;
-    }
-    return (
-      <tr key={issue.id}>
-        {project.role >= Role.UPDATER && (<td className="selected">
-          <label htmlFor={issueId}>
-            <Checkbox
-                id={issueId}
-                bsClass="cbox"
-                data-id={issue.id}
-                checked={this.selection.has(issue.id)}
-                onChange={this.onChangeSelection}
-            />
-          </label>
-        </td>)}
-        <td className="id">
-          <NavLink to={linkTarget}>{issue.id}</NavLink>
-        </td>
-        {prefs.columns.map(cname => {
-          const cr = this.columnRenderers.get(cname);
-          if (cr) {
-            return cr.render(issue);
-          }
-          return <td className="custom" key={cname} />;
-        })}
-        <td className="title">
-          <NavLink to={linkTarget} className={classNames({ child: level > 0 })} style={style}>
-            <span className="summary">{issue.summary}</span>
-          </NavLink>
-        </td>
-      </tr>
-    );
-    // TODO:
-    // {issue.labels
-    //   .filter(l => labels.has(l))
-    //   .map(l => <LabelName project={project.id} label={l} key={l} />)}
-  }
-
   @bind
   private onChangeSort(column: string, descending: boolean) {
     const { history } = this.props;
@@ -198,20 +154,11 @@ export class IssueListView extends React.Component<Props> {
   }
 
   @action.bound
-  private onChangeSelection(e: any) {
-    const id = e.target.dataset.id;
-    if (e.target.checked) {
-      this.selection.set(id, true);
-    } else {
-      this.selection.delete(id);
-    }
-  }
-
-  @action.bound
   private onChangeSelectAll(e: any) {
     if (e.target.checked) {
-      // this.iss
-      // this.props.selectIssues(this.issueIds);
+      for (const id of this.props.issues.asList) {
+        this.selection.set(id, true);
+      }
     } else {
       this.selection.clear();
     }
@@ -257,5 +204,20 @@ export class IssueListView extends React.Component<Props> {
     const { sort, descending } = this.sortOrder();
     issues.sort = sort;
     issues.descending = descending;
+  }
+
+  // Checkbox 'indeterminate' state can only be set programmatically.
+  private updateSelectAll() {
+    if (this.selectAllEl) {
+      const noneSelected = this.selection.size === 0;
+      let allSelected = true;
+      for (const id of this.props.issues.asList) {
+        if (!this.selection.has(id)) {
+          allSelected = false;
+          break;
+        }
+      }
+      this.selectAllEl.indeterminate = !allSelected && !noneSelected;
+    }
   }
 }

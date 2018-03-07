@@ -96,28 +96,17 @@
     },
     "custom": {
       "description": "List of custom field values.",
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "Custom field name.",
-            "type": "string"
-          },
-          "value": {
-            "description": "Custom field value.",
-            "oneOf": [
-              { "type": "string" },
-              { "type": "number" },
-              { "type": "boolean" }
-            ]
-          }
-        },
-        "required": [
-          "name",
-          "value"
-        ]
-      }
+      "type": "object",
+      "patternProperties": {
+        "^[A-Za-z\\_][A-Za-z0-9\\-\\_]*$": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "number" },
+            { "type": "boolean" }
+          ]
+        }
+      },
+      "additionalProperties": false
     },
     "public": {
       "description": "Whether this issue is visible to non-members.",

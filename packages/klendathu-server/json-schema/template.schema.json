@@ -64,7 +64,8 @@
               "properties": {
                 "id": {
                   "description": "ID of of this field.",
-                  "type": "string"
+                  "type": "string",
+                  "pattern": "^[A-Za-z\\_][A-Za-z0-9\\-\\_]*$"
                 },
                 "caption": {
                   "description": "Human-readable name of this field.",

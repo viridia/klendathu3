@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { Project } from '../../models';
+import { LabelListQuery, Project, ProjectPrefs } from '../../models';
 import { AccountName } from '../common/AccountName';
 import { RelativeDate } from '../common/RelativeDate';
-import { LabelListQuery } from '../../models/LabelListQuery';
 import { Label, Role } from 'klendathu-json-types';
 import { Button, Checkbox, Modal } from 'react-bootstrap';
 import { LabelDialog } from './LabelDialog';
@@ -16,7 +15,7 @@ import '../common/LabelName.scss';
 
 interface Props {
   project: Project;
-  //   projectPrefs: ProjectPrefs;
+  prefs: ProjectPrefs;
 }
 
 @observer
@@ -203,13 +202,13 @@ export class LabelListView extends React.Component<Props> {
 
   @action.bound
   private onChangeVisible(e: any) {
-    // const { projectRef } = this.props;
-    // const id = parseInt(e.target.dataset.id, 10);
-    // if (e.target.checked) {
+    const { project } = this.props;
+    const id = e.target.dataset.id;
+    if (e.target.checked) {
     //   setProjectPrefs(project.id, { labelsToAdd: [id] });
     // } else {
     //   setProjectPrefs(project.id, { labelsToRemove: [id] });
-    // }
+    }
   }
 
   // private visibleSet(props: Props): Immutable.Set<number> {

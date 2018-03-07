@@ -8,7 +8,7 @@ import { SetupAccountDialog } from '../settings/SetupAccountDialog';
 // import { EmailVerificationDialog } from '../settings/EmailVerificationDialog';
 import { IssueCreateView } from '../issues/IssueCreateView';
 import { IssueEditView } from '../issues/IssueEditView';
-// import { IssueListView } from '../issues/IssueListView';
+import { IssueListView } from '../issues/IssueListView';
 import { IssueDetailsView } from '../issues/IssueDetailsView';
 import { LabelListView } from '../labels/LabelListView';
 import { AccountProvider } from '../common/AccountProvider';
@@ -91,15 +91,7 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
                             <Route
                                 path="/:account/:project/issues"
                                 exact={true}
-                                render={() => (
-                                  false
-                                  // <IssueListView
-                                  //     {...this.props}
-                                  //     project={this.project}
-                                  //     issues={this.issues}
-                                  //     prefs={this.prefs}
-                                  // />
-                                )}
+                                render={props => (<IssueListView {...props} {...models}/>)}
                             />
                             <Route
                                 path="/:account/:project/labels"

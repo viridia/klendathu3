@@ -10,7 +10,6 @@ const templateWatcher = new RecordWatcher<TemplateRecord, Template>(encodeTempla
 server.deepstream.record.listen('^template/.*', async (eventName, isSubscribed, response) => {
   if (isSubscribed) {
     response.accept();
-    console.log('requesting template:', eventName);
     const id = eventName.slice(9);
     templateWatcher.subscribe(eventName, r.table('templates').filter({ id }));
   } else {

@@ -20,6 +20,7 @@ export class LabelListQuery {
   }
 
   public release() {
+    this.record.unsubscribe(this.onUpdate);
     this.record.discard();
   }
 
