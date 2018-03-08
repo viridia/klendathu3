@@ -6,7 +6,6 @@
 
 ## Files with unfinished pieces:
 * LoginForm
-* NewIssueButton
 * EmailVerificationDialog
 * MainPage
 * IssueEditView

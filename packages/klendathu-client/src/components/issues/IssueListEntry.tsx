@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Role } from 'klendathu-json-types';
-import { Account, Issue, issues, Project, ProjectPrefs } from '../../models';
+import { Account, Role } from 'klendathu-json-types';
+import { Issue, issues, Project, ProjectPrefs } from '../../models';
 import { NavLink, RouteComponentProps } from 'react-router-dom';
 import { ColumnRenderer } from './columns';
 import { Checkbox } from 'react-bootstrap';

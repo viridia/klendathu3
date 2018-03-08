@@ -9,7 +9,9 @@ export interface IssueRecord {
   summary: string;
   description: string;
   reporter: string;
+  reporterSort: string;
   owner: string;
+  ownerSort: string;
   cc: string[];
   created: Date;
   updated: Date;

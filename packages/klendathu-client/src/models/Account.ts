@@ -2,7 +2,7 @@ import { Account as AccountData } from 'klendathu-json-types';
 import { action, Atom, observable } from 'mobx';
 
 /** Represents the displayable info for a user or organization. */
-export class Account {
+export class Account implements AccountData {
   @observable public loaded = false;
 
   private record: deepstreamIO.Record;

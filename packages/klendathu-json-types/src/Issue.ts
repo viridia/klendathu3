@@ -58,6 +58,9 @@ export interface Issue extends IssueBase {
 
 /** An issue. */
 export interface IssueInput extends IssueBase {
+  /** Used to sort records in order by owner. */
+  ownerSort: string;
+
   /** List of issues linked to this one. */
   linked: IssueLink[];
 

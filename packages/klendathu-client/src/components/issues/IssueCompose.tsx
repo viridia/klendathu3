@@ -342,6 +342,7 @@ export class IssueCompose extends React.Component<Props> {
       summary: this.summary,
       description: this.description,
       owner: this.owner ? this.owner.uid : undefined,
+      ownerSort: this.owner ? this.owner.uname : undefined,
       cc: this.cc.map(cc => cc.uid),
       labels: this.labels.map(label => label.id),
       linked: [],

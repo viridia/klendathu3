@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Role } from 'klendathu-json-types';
-import { Account, IssueListQuery, Project, ProjectPrefs } from '../../models';
+import { Account, Role } from 'klendathu-json-types';
+import { IssueListQuery, Project, ProjectPrefs } from '../../models';
 import { ColumnSort } from '../common/ColumnSort';
 import { RouteComponentProps } from 'react-router-dom';
 import { IssueListEntry } from './IssueListEntry';
