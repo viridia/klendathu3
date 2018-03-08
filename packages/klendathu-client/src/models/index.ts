@@ -1,10 +1,12 @@
-export { ObservableAccount } from './ObservableAccount';
 export { AccountStore, accounts } from './AccountStore';
-export { ObservableIssue } from './ObservableIssue';
 export { IssueListQuery } from './IssueListQuery';
 export { IssueStore, issues } from './IssueStore';
 export { Memberships } from './Memberships';
 export { LabelListQuery } from './LabelListQuery';
+export { LabelStore, labels } from './LabelStore';
+export { ObservableAccount } from './ObservableAccount';
+export { ObservableIssue } from './ObservableIssue';
+export { ObservableLabel } from './ObservableLabel';
 export { Project } from './Project';
 export { ProjectListQuery } from './ProjectListQuery';
 export { ProjectPrefs } from './ProjectPrefs';

@@ -1,5 +1,12 @@
 # TODO:
 
+* Sorting
+* Filter bar
+* Mass edit bar
+* Update Project
+* Update Issue
+* Project prefs
+
 # Longer term:
 
 * Update to passport-github2
@@ -25,13 +32,13 @@
 /organizations/{organization}/settings/{tab}
 
 / (dashboard)
-/{user|org}/ (profile page, including project list)
-/{user|org}/{project}/ (project summary)
-/{user|org}/{project}/new
-/{user|org}/{project}/edit/{id}
-/{user|org}/{project}/issues/{id}
-/{user|org}/{project}/labels/{id}
-/{user|org}/{project}/settings/{tab}
+/{account}/ (profile page, including project list)
+/{account}/{project}/ (project summary)
+/{account}/{project}/new
+/{account}/{project}/edit/{id}
+/{account}/{project}/issues/{id}
+/{account}/{project}/labels/{id}
+/{account}/{project}/settings/{tab}
 
 # More Ideas
 

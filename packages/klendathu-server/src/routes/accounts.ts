@@ -4,6 +4,13 @@ import { AccountRecord } from '../db/types';
 import { logger } from '../logger';
 import * as r from 'rethinkdb';
 
+const restrictedNames = new Set([
+  'account',
+  'settings',
+  'organizations',
+  'default',
+]);
+
 // Get account info for current logged-in user.
 server.api.get('/accounts/me', (req, res) => {
   const ar: AccountRecord = req.user as AccountRecord;
@@ -35,6 +42,10 @@ server.api.patch('/accounts/me', async (req, res) => {
     newAccount.display = body.display;
   }
   if (body.uname) {
+    if (restrictedNames.has(body.uname)) {
+      res.status(409).json({ error: 'name-exists' });
+      return;
+    }
     newAccount.uname = body.uname;
   }
   if (body.uname && !ar.uname) {

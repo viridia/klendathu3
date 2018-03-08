@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import { QueryLink } from './QueryLink';
-// import { LabelLinks } from './LabelLinks';
+import { AccountProvider } from '../common/AccountProvider';
+import { LabelLinks } from './LabelLinks';
 import { NavLink, RouteComponentProps } from 'react-router-dom';
 
 import './LeftNav.scss';
@@ -31,7 +32,9 @@ export class ProjectNavLinks extends React.Component<Props> {
         <NavLink to={{ pathname: `/${account}/${project}/labels` }}>
           <LabelIcon /> Labels
         </NavLink>
-        {/*<LabelLinks project={this.projectRef} />*/}
+        <AccountProvider account={account}>
+          {acc => <LabelLinks {...this.props} account={acc} project={project} />}
+        </AccountProvider>
         <NavLink to={{ pathname: `/${account}/${project}/settings` }}>
           <SettingsIcon /> Settings
         </NavLink>

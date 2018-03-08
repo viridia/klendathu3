@@ -1,56 +1,41 @@
 import * as React from 'react';
-import { Project } from '../../models';
-import { Label } from 'klendathu-json-types';
-import { action, observable } from 'mobx';
+import { labels, ObservableLabel } from '../../models';
 import { observer } from 'mobx-react';
 
 import './LabelName.scss';
 
 interface Props {
-  label: number;
-  project: Project;
+  label: string;
 }
 
 /** Component that displays a label as a chip. */
 @observer
 export class LabelName extends React.Component<Props> {
-  @observable.ref private label: Label = null;
-  // private unsubscribe: () => void;
+  private label: ObservableLabel = null;
 
   public componentWillMount() {
-    const { project, label } = this.props;
-    // this.unsubscribe = db
-    //     .collection('database').doc(project.owner)
-    //     .collection('projects').doc(project.id)
-    //     .collection('labels').doc(String(label))
-    //     .onSnapshot({ next: this.onNext, error: this.onError });
+    const { label } = this.props;
+    this.label = labels.get(label);
   }
 
   public componentWillUnmount() {
-    // this.unsubscribe();
+    this.label.release();
   }
 
   public render() {
     const label = this.label;
-    if (label) {
-      return (
-        <span className="label-name" style={{ backgroundColor: label.color }}>
-          {label.name}
-        </span>
-      );
+    if (label.loaded) {
+      if (label.name) {
+        return (
+          <span className="label-name" style={{ backgroundColor: label.color }}>
+            {label.name}
+          </span>
+        );
+      } else {
+        return <span className="label-name missing">unknown-label</span>;
+      }
     } else {
-      return <span className="label-name">unknown label</span>;
+      return null;
     }
-  }
-
-  // @action.bound
-  // private onNext(record: firebase.firestore.DocumentSnapshot) {
-  //   this.label = record.exists ? record.data() as Label : null;
-  // }
-
-  @action.bound
-  private onError(error: Error) {
-    // this.label = null;
-    // console.error('Error loading label:', error);
   }
 }

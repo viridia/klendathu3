@@ -1,15 +1,14 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { LabelName } from '../common/LabelName';
-import { Project } from '../../models';
-import { LabelListQuery } from '../../models/LabelListQuery';
-import { NavLink } from 'react-router-dom';
-import * as qs from 'qs';
+import { LabelListQuery } from '../../models';
+import { Account } from 'klendathu-json-types';
+import { LabelLink } from './LabelLink';
 
 import './LeftNav.scss';
 
 interface Props {
-  project: Project;
+  account: Account;
+  project: string;
 }
 
 @observer
@@ -17,7 +16,8 @@ export class LabelLinks extends React.Component<Props> {
   private query: LabelListQuery;
 
   public componentWillMount() {
-    this.query = new LabelListQuery(this.props.project);
+    const { account, project } = this.props;
+    this.query = new LabelListQuery(account.uid, project);
   }
 
   public componentWillUnmount() {
@@ -25,22 +25,14 @@ export class LabelLinks extends React.Component<Props> {
   }
 
   public render() {
-    const { project } = this.props;
-    if (this.query.size === 0) {
+    const { account, project } = this.props;
+    if (this.query.length === 0) {
       return null;
     }
     return (
       <ul>
-        {this.query.list.map(label => (
-          <li className="label-item" key={label.id}>
-            <NavLink
-                to={{
-                  pathname: `/${project.account}/${project.uname}/issues`,
-                  search: `?${qs.stringify({ label: label.id })}` }}
-            >
-              <LabelName project={project} label={label.id} />
-            </NavLink>
-          </li>
+        {this.query.asList.map(label => (
+          <LabelLink key={label.id} account={account} project={project} label={label} />
         ))}
       </ul>
     );

@@ -3,6 +3,7 @@ import { Label } from 'klendathu-json-types';
 import { LabelRecord } from '../db/types';
 import { escapeRegExp } from '../db/helpers';
 import { logger } from '../logger';
+import { RecordWatcher } from './RecordWatcher';
 import { RecordSetWatcher } from './RecordSetWatcher';
 import * as r from 'rethinkdb';
 
@@ -21,6 +22,7 @@ function encodeLabel(record: LabelRecord): Label {
 }
 
 const labelListWatcher = new RecordSetWatcher<LabelRecord, Label>(encodeLabel);
+const labelWatcher = new RecordWatcher<LabelRecord, Label>(encodeLabel);
 
 server.deepstream.record.listen('^labels/.*', async (eventName, isSubscribed, response) => {
   if (isSubscribed) {
@@ -31,6 +33,18 @@ server.deepstream.record.listen('^labels/.*', async (eventName, isSubscribed, re
       r.table('labels').filter({ project: `${account}/${project}` }));
   } else {
     labelListWatcher.unsubscribe(eventName);
+  }
+});
+
+server.deepstream.record.listen('^label/.*', async (eventName, isSubscribed, response) => {
+  if (isSubscribed) {
+    response.accept();
+    const [, account, project, id] = eventName.split('/', 4);
+    labelWatcher.subscribe(
+      eventName,
+      r.table('labels').get(`${account}/${project}/${id}`) as any);
+  } else {
+    labelWatcher.unsubscribe(eventName);
   }
 });
 
