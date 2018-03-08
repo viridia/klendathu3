@@ -1,5 +1,5 @@
 import * as classNames from 'classnames';
-import { Issue } from '../../../models/Issue';
+import { ObservableIssue } from '../../../models/Issue';
 import { FieldType } from 'klendathu-json-types';
 import * as React from 'react';
 import { ColumnSort } from '../../common/ColumnSort';
@@ -38,7 +38,7 @@ export class CustomColumnRenderer implements ColumnRenderer {
     );
   }
 
-  public render(issue: Issue) {
+  public render(issue: ObservableIssue) {
     if (issue.custom && this.field.id in issue.custom) {
       return <td className={this.className}>{issue.custom[this.field.id]}</td>;
     }

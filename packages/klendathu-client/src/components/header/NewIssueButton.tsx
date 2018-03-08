@@ -2,13 +2,13 @@ import * as React from 'react';
 import { Memberships, Project, projects } from '../../models';
 import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Account as AccountData, Role } from 'klendathu-json-types';
+import { Account, Role } from 'klendathu-json-types';
 import { observer } from 'mobx-react';
 
 import AddBoxIcon from '../../../icons/ic_add_box.svg';
 
 interface Props {
-  account: AccountData;
+  account: Account;
   project: string;
   memberships: Memberships;
 }

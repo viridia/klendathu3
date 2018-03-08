@@ -34,6 +34,9 @@ export interface IssueBase {
 
   /** Whether this issue should be visible to non-members of the project. */
   isPublic?: boolean;
+
+  /** X / Y position of issue in mural view. */
+  position?: [number, number];
 }
 
 export interface Issue extends IssueBase {

@@ -19,7 +19,7 @@ export function connect(authToken: string): Promise<deepstreamIO.Client> {
   });
 
   return new Promise((resolve, reject) => {
-    connection.login({ Authorization: `Bearer ${authToken}` }, (success, data) => {
+    connection.login({ Authorization: `Bearer ${authToken}` }, (success: boolean, data) => {
       if (success) {
         resolve(connection);
       } else {

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Account, Role } from 'klendathu-json-types';
-import { Issue, issues, Project, ProjectPrefs } from '../../models';
+import { ObservableIssue, issues, Project, ProjectPrefs } from '../../models';
 import { NavLink, RouteComponentProps } from 'react-router-dom';
 import { ColumnRenderer } from './columns';
 import { Checkbox } from 'react-bootstrap';
@@ -19,7 +19,7 @@ interface Props extends RouteComponentProps<{}> {
 
 @observer
 export class IssueListEntry extends React.Component<Props> {
-  private issue: Issue;
+  private issue: ObservableIssue;
 
   public componentWillMount() {
     const { issueId } = this.props;

@@ -81,6 +81,7 @@ server.api.post('/issues/:account/:project', async (req, res) => {
       labels: input.labels || [],
       custom: input.custom,
       isPublic: !!input.isPublic,
+      position: input.position,
     };
 
     // attachments: input.attachments || [],

@@ -1,4 +1,4 @@
-import { Issue, Template } from '../../../models';
+import { ObservableIssue, Template } from '../../../models';
 import * as React from 'react';
 import { AbstractColumnRenderer } from './AbstractColumnRenderer';
 
@@ -10,7 +10,7 @@ export class TypeColumnRenderer extends AbstractColumnRenderer {
     this.template = template;
   }
 
-  public render(issue: Issue) {
+  public render(issue: ObservableIssue) {
     const typeInfo = this.template.types.find(t => t.id === issue.type);
     return (
       <td className="type" key="type">

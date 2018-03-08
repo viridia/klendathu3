@@ -21,7 +21,10 @@ export function deleteLabel(labelId: string): Promise<any> {
 
 export function searchLabels(
     account: string, project: string, token: string, callback: (labels: Label[]) => void): void {
-  session.connection.rpc.make(`labels.search`, { account, project, token }, (error, resp) => {
+  session.connection.rpc.make(
+      `labels.search`,
+      { account, project, token },
+      (error: string, resp: Label[]) => {
     if (resp && !error) {
       callback(resp);
     }
@@ -47,8 +50,11 @@ export function deleteIssue(labelId: string): Promise<any> {
 }
 
 export function searchIssues(
-    account: string, project: string, token: string, callback: (labels: Issue[]) => void): void {
-  session.connection.rpc.make(`issues.search`, { account, project, token }, (error, resp) => {
+    account: string, project: string, token: string, callback: (issues: Issue[]) => void): void {
+  session.connection.rpc.make(
+      `issues.search`,
+      { account, project, token },
+      (error: string, resp: Issue[]) => {
     if (resp && !error) {
       callback(resp);
     }

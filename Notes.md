@@ -1,5 +1,7 @@
 # TODO:
 
+# Longer term:
+
 * Update to passport-github2
 * Investigate github webhooks
 * Investigate Jest
@@ -9,8 +11,6 @@
 * EmailVerificationDialog
 * MainPage
 * IssueEditView
-* IssueCreateView
-* ProjectContentArea
 * LabelDialog
 * LabelListView
 

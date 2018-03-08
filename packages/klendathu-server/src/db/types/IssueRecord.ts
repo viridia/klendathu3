@@ -20,4 +20,5 @@ export interface IssueRecord {
   // comments: CommentEntry[];
   // attachments: string[];
   isPublic?: boolean;
+  position?: [number, number];
 }

@@ -1,18 +1,18 @@
 import * as React from 'react';
 import { accounts } from '../../models';
-import { Account as AccountData } from 'klendathu-json-types';
+import { Account } from 'klendathu-json-types';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
 
 interface Props {
   account: string;
-  children: (account: AccountData) => React.ReactNode;
+  children: (account: Account) => React.ReactNode;
 }
 
 /** Component which looks up an account by name and provides the account id to children. */
 @observer
 export class AccountProvider extends React.Component<Props> {
-  @observable.ref private account: AccountData = null;
+  @observable.ref private account: Account = null;
 
   public componentWillMount() {
     accounts.byName(this.props.account).then(account => {

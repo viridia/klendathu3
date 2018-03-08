@@ -1,4 +1,4 @@
-import { Issue } from '../../../models/Issue';
+import { ObservableIssue } from '../../../models/Issue';
 
 export interface ColumnRenderer {
   renderHeader(
@@ -6,5 +6,5 @@ export interface ColumnRenderer {
     descending: boolean,
     onChangeSort: (column: string, descending: boolean) => void): JSX.Element;
 
-  render(issue: Issue): JSX.Element;
+  render(issue: ObservableIssue): JSX.Element;
 }

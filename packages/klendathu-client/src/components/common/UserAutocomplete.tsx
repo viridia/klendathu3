@@ -1,5 +1,5 @@
 import bind from 'bind-decorator';
-import { Account as AccountData } from 'klendathu-json-types';
+import { Account } from 'klendathu-json-types';
 import * as React from 'react';
 import { Autocomplete } from '../ac/Autocomplete';
 import { Chip } from '../ac/Chip';
@@ -10,8 +10,8 @@ interface Props {
   placeholder?: string;
   autoFocus?: boolean;
   multiple?: boolean;
-  selection: AccountData | AccountData[];
-  onSelectionChange: (selection: AccountData | AccountData[] | null) => void;
+  selection: Account | Account[];
+  onSelectionChange: (selection: Account | Account[] | null) => void;
 }
 
 export class UserAutocomplete extends React.Component<Props> {
@@ -31,7 +31,7 @@ export class UserAutocomplete extends React.Component<Props> {
   }
 
   @bind
-  private onSearch(token: string, callback: (suggestions: AccountData[]) => void) {
+  private onSearch(token: string, callback: (suggestions: Account[]) => void) {
     this.token = token;
     if (token.length < 1) {
       callback([]);
@@ -45,7 +45,7 @@ export class UserAutocomplete extends React.Component<Props> {
   }
 
   @bind
-  private onRenderSuggestion(user: AccountData): JSX.Element {
+  private onRenderSuggestion(user: Account): JSX.Element {
     return (
       <span>
         <span className="name">{user.display}</span>
@@ -55,7 +55,7 @@ export class UserAutocomplete extends React.Component<Props> {
   }
 
   @bind
-  private onRenderSelection(user: AccountData): JSX.Element {
+  private onRenderSelection(user: Account): JSX.Element {
     return (
       <Chip>
         <span className="name">{user.display}</span>
@@ -65,12 +65,12 @@ export class UserAutocomplete extends React.Component<Props> {
   }
 
   @bind
-  private onGetValue(user: AccountData): string {
+  private onGetValue(user: Account): string {
     return user.uname;
   }
 
   @bind
-  private onGetSortKey(user: AccountData): string {
+  private onGetSortKey(user: Account): string {
     return user.display;
   }
 }

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Account, accounts } from '../../models';
+import { accounts, ObservableAccount } from '../../models';
 import { observer } from 'mobx-react';
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 /** Component which displays the name of an account. */
 @observer
 export class AccountName extends React.Component<Props> {
-  private account: Account;
+  private account: ObservableAccount;
 
   public componentWillMount() {
     this.account = accounts.byId(this.props.id);

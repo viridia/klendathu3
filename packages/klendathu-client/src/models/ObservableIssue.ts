@@ -2,7 +2,7 @@ import { Issue as IssueData, CustomValues } from 'klendathu-json-types';
 import { action, Atom, computed, observable } from 'mobx';
 
 /** Represents the displayable info for a user or organization. */
-export class Issue {
+export class ObservableIssue {
   @observable public loaded = false;
   public readonly id: number; // Numeric index of this issue. */
 

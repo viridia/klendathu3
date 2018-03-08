@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { Account as AccountData } from 'klendathu-json-types';
+import { Account } from 'klendathu-json-types';
 import {
   IssueListQuery,
   Memberships,
@@ -10,14 +10,14 @@ import {
 } from '../../models';
 
 interface OutProps {
-  account: AccountData;
+  account: Account;
   project: Project;
   issues: IssueListQuery;
   prefs: ProjectPrefs;
 }
 
 interface Props {
-  account: AccountData;
+  account: Account;
   project: string;
   memberships: Memberships;
   children: (props: OutProps) => React.ReactNode;

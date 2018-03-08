@@ -1,10 +1,10 @@
-import { Issue } from '../../../models/Issue';
+import { ObservableIssue } from '../../../models';
 import * as React from 'react';
 import { AbstractColumnRenderer } from './AbstractColumnRenderer';
-import { Account } from '../../../models';
+import { Account } from 'klendathu-json-types';
 
 export class UserColumnRenderer extends AbstractColumnRenderer {
-  public render(issue: Issue) {
+  public render(issue: ObservableIssue) {
     const user: Account = (issue as any)[this.fieldName];
     return (
       <td className={this.className} key={this.fieldName}>

@@ -1,6 +1,6 @@
-export { Account } from './Account';
+export { ObservableAccount } from './ObservableAccount';
 export { AccountStore, accounts } from './AccountStore';
-export { Issue } from './Issue';
+export { ObservableIssue } from './ObservableIssue';
 export { IssueListQuery } from './IssueListQuery';
 export { IssueStore, issues } from './IssueStore';
 export { Memberships } from './Memberships';
