@@ -32,7 +32,7 @@ export class LabelLinks extends React.Component<Props> {
     return (
       <ul>
         {this.query.asList.map(label => (
-          <LabelLink key={label.id} account={account} project={project} label={label} />
+          <LabelLink key={label.id} account={account.uname} project={project} label={label} />
         ))}
       </ul>
     );
