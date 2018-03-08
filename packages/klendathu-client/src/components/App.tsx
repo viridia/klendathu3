@@ -9,6 +9,7 @@ import '../styles/card.scss';
 import '../styles/form.scss';
 import '../styles/layout.scss';
 import '../styles/scrollbars.scss';
+import '../styles/table.scss';
 import './App.scss';
 
 class App extends React.Component<undefined> {

@@ -1,4 +1,4 @@
-import { ObservableIssue } from '../../../models/Issue';
+import { ObservableIssue } from '../../../models';
 import * as React from 'react';
 import { RelativeDate } from '../../common/RelativeDate';
 import { AbstractColumnRenderer } from './AbstractColumnRenderer';

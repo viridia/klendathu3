@@ -2,6 +2,7 @@ import { server } from '../Server';
 import { Account } from 'klendathu-json-types';
 import { AccountRecord } from '../db/types';
 import { escapeRegExp } from '../db/helpers';
+import { encodeAccount } from '../db/encoders';
 import { logger } from '../logger';
 import * as r from 'rethinkdb';
 import bind from 'bind-decorator';
@@ -11,16 +12,6 @@ const ds = server.deepstream;
 interface Change<T> {
   old_val?: T;
   new_val?: T;
-}
-
-function encodeAccount(record: AccountRecord): Account {
-  return {
-    uid: record.id,
-    uname: record.uname,
-    display: record.display,
-    photo: record.photo,
-    type: record.type,
-  };
 }
 
 class ActiveQuery<RecordType extends { id?: string }, JSONType> {

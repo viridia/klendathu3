@@ -8,14 +8,16 @@ import './routes/auth';
 import './routes/accounts';
 import './routes/issues';
 import './routes/labels';
-// import './routes/names';
+import './routes/names';
 import './routes/projects';
+import './routes/projectPrefs';
 import './routes/version';
 import './routes/templates';
 import './listeners/accounts';
 import './listeners/issues';
 import './listeners/labels';
 import './listeners/projects';
+import './listeners/projectPrefs';
 import './listeners/templates';
 
 server.start();

@@ -1,4 +1,4 @@
-import { Membership, Role, Project as ProjectData } from 'klendathu-json-types';
+import { Membership, Role } from 'klendathu-json-types';
 import { session } from './Session';
 
 /** All of the projects and organizations this user belongs to. */

@@ -1,4 +1,4 @@
-import { ObservableIssue } from '../../../models/Issue';
+import { ObservableIssue } from '../../../models';
 
 export interface ColumnRenderer {
   renderHeader(

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Account, IssueListQuery, Project, session, Template } from '../../models';
+import { IssueListQuery, Project, session, Template } from '../../models';
 import { StateSelector } from './input/StateSelector';
 import { TypeSelector } from './input/TypeSelector';
 import { LabelSelector } from './input/LabelSelector';
@@ -8,7 +8,7 @@ import { AutoNavigate } from '../common/AutoNavigate';
 import { UserAutocomplete } from '../common/UserAutocomplete';
 import { IssueLinks } from './IssueLinks';
 import { relationNames } from '../common/relationNames';
-// import { RequestError, RequestErrorCode } from '../../requests/RequestError';
+import { RequestError } from '../../network';
 import {
   Button,
   Checkbox,
@@ -22,6 +22,8 @@ import { action, computed, IObservableArray, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { toast } from 'react-toastify';
 import {
+  Account,
+  Errors,
   IssueInput,
   Issue as IssueRecord,
   IssueType,
@@ -356,29 +358,22 @@ export class IssueCompose extends React.Component<Props> {
       if (!this.another) {
         //
       }
-    // }, (error: RequestError) => {
-    //   switch (error.code) {
-    //     case RequestErrorCode.INTERNAL:
-    //       toast.error('Internal error');
-    //       break;
-    //     case RequestErrorCode.UNKNOWN:
-    //       toast.error('Unknown error');
-    //       break;
-    //     case RequestErrorCode.SCHEMA_VALIDATION:
-    //       toast.error('Schema validation failure');
-    //       for (const detail of error.details as any[]) {
-    //         if (detail.keyword === 'additionalProperties') {
-    //           console.error('Disallowed additional property:', detail.params.additionalProperty);
-    //         } else {
-    //           console.error(detail);
-    //         }
-    //       }
-    //       break;
-    //     default:
-    //       toast.error(error.code);
-    //       break;
-      // }
-      // this.busy = false;
+    }, (error: RequestError) => {
+      switch (error.code) {
+        case Errors.INTERNAL:
+          toast.error('Internal error');
+          break;
+        case Errors.UNKNOWN:
+          toast.error('Unknown error');
+          break;
+        case Errors.SCHEMA:
+          toast.error('Schema validation failure');
+          break;
+        default:
+          toast.error(error.message);
+          break;
+      }
+      this.busy = false;
     });
   }
 

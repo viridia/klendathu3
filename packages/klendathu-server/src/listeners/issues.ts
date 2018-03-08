@@ -1,30 +1,12 @@
 import { server } from '../Server';
 import { Issue } from 'klendathu-json-types';
 import { IssueRecord } from '../db/types';
+import { encodeIssue } from '../db/encoders';
 // import { escapeRegExp } from '../db/helpers';
 import { RecordWatcher } from './RecordWatcher';
 import { RecordListWatcher } from './RecordListWatcher';
 import * as url from 'url';
 import * as r from 'rethinkdb';
-
-function encodeIssue(record: IssueRecord): Issue {
-  return {
-    id: record.id,
-    project: record.project,
-    type: record.type,
-    state: record.state,
-    summary: record.summary,
-    description: record.description,
-    reporter: record.reporter,
-    owner: record.owner,
-    cc: record.cc,
-    created: record.created.toJSON(),
-    updated: record.updated.toJSON(),
-    labels: record.labels,
-    custom: record.custom,
-    isPublic: record.isPublic,
-  };
-}
 
 const issueListWatcher = new RecordListWatcher<IssueRecord, Issue>(encodeIssue);
 const issueWatcher = new RecordWatcher<IssueRecord, Issue>(encodeIssue);
@@ -50,9 +32,7 @@ server.deepstream.record.listen('^issue/.*', async (eventName, isSubscribed, res
   if (isSubscribed) {
     response.accept();
     const [, account, project, issue] = eventName.split('/', 4);
-    issueWatcher.subscribe(
-      eventName,
-      r.table('issues').get(`${account}/${project}/${issue}`) as any);
+    issueWatcher.subscribe(eventName, r.table('issues').get(`${account}/${project}/${issue}`));
   } else {
     issueListWatcher.unsubscribe(eventName);
   }

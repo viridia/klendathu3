@@ -4,8 +4,8 @@ import { AccountRecord } from '../db/types';
 import { logger } from '../logger';
 import * as r from 'rethinkdb';
 
-// Look up a user or organization by their unique name.
-// TODO: This can be better done via RPC.
+// Look up a user or organization by their unique name. This is used for choosing a unique
+// user name. (TODO: Convert this to an RPC)
 server.api.get('/names/:name', (req, res) => {
   r.table('accounts').filter({ name: req.params.name }).run(server.conn).then(cursor => {
     cursor.toArray().then(accounts => {

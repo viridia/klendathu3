@@ -15,9 +15,9 @@ export class RecordWatcher<RecordType extends { id?: string }, JSONType> {
     this.encoder = encoder;
   }
 
-  public subscribe(recordName: string, sequence: r.Sequence) {
+  public subscribe(recordName: string, sequence: r.Sequence | r.Operation<r.Cursor>) {
     if (!this.queries.has(recordName)) {
-      sequence
+      (sequence as r.Sequence)
           .changes({ includeInitial: true, squash: true } as any)
           .run(server.conn)
           .then(cursor => {

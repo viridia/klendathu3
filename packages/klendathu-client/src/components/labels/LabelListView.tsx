@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { LabelListQuery, Project, ProjectPrefs } from '../../models';
+import { LabelListQuery, Project } from '../../models';
 import { AccountName } from '../common/AccountName';
 import { RelativeDate } from '../common/RelativeDate';
-import { Label, Role } from 'klendathu-json-types';
+import { Label, Role, ProjectPrefs } from 'klendathu-json-types';
 import { Button, Checkbox, Modal } from 'react-bootstrap';
 import { LabelDialog } from './LabelDialog';
-import { deleteLabel } from '../../network/requests';
-import { action, observable } from 'mobx';
+import { deleteLabel, addPrefsLabel, removePrefsLabel } from '../../network/requests';
+import { displayErrorToast } from '../common/displayErrorToast';
+import { action, computed, observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { toast } from 'react-toastify';
 
 import './LabelListView.scss';
 import '../common/LabelName.scss';
@@ -24,7 +24,6 @@ export class LabelListView extends React.Component<Props> {
   @observable private showDelete = false;
   @observable private labelToDelete?: Label = null;
   @observable private labelToUpdate: Label = null;
-  @observable private visible = new Map<string, boolean>();
   @observable private busy = false;
   private query: LabelListQuery;
 
@@ -125,7 +124,7 @@ export class LabelListView extends React.Component<Props> {
         <td className="visible center">
           <Checkbox
               bsClass="cbox"
-              data-id={label.id}
+              data-id={label.id.split('/')[2]}
               checked={this.visible.has(label.id)}
               onChange={this.onChangeVisible}
           />
@@ -183,12 +182,7 @@ export class LabelListView extends React.Component<Props> {
       this.showDelete = false;
       this.busy = false;
     }, (error: any) => {
-      console.error(error);
-      if (error.response && error.response.data && error.response.data.err) {
-        toast.error(`Server returned '${error.response.data.err}'`);
-      } else {
-        toast.error(error.message);
-      }
+      displayErrorToast(error);
       this.showDelete = false;
       this.busy = false;
     });
@@ -205,14 +199,16 @@ export class LabelListView extends React.Component<Props> {
     const { project } = this.props;
     const id = e.target.dataset.id;
     if (e.target.checked) {
-    //   setProjectPrefs(project.id, { labelsToAdd: [id] });
-    // } else {
-    //   setProjectPrefs(project.id, { labelsToRemove: [id] });
+      addPrefsLabel(project.account, project.uname, id).catch(displayErrorToast);
+    } else {
+      removePrefsLabel(project.account, project.uname, id).catch(displayErrorToast);
     }
   }
 
-  // private visibleSet(props: Props): Immutable.Set<number> {
-  //   const { projectPrefs } = props.data;
-  //   return Immutable.Set<number>(projectPrefs ? projectPrefs.labels : []);
-  // }
+  @computed
+  private get visible(): Map<string, boolean> {
+    const visibleMap = new Map<string, boolean>(
+        this.props.prefs.labels.map(label => [label, true] as [string, boolean]));
+    return visibleMap;
+  }
 }

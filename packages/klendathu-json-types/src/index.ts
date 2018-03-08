@@ -9,6 +9,7 @@ export {
 } from './Change';
 export { Comment } from './Comment';
 export { CustomValues, Issue, IssueInput } from './Issue';
+export { Errors } from './Errors';
 export { IssueLink } from './IssueLink';
 export { Label, LabelInput } from './Label';
 export { Membership } from './Membership';

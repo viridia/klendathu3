@@ -6,7 +6,7 @@ import { Button, Modal } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { Account, accounts, Memberships, request } from '../../models';
+import { accounts, Memberships, ObservableAccount, request } from '../../models';
 import bind from 'bind-decorator';
 import { toast } from 'react-toastify';
 
@@ -20,7 +20,7 @@ interface Props {
 @observer
 export class ProjectCard extends React.Component<Props> {
   @observable private showDelete = false;
-  private account: Account;
+  private account: ObservableAccount;
 
   public componentWillMount() {
     const { project } = this.props;
@@ -67,7 +67,7 @@ export class ProjectCard extends React.Component<Props> {
           <div className="project-owner">
             <div className="role">
               <span className="title">Role: </span>
-              <RoleName role={memberships.getProjectRole(project)} />
+              <RoleName role={memberships.getProjectRole(project.id, project.owner)} />
             </div>
             <div className="description">{project.description}</div>
           </div>
@@ -98,7 +98,6 @@ export class ProjectCard extends React.Component<Props> {
       toast.success(`Project '${project.title}' deleted.`);
       this.showDelete = false;
     }, error => {
-      // TODO: Toast
       toast.error(`Error deleting project '${project.title}'.`);
       this.showDelete = false;
       console.error('Project delete error:', error);

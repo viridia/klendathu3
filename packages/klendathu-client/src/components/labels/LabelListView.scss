@@ -10,35 +10,40 @@
   }
 
   table {
-    tbody {
-      border-bottom: 3px solid transparent;
+    thead {
+      th {
+        padding: 4px 1rem;
+      }
     }
 
-    th.visible, th.label-id {
-      padding: 0 1rem;
+    tbody {
+      border-bottom: 3px solid transparent;
+      > tr > td {
+        padding-top: 3px;
+      }
+      > tr:last-child > td {
+        padding-bottom: 3px;
+      }
     }
 
     td.label-id {
-      padding: 0 1rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
     }
 
     td.visible {
-      padding: 3px 8px 0 8px;
+      padding: 5px 8px 0 8px;
     }
 
     td {
       vertical-align: middle;
     }
 
-    .name {
-      padding: 4px 8px;
-    }
-
     .actions {
       width: 1%;
       white-space: nowrap;
       button {
-        margin: 3px;
+        margin: 3px 3px 0 3px;
         &:first-child {
           margin-left: 0;
         }

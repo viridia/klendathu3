@@ -12,6 +12,7 @@
 * Update to passport-github2
 * Investigate github webhooks
 * Investigate Jest
+* Convert /names endpoint to use RPC instead.
 
 ## Files with unfinished pieces:
 * LoginForm

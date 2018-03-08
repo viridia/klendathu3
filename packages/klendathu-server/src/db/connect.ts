@@ -19,7 +19,7 @@ export async function connect(): Promise<r.Connection> {
     'labels',
     'memberships',
     'projects',
-    'projectSettings',
+    'projectPrefs',
     'templates',
     'accounts',
   ]);

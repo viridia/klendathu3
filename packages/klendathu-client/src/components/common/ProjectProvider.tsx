@@ -5,7 +5,7 @@ import {
   IssueListQuery,
   Memberships,
   Project,
-  ProjectPrefs,
+  ObservableProjectPrefs,
   projects,
 } from '../../models';
 
@@ -13,7 +13,7 @@ interface OutProps {
   account: Account;
   project: Project;
   issues: IssueListQuery;
-  prefs: ProjectPrefs;
+  prefs: ObservableProjectPrefs;
 }
 
 interface Props {
@@ -28,12 +28,12 @@ interface Props {
 export class ProjectProvider extends React.Component<Props> {
   private project: Project = null;
   private issues: IssueListQuery = null;
-  private prefs: ProjectPrefs = null;
+  private prefs: ObservableProjectPrefs = null;
 
   public componentWillMount() {
     const { account, project, memberships } = this.props;
     this.project = projects.get(account.uid, project, memberships);
-    this.prefs = new ProjectPrefs(account.uid, project);
+    this.prefs = new ObservableProjectPrefs(account.uid, project);
     this.issues = new IssueListQuery(account.uid, project);
   }
 
@@ -43,7 +43,7 @@ export class ProjectProvider extends React.Component<Props> {
       this.project.release();
       this.prefs.release();
       this.project = projects.get(account.uid, project, memberships);
-      this.prefs = new ProjectPrefs(account.uid, project);
+      this.prefs = new ObservableProjectPrefs(account.uid, project);
       this.issues = new IssueListQuery(account.uid, project);
     }
   }

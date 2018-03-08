@@ -1,5 +1,5 @@
 import * as classNames from 'classnames';
-import { ObservableIssue } from '../../../models/Issue';
+import { ObservableIssue } from '../../../models';
 import { FieldType } from 'klendathu-json-types';
 import * as React from 'react';
 import { ColumnSort } from '../../common/ColumnSort';
