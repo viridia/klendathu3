@@ -31,7 +31,7 @@ export class IssueLinks extends React.Component<Props> {
     return (
       <li className="issue-link" key={to}>
         <span className="relation">{relationNames[relation]}</span>
-        <IssueSummary id={to} issues={this.props.issues} />
+        <IssueSummary id={to} />
         {this.props.onRemoveLink && (
           <Button className="bare light" onClick={() => this.props.onRemoveLink(to)}>
             <CloseIcon />

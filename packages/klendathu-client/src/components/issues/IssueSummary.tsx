@@ -15,7 +15,7 @@ export class IssueSummary extends React.Component<Props> {
     if (issue) {
       return (
         <span className="issue">
-          <span className="id">#{issue.id}</span>
+          <span className="id">#{issue.index}</span>
           <span className="summary">: {issue.summary}</span>
         </span>);
     } else {

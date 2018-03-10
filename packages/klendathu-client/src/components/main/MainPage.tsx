@@ -78,14 +78,14 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
                           <Switch>
                             <Route
                                 path="/:account/:project/new"
-                                render={() => <IssueCreateView {...models} />}
+                                render={props => <IssueCreateView {...props} {...models} />}
                             />
                             <Route
                                 path="/:account/:project/edit/:id"
                                 render={props => <IssueEditView {...props} {...models} />}
                             />
                             <Route
-                                path="/:account/:project/issues/:id"
+                                path="/:account/:project/:id(\d+)"
                                 render={props => (<IssueDetailsView {...props} {...models} />)}
                             />
                             <Route

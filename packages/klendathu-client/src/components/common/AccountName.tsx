@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 
 interface Props {
   id: string;
+  full?: boolean;
 }
 
 /** Component which displays the name of an account. */

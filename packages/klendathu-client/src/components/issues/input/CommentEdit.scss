@@ -1,0 +1,10 @@
+.comment-compose {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  > .comment-entry {
+    height: 8em;
+    margin-bottom: 8px;
+  }
+}

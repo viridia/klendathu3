@@ -2,6 +2,7 @@ import { CustomFieldChange, ListChange, LinkChange, ScalarChange } from 'klendat
 
 export interface IssueChangeRecord {
   issue: string;
+  project: string;
   by: string;
   at: Date;
   type?: ScalarChange;

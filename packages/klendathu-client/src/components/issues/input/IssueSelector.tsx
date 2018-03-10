@@ -12,7 +12,7 @@ interface Props {
   placeholder?: string;
   project: Project;
   issues: IssueListQuery;
-  exclude?: number;
+  exclude?: string;
   selection: IssueData | IssueData[];
   onSelectionChange: (selection: IssueData | IssueData[] | null) => void;
 }

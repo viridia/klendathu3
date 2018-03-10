@@ -1,21 +1,20 @@
 import * as React from 'react';
 import { IssueListQuery, Project } from '../../models';
+import { RouteComponentProps } from 'react-router-dom';
 import { createIssue } from '../../network/requests';
 import { IssueCompose } from './IssueCompose';
 import { toast } from 'react-toastify';
 import bind from 'bind-decorator';
 import { IssueInput } from 'klendathu-json-types';
 
-interface Props {
+interface Props extends RouteComponentProps<{}> {
   project: Project;
   issues: IssueListQuery;
 }
 
 export class IssueCreateView extends React.Component<Props> {
   public render() {
-    return (
-      <IssueCompose project={this.props.project} issues={this.props.issues} onSave={this.onSave} />
-    );
+    return <IssueCompose {...this.props} onSave={this.onSave} />;
   }
 
   @bind

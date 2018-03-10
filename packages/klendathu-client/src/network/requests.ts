@@ -73,14 +73,14 @@ export function createIssue(account: string, project: string, label: IssueInput)
   }, handleAxiosError);
 }
 
-export function updateIssue(labelId: string, label: IssueInput): Promise<Issue> {
-  return request.patch(`/api/issues/${labelId}`, label).then(resp => {
+export function updateIssue(issueId: string, issue: IssueInput): Promise<Issue> {
+  return request.patch(`/api/issues/${issueId}`, issue).then(resp => {
     return resp.data;
   }, handleAxiosError);
 }
 
-export function deleteIssue(labelId: string): Promise<any> {
-  return request.delete(`/api/issues/${labelId}`).then(resp => {
+export function deleteIssue(issue: string): Promise<any> {
+  return request.delete(`/api/issues/${issue}`).then(resp => {
     return resp.data;
   }, handleAxiosError);
 }

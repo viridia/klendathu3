@@ -1,14 +1,28 @@
 import * as React from 'react';
-import { IssueListQuery, Project, session, Template } from '../../models';
-import { StateSelector } from './input/StateSelector';
-import { TypeSelector } from './input/TypeSelector';
-import { LabelSelector } from './input/LabelSelector';
-import { IssueSelector } from './input/IssueSelector';
-import { AutoNavigate } from '../common/AutoNavigate';
-import { UserAutocomplete } from '../common/UserAutocomplete';
-import { IssueLinks } from './IssueLinks';
-import { relationNames } from '../common/relationNames';
-import { RequestError } from '../../network';
+import {
+  Account,
+  CustomValues,
+  DataType,
+  Errors,
+  Issue,
+  IssueInput,
+  IssueLink,
+  IssueType,
+  Label,
+  Relation,
+  Role,
+  Workflow,
+} from 'klendathu-json-types';
+import { IssueListQuery, ObservableIssue, Project, session, Template } from '../../models';
+import {
+  CommentEdit,
+  CustomEnumField,
+  CustomSuggestField,
+  IssueSelector,
+  LabelSelector,
+  TypeSelector,
+  StateSelector,
+} from './input';
 import {
   Button,
   Checkbox,
@@ -17,20 +31,16 @@ import {
   FormControl,
   MenuItem,
 } from 'react-bootstrap';
+import { AutoNavigate } from '../common/AutoNavigate';
+import { UserAutocomplete } from '../common/UserAutocomplete';
+import { IssueLinks } from './IssueLinks';
+import { relationNames } from '../common/relationNames';
+import { RequestError } from '../../network';
+import { RouteComponentProps } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
-import { action, computed, IObservableArray, observable } from 'mobx';
+import { action, computed, IObservableArray, observable, toJS, when } from 'mobx';
 import { observer } from 'mobx-react';
 import { toast } from 'react-toastify';
-import {
-  Account,
-  Errors,
-  IssueInput,
-  Issue as IssueRecord,
-  IssueType,
-  Label,
-  Relation,
-  Workflow,
-} from 'klendathu-json-types';
 
 import './IssueCompose.scss';
 
@@ -43,10 +53,10 @@ const RELATIONS: Relation[] = [
   Relation.RELATED,
 ];
 
-interface Props {
+interface Props extends RouteComponentProps<{}> {
   project: Project;
   issues: IssueListQuery;
-  issue?: IssueRecord;
+  issue?: ObservableIssue;
   onSave: (input: IssueInput) => Promise<any>;
 }
 
@@ -62,30 +72,37 @@ export class IssueCompose extends React.Component<Props> {
   @observable.shallow private cc = [] as IObservableArray<Account>;
   @observable.shallow private labels = [] as IObservableArray<Label>;
   @observable private relation: Relation = Relation.BLOCKED_BY;
-  @observable private issueToLink: IssueRecord = null;
+  @observable private issueToLink: Issue = null;
   @observable.shallow private issueLinkMap = new Map<string, Relation>();
+  @observable private custom = new Map<string, string | number | boolean>();
+  @observable private comments: string[] = [];
   @observable private busy = false;
   private prevState: string = '';
+
+  public componentWillMount() {
+    if (this.props.issue) {
+      this.reset();
+    }
+  }
 
   public componentWillUpdate() {
     this.resetType();
   }
 
   public render() {
-    // const project = this.props.projectRef.value;
+    const { location, issue, project } = this.props;
     const template = this.template;
     if (!template) {
       return null;
     }
-    const issue: any = null;
     const canSave = !this.busy && this.type && this.issueState && this.summary;
-    const backLink = '/foo/bar';
+    const backLink = (location.state && location.state.back) || { pathname: '..' };
     return (
       <section className="kdt issue-compose">
         <div className="card">
           <header>
             {issue
-              ? <span>Edit Issue #{issue.id}</span>
+              ? <span>Edit Issue #{issue.index}</span>
               : <span>New Issue: {this.props.project.uname}</span>}
           </header>
           <form
@@ -175,6 +192,7 @@ export class IssueCompose extends React.Component<Props> {
                       </div>
                     </td>
                   </tr>
+                  {this.renderTemplateFields()}
                   <tr>
                     <th className="header"><ControlLabel>Linked Issues:</ControlLabel></th>
                     <td>
@@ -222,6 +240,24 @@ export class IssueCompose extends React.Component<Props> {
                       </div>
                     </td>
                   </tr>
+                  {/*<tr>
+                    <th className="header"><ControlLabel>Attach files:</ControlLabel></th>
+                    <td>
+                      <UploadAttachments
+                        ref={el => { this.attachments = el; }}
+                        project={project}
+                      />
+                    </td>
+                  </tr>*/}
+                  <tr>
+                    <th className="header"><ControlLabel>Comments:</ControlLabel></th>
+                    <td>
+                      <CommentEdit
+                          disabled={project.role < Role.REPORTER}
+                          onAddComment={this.onAddComment}
+                      />
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </section>
@@ -262,6 +298,54 @@ export class IssueCompose extends React.Component<Props> {
     );
   }
 
+  private renderTemplateFields(): JSX.Element[] {
+    const result: JSX.Element[] = [];
+    if (this.issueType) {
+      return this.renderCustomFields(this.issueType, result);
+    }
+    return result;
+  }
+
+  private renderCustomFields(issueType: IssueType, result: JSX.Element[]) {
+    const { project } = this.props;
+    for (const field of this.issueType.fields) {
+      let component = null;
+      const value = this.custom.get(field.id) || field.default || '';
+      switch (field.type) {
+        case DataType.TEXT:
+          component = (
+            <CustomSuggestField
+                value={String(value)}
+                field={field}
+                project={project}
+                onChange={this.onChangeCustomField}
+            />
+          );
+          break;
+        case DataType.ENUM:
+          component = (
+            <CustomEnumField
+                value={String(value)}
+                field={field}
+                onChange={this.onChangeCustomField}
+            />
+          );
+          break;
+        default:
+          console.error('invalid field type:', field.type);
+          break;
+      }
+      if (component) {
+        result.push(
+          <tr key={field.id}>
+            <th>{field.caption}:</th>
+            <td>{component}</td>
+          </tr>);
+      }
+    }
+    return result;
+  }
+
   @action.bound
   private onChangeType(type: string) {
     this.type = type;
@@ -298,13 +382,18 @@ export class IssueCompose extends React.Component<Props> {
   }
 
   @action.bound
-  private onChangeIssueToLink(selection: IssueRecord) {
+  private onChangeIssueToLink(selection: Issue) {
     this.issueToLink =  selection;
   }
 
   @action.bound
   private onChangeRelation(selection: any) {
     this.relation = selection;
+  }
+
+  @action.bound
+  private onChangeCustomField(id: string, value: any) {
+    this.custom.set(id, value);
   }
 
   @action.bound
@@ -335,9 +424,24 @@ export class IssueCompose extends React.Component<Props> {
   }
 
   @action.bound
+  private onAddComment(commentText: string) {
+    this.comments.push(commentText);
+  }
+
+  @action.bound
   private onSubmit(e: any) {
     e.preventDefault();
     this.busy = true;
+    const custom: CustomValues = {};
+    for (const field of this.issueType.fields) {
+      if (this.custom.has(field.id)) {
+        custom[field.id] = this.custom.get(field.id);
+      }
+    }
+    const linked: IssueLink[] = [];
+    this.issueLinkMap.forEach((value, key) => {
+      linked.push({ to: key, relation: value });
+    });
     const input: IssueInput = {
       type: this.type,
       state: this.issueState,
@@ -347,16 +451,19 @@ export class IssueCompose extends React.Component<Props> {
       ownerSort: this.owner ? this.owner.uname : undefined,
       cc: this.cc.map(cc => cc.uid),
       labels: this.labels.map(label => label.id),
-      linked: [],
-      custom: {},
-      comments: [],
+      linked,
+      custom,
+      comments: toJS(this.comments),
       attachments: [],
     };
     this.props.onSave(input).then(() => {
+      const { history, location } = this.props;
       this.busy = false;
       this.reset();
       if (!this.another) {
-        //
+        // TODO: Calculate this better.
+        const backLink = (location.state && location.state.back) || { pathname: '..' };
+        history.push(backLink);
       }
     }, (error: RequestError) => {
       switch (error.code) {
@@ -379,13 +486,33 @@ export class IssueCompose extends React.Component<Props> {
 
   @action.bound
   private reset() {
-    this.resetType();
-    this.summary = '';
-    this.description = '';
-    this.owner = null;
-    this.cc.replace([]);
-    this.labels.replace([]);
-    // this.public = false;
+    const { issue } = this.props;
+    if (issue) {
+      when('issue loaded', () => issue.loaded, () => {
+        this.type = issue.type;
+        this.issueState = issue.state;
+        this.summary = issue.summary;
+        this.description = issue.description;
+        this.custom.clear();
+        // this.owner = issue.owner;
+        // this.cc = issue.cc;
+        // this.labels.replace(issue.labels);
+        for (const key of Object.getOwnPropertyNames(issue.custom)) {
+          this.custom.set(key, issue.custom[key]);
+        }
+        // this.issueLinkMap.clear();
+      });
+    } else {
+      this.resetType();
+      this.summary = '';
+      this.description = '';
+      this.owner = null;
+      this.cc.replace([]);
+      this.labels.replace([]);
+      this.custom.clear();
+      this.issueLinkMap.clear();
+      // this.public = false;
+    }
   }
 
   @action.bound

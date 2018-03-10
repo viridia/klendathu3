@@ -37,10 +37,10 @@ export interface CustomFieldChange {
   name: string;
 
   /** Value of the field before the change. */
-  before?: string;
+  before?: string | number | boolean;
 
   /** Value of the field after the change. */
-  after?: string;
+  after?: string | number | boolean;
 }
 
 /** A change record for an issue. */

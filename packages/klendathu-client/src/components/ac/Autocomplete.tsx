@@ -10,19 +10,22 @@ import './Autocomplete.scss';
 export type SearchCallback<S> = (suggestion: S[], suffixActions?: any[]) => void;
 
 interface Props<S> {
-  selection: S | S[];
   className?: string;
+  selection: S | S[];
+  textValue?: string;
   placeholder?: string;
   autoFocus?: boolean;
   maxLength?: number;
   multiple?: boolean;
+  suggest?: boolean;
   onSearch: (search: string, callback: SearchCallback<S>) => void;
   onChooseSuggestion?: (suggestion: S, callback: (suggestion: S) => void) => boolean;
-  onRenderSuggestion?: (suggestion: S) => JSX.Element;
-  onRenderSelection?: (suggestion: S) => JSX.Element;
+  onRenderSuggestion?: (suggestion: S) => React.ReactNode;
+  onRenderSelection: (suggestion: S) => React.ReactNode;
   onGetValue?: (suggestion: S) => string | number;
   onGetSortKey?: (suggestion: S) => string | number;
   onSelectionChange: (selection: S | S[] | null) => void;
+  onValueChange?: (text: string) => void;
 }
 
 @observer
@@ -86,7 +89,7 @@ export class Autocomplete<S> extends React.Component<Props<S>> {
   public render() {
     const { className, maxLength, placeholder, autoFocus } = this.props;
     const selection = this.selection();
-    const editing = this.value.length > 0;
+    const editing = this.textValue.length > 0;
     return (
       <div
           className={classNames('autocomplete dropdown',
@@ -100,7 +103,7 @@ export class Autocomplete<S> extends React.Component<Props<S>> {
             placeholder={selection.length > 0 ? null : placeholder}
             inputRef={el => { this.input = el; }}
             autoFocus={autoFocus}
-            value={this.value}
+            value={this.textValue}
             maxLength={maxLength}
             onChange={this.onValueChange}
             onFocus={this.onFocus}
@@ -174,7 +177,7 @@ export class Autocomplete<S> extends React.Component<Props<S>> {
     for (let i = 0; i < selection.length; i += 1) {
       const item = selection[i];
       const value = this.props.onGetValue(item);
-      const last = (i === selection.length - 1) && this.value.length === 0;
+      const last = (i === selection.length - 1) && this.textValue.length === 0;
       const chip = this.props.onRenderSelection(item);
       result.push(
         <span className={classNames('ac-chip-wrapper', { last })} key={value}>
@@ -189,10 +192,14 @@ export class Autocomplete<S> extends React.Component<Props<S>> {
   private onValueChange(e: any) {
     let value = e.target.value;
     // Don't allow typing if it's a non-multiple and we already have a value.
-    if (!this.props.multiple && this.selection().length > 0) {
+    if (!this.props.suggest && !this.props.multiple && this.selection().length > 0) {
       value = '';
     }
-    this.value = value;
+    if (this.props.onValueChange) {
+      this.props.onValueChange(value);
+    } else {
+      this.value = value;
+    }
     clearTimeout(this.timer);
     this.timer = setTimeout(() => {
       runInAction(() => {
@@ -207,7 +214,7 @@ export class Autocomplete<S> extends React.Component<Props<S>> {
   @bind
   private onFocus() {
     this.focused = true;
-    if (this.value.length === 0) {
+    if (this.textValue.length === 0) {
       this.searchValue = this.value;
       this.props.onSearch(this.searchValue, this.onReceiveSuggestions);
     }
@@ -232,7 +239,13 @@ export class Autocomplete<S> extends React.Component<Props<S>> {
   private onClickSuggestion(e: any, item: S) {
     e.preventDefault();
     e.stopPropagation();
-    this.value = '';
+    if (!this.props.suggest) {
+      if (this.props.onValueChange) {
+        this.props.onValueChange('');
+      } else {
+        this.value = '';
+      }
+    }
     this.open = false;
     this.searchValue = '';
     this.chooseSuggestion(item);
@@ -248,8 +261,8 @@ export class Autocomplete<S> extends React.Component<Props<S>> {
     this.suffixActions = suffixActions;
     this.open = suggestionCount > 0;
     this.suggestionIndex = uniqueSuggestions.length > 0 ? 0 : -1;
-    if (this.value !== this.searchValue) {
-      this.searchValue = this.value;
+    if (this.textValue !== this.searchValue) {
+      this.searchValue = this.textValue;
       this.props.onSearch(this.searchValue, this.onReceiveSuggestions);
     }
   }
@@ -283,7 +296,13 @@ export class Autocomplete<S> extends React.Component<Props<S>> {
         break;
       case 13: // RETURN
         this.searchValue = '';
-        this.value = '';
+        if (!this.props.suggest) {
+          if (this.props.onValueChange) {
+            this.props.onValueChange('');
+          } else {
+            this.value = '';
+          }
+        }
         if (suggestionCount > 0 && this.suggestionIndex !== -1) {
           if (this.open) {
             this.open = false;
@@ -344,5 +363,9 @@ export class Autocomplete<S> extends React.Component<Props<S>> {
     } else {
       return [this.props.selection];
     }
+  }
+
+  private get textValue() {
+    return this.props.textValue || this.value;
   }
 }

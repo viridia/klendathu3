@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Account, Role } from 'klendathu-json-types';
-import { ObservableIssue, issues, Project, ProjectPrefs } from '../../models';
+import { ObservableIssue, issues, Project, ObservableProjectPrefs } from '../../models';
 import { NavLink, RouteComponentProps } from 'react-router-dom';
 import { ColumnRenderer } from './columns';
 import { Checkbox } from 'react-bootstrap';
@@ -11,7 +11,7 @@ import * as classNames from 'classnames';
 interface Props extends RouteComponentProps<{}> {
   account: Account;
   project: Project;
-  prefs: ProjectPrefs;
+  prefs: ObservableProjectPrefs;
   issueId: string;
   columnRenderers: Map<string, ColumnRenderer>;
   selection: Map<string, boolean>;
@@ -36,10 +36,10 @@ export class IssueListEntry extends React.Component<Props> {
     }
     const { account, project, prefs, columnRenderers, selection } = this.props;
     const linkTarget = {
-      pathname: `/${account.uname}/${project.uname}/issues/${this.issue.id}`,
+      pathname: `/${account.uname}/${project.uname}/${this.issue.index}`,
       state: { back: this.props.location },
     };
-    const issueId = `issue-${this.issue.uid}`;
+    const issueId = `issue-${this.issue.id}`;
     const style: any = {};
     const level = 0;
     if (level > 0) {
@@ -52,14 +52,14 @@ export class IssueListEntry extends React.Component<Props> {
             <Checkbox
                 id={issueId}
                 bsClass="cbox"
-                data-id={this.issue.uid}
-                checked={selection.has(this.issue.uid)}
+                data-id={this.issue.id}
+                checked={selection.has(this.issue.id)}
                 onChange={this.onChangeSelection}
             />
           </label>
         </td>)}
         <td className="id">
-          <NavLink to={linkTarget}>{this.issue.id}</NavLink>
+          <NavLink to={linkTarget}>{this.issue.index}</NavLink>
         </td>
         {prefs.columns.map(cname => {
           const cr = columnRenderers.get(cname);
@@ -85,9 +85,9 @@ export class IssueListEntry extends React.Component<Props> {
   private onChangeSelection(e: any) {
     const { selection } = this.props;
     if (e.target.checked) {
-      selection.set(this.issue.uid, true);
+      selection.set(this.issue.id, true);
     } else {
-      selection.delete(this.issue.uid);
+      selection.delete(this.issue.id);
     }
   }
 }

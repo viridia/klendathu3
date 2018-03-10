@@ -66,7 +66,18 @@ export class Template {
       if (iType.extends) {
         const base = this.getInheritedIssueType(iType.extends);
         if (base) {
-          iType = { ...base, ...iType };
+          const fieldList: FieldType[] = Array.from(base.fields || []);
+          if (iType.fields) {
+            for (const field of iType.fields) {
+              const index = fieldList.findIndex(f => f.id === field.id);
+              if (index < 0) {
+                fieldList.push(field);
+              }
+            }
+          }
+          iType = {
+            ...base, ...iType, fields: fieldList,
+          };
         }
       }
     }

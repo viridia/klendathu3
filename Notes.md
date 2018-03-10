@@ -1,18 +1,30 @@
 # TODO:
 
+* Issue Edit
+  * Edit form
+  * Version history
+* Comments
+* Attachments
+* Issue links
 * Sorting
 * Filter bar
+* Issue Selector
+* User Selector
+* Issue Compose (finish)
+* Issue Details
 * Mass edit bar
 * Update Project
 * Update Issue
 * Project prefs
+* Issue Grouping
+* Workflow Edit
 
 # Longer term:
 
+* Convert /names endpoint to use RPC instead.
 * Update to passport-github2
 * Investigate github webhooks
 * Investigate Jest
-* Convert /names endpoint to use RPC instead.
 
 ## Files with unfinished pieces:
 * LoginForm
@@ -20,7 +32,8 @@
 * MainPage
 * IssueEditView
 * LabelDialog
-* LabelListView
+* CustomSuggestField
+* ErrorDisplay
 
 ## Routes:
 
@@ -36,8 +49,8 @@
 /{account}/ (profile page, including project list)
 /{account}/{project}/ (project summary)
 /{account}/{project}/new
+/{account}/{project}/{id}
 /{account}/{project}/edit/{id}
-/{account}/{project}/issues/{id}
 /{account}/{project}/labels/{id}
 /{account}/{project}/settings/{tab}
 
