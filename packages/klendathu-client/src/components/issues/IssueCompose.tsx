@@ -469,7 +469,6 @@ export class IssueCompose extends React.Component<Props> {
       const { history } = this.props;
       this.busy = false;
       this.reset();
-      console.log('backlink', this.another, this.backLink);
       if (!this.another) {
         history.push(this.backLink);
       }

@@ -160,7 +160,6 @@ export class LabelListView extends React.Component<Props> {
 
   @action.bound
   private onCreateLabel() {
-    console.log('on create');
     this.showCreate = false;
   }
 

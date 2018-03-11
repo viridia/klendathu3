@@ -12,12 +12,25 @@ import { displayErrorToast } from '../common/displayErrorToast';
 import { deleteIssue } from '../../network/requests';
 import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';
+import * as marked from 'marked';
 
 import './IssueDetailsView.scss';
 
 import ArrowBackIcon from '../../../icons/ic_arrow_back.svg';
 import ArrowForwardIcon from '../../../icons/ic_arrow_forward.svg';
 import ArrowUpIcon from '../../../icons/ic_arrow_upward.svg';
+
+// Global options for marked.
+marked.setOptions({
+  renderer: new marked.Renderer(),
+  gfm: true,
+  tables: true,
+  breaks: false,
+  pedantic: false,
+  sanitize: true,
+  smartLists: true,
+  smartypants: true,
+});
 
 interface Props extends RouteComponentProps<{ project: string; id: string }> {
   account: Account;
@@ -194,8 +207,7 @@ export class IssueDetails extends React.Component<Props> {
   }
 
   private renderDescription(description: string) {
-    return <td />;
-    // return <td className="descr" dangerouslySetInnerHTML={{ __html: marked(description) }} />;
+    return <td className="descr" dangerouslySetInnerHTML={{ __html: marked(description) }} />;
   }
 
   private adjacentIssueIds(id: string): [string, string] {
