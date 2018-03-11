@@ -170,8 +170,8 @@ export class IssueListView extends React.Component<Props> {
     const columnRenderers = new Map<string, ColumnRenderer>();
     columnRenderers.set('state', new TextColumnRenderer('State', 'state', 'state pad'));
     columnRenderers.set('reporter',
-        new UserColumnRenderer('Reporter', 'reporterName', 'reporter pad'));
-    columnRenderers.set('owner', new UserColumnRenderer('Owner', 'ownerName', 'owner pad'));
+        new UserColumnRenderer('Reporter', 'reporter', 'reporter pad'));
+    columnRenderers.set('owner', new UserColumnRenderer('Owner', 'owner', 'owner pad'));
     columnRenderers.set('created', new DateColumnRenderer('Created', 'created', 'created pad'));
     columnRenderers.set('updated', new DateColumnRenderer('Updated', 'updated', 'updated pad'));
     const template = project.template;
