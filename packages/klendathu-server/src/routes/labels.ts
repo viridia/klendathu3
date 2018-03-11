@@ -136,11 +136,10 @@ server.api.delete('/labels/:account/:project/:label', async (req, res) => {
       labels: (r.row('labels') as any).filter((id: string) => id !== labelId),
     }).run(server.conn);
 
-    // TODO: Implement.
-    //   // Delete all instances of that label from project prefs
-    //   await r.table('projectPrefs').filter({ project: project.id }).update({
-    //     labels: (r.row('labels') as any).filter((id: number) => id !== args.id),
-    //   }).run(context.conn);
+    // Delete all instances of that label from project prefs
+    await r.table('projectPrefs').filter({ project: projectId }).update({
+      labels: (r.row('labels') as any).filter((id: string) => id !== labelId),
+    }).run(server.conn);
 
     // Delete the label record
     const resp = await r.table('labels')

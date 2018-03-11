@@ -1,14 +1,17 @@
 # TODO:
 
+* User Autocomplete
+* Issue Autocomplete
+* Issue Link Edit
 * Issue Edit
   * Edit form
   * Version history
+* Marked
 * Comments
-* Attachments
+* Attachments - where to store to?
 * Issue links
-* Sorting
+* Sorting by custom fields.
 * Filter bar
-* Issue Selector
 * User Selector
 * Issue Compose (finish)
 * Issue Details
@@ -32,7 +35,6 @@
 * EmailVerificationDialog
 * MainPage
 * IssueEditView
-* LabelDialog
 * CustomSuggestField
 * ErrorDisplay
 

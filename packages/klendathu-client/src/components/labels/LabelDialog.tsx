@@ -11,7 +11,7 @@ import {
   FormGroup,
   Modal,
 } from 'react-bootstrap';
-import { createLabel, updateLabel } from '../../network/requests';
+import { createLabel, updateLabel, addPrefsLabel, removePrefsLabel } from '../../network/requests';
 import LABEL_COLORS from '../common/labelColors'; // tslint:disable-line
 import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';
@@ -40,6 +40,7 @@ export class LabelDialog extends React.Component<Props> {
     if (this.props.label) {
       this.labelName = label.name;
       this.color = label.color;
+      this.visible = this.props.visible;
     }
   }
 
@@ -48,6 +49,7 @@ export class LabelDialog extends React.Component<Props> {
       const { label } = nextProps;
       this.labelName = label.name;
       this.color = label.color;
+      this.visible = this.props.visible;
     }
   }
 
@@ -78,11 +80,6 @@ export class LabelDialog extends React.Component<Props> {
               />
               <FormControl.Feedback />
             </FormGroup>
-            <FormGroup controlId="visible">
-              <Checkbox checked={this.visible} onChange={this.onChangeVisible}>
-                Show in hotlist
-              </Checkbox>
-            </FormGroup>
             <FormGroup controlId="color">
               <ControlLabel>Label color</ControlLabel>
               <div className="color-table">
@@ -101,6 +98,11 @@ export class LabelDialog extends React.Component<Props> {
                       </button>)}
                   </div>))}
               </div>
+            </FormGroup>
+            <FormGroup controlId="visible">
+              <Checkbox checked={this.visible} onChange={this.onChangeVisible}>
+                Show label in hotlist
+              </Checkbox>
             </FormGroup>
             <FormGroup controlId="preview">
               <ControlLabel>Label preview:</ControlLabel>
@@ -162,27 +164,21 @@ export class LabelDialog extends React.Component<Props> {
     }
 
     result.then(updatedLabel => {
-      if (!label || this.props.visible !== this.visible) {
-      //   const update: { labelsToAdd?: number[]; labelsToRemove?: number[]; } = {};
-      //   if (this.visible) {
-      //     update.labelsToAdd = [updatedLabel.id];
-      //   } else {
-      //     update.labelsToRemove = [updatedLabel.id];
-      //   }
-      //
-      //   setProjectPrefs(project.id, update).then(() => {
-      //     this.props.onInsertLabel(updatedLabel);
-      //     this.setState({ busy: false });
-      //     this.props.onHide();
-      //   });
-        this.busy = false;
-        this.props.onHide();
-        this.props.onInsertLabel(updatedLabel);
+      const id = updatedLabel.id.split('/')[2];
+      let promise: Promise<any> = null;
+      if (this.visible && (!label || !this.props.visible)) {
+        promise = addPrefsLabel(project.account, project.uname, id);
+      } else if (!this.visible && label && this.props.visible) {
+        promise = removePrefsLabel(project.account, project.uname, id);
       } else {
+        promise = Promise.resolve();
+      }
+
+      promise.then(() => {
         this.busy = false;
         this.props.onHide();
         this.props.onInsertLabel(updatedLabel);
-      }
+      });
     }, error => {
       console.error(error);
       if (error.response && error.response.data && error.response.data.err) {
