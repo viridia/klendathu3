@@ -8,6 +8,8 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { AccountName } from '../common/AccountName';
 import { LabelName } from '../common/LabelName';
 import { RelativeDate } from '../common/RelativeDate';
+import { displayErrorToast } from '../common/displayErrorToast';
+import { deleteIssue } from '../../network/requests';
 import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';
 
@@ -251,30 +253,31 @@ export class IssueDetails extends React.Component<Props> {
 
   @action.bound
   private onConfirmDelete() {
-  //   const { location, history, project, data: { issue } } = this.props;
+    const { account, location, history, project, issue } = this.props;
     this.busy = true;
-  //   return deleteIssue(project.id, issue.id).then(() => {
-  //     const { prevIssue, nextIssue } = this.state;
-  //     this.setState({ showDelete: false, busyDelete: false });
-  //     if (prevIssue) {
-  //       history.replace({
-  //         ...location,
-  //         pathname: `/project/${project.name}/issues/${prevIssue}`,
-  //       });
-  //     } else if (nextIssue) {
-  //       history.replace({
-  //         ...location,
-  //         pathname: `/project/${project.name}/issues/${nextIssue}`,
-  //       });
-  //     } else if (location.state && location.state.back) {
-  //       history.replace(location.state.back);
-  //     } else {
-  //       history.replace({
-  //         ...location,
-  //         pathname: `/project/${project.name}/issues`,
-  //       });
-  //     }
-  //   });
+    return deleteIssue(issue.id).then(() => {
+      const [prevIssue, nextIssue] = this.adjacentIssueIds(issue.id);
+      this.showDelete = false;
+      this.busy = false;
+      if (prevIssue) {
+        history.replace({
+          ...location,
+          pathname: `/${account.uname}/${project.uname}/${prevIssue}`,
+        });
+      } else if (nextIssue) {
+        history.replace({
+          ...location,
+          pathname: `/${account.uname}/${project.uname}/issues/${nextIssue}`,
+        });
+      } else if (location.state && location.state.back) {
+        history.replace(location.state.back);
+      } else {
+        history.replace({
+          ...location,
+          pathname: `/${account.uname}/${project.uname}/issues`,
+        });
+      }
+    }, displayErrorToast);
   }
 
   @action.bound

@@ -81,16 +81,16 @@ server.api.post('/issues/:account/:project', async (req, res) => {
       summary: input.summary,
       description: input.description,
       reporter: user.id,
-      reporterSort: user.uname,
+      reporterSort: user.uname || '',
       owner: input.owner || null,
-      ownerSort: input.ownerSort || null,
+      ownerSort: input.ownerSort || '',
       created: now,
       updated: now,
       cc: (input.cc || []),
       labels: input.labels || [],
       custom: input.custom,
       isPublic: !!input.isPublic,
-      position: input.position,
+      position: input.position || null,
     };
 
     // attachments: input.attachments || [],
@@ -187,10 +187,8 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
     res.status(400).json({ error: Errors.SCHEMA, details: issueInputValidator.errors });
     logger.error('Schema validation failure:', req.body, issueInputValidator.errors);
   } else {
-    // Increment the issue id counter.
     const projectId = `${account}/${project}`;
     const issueId = `${account}/${project}/${id}`;
-
     const now = new Date();
     const input: IssueInput = req.body;
 
@@ -258,6 +256,7 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
 
     if ('owner' in input && input.owner !== existing.owner) {
       record.owner = input.owner;
+      record.ownerSort = input.ownerSort || null;
       change.owner = { before: existing.owner, after: input.owner };
       change.at = record.updated;
     }
@@ -277,7 +276,6 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
 
     // Compute which labels have been added or deleted.
     if ('labels' in input) {
-      console.log('updating labels:', input.labels);
       const labelsPrev = new Set(existing.labels); // Removed items
       const labelsNext = new Set(input.labels);    // Newly-added items
       input.labels.forEach(labels => labelsPrev.delete(labels));
@@ -523,6 +521,53 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
       res.json((result as any).changes[0].new_val);
     } else {
       res.json(existing);
+    }
+  }
+});
+
+// Delete an new issue.
+server.api.delete('/issues/:account/:project/:id', async (req, res) => {
+  if (!req.user) {
+    return res.status(401).end();
+  }
+  const user = req.user as AccountRecord;
+  const { account, project, id }: { account: string, project: string, id: string } = req.params;
+  const { projectRecord, role } = await getProjectAndRole(account, project, user);
+  const details = { user: user.uname, account, project };
+
+  if (!projectRecord || (!projectRecord.isPublic && role < Role.VIEWER)) {
+    if (project) {
+      logger.error(`delete issue: project ${project} not visible.`, details);
+    } else {
+      logger.error(`delete issue: project ${project} not found.`, details);
+    }
+    res.status(404).json({ error: Errors.NOT_FOUND });
+  } else if (role < Role.UPDATER) {
+    logger.error(`delete issue: user has insufficient privileges.`, details);
+    res.status(403).json({ error: Errors.FORBIDDEN });
+  } else {
+    const issueId = `${account}/${project}/${id}`;
+    const existing = await r.table('issues').get<IssueRecord>(issueId).run(server.conn);
+    if (existing === null) {
+      logger.error(`delete issue: issue ${issueId} not visible.`, details);
+      res.status(404).json({ error: Errors.NOT_FOUND });
+      return;
+    }
+
+    const results = await Promise.all([
+      r.table('issueChanges').filter({ issue: issueId }).delete().run(server.conn),
+      r.table('issueLinks').filter({ to: issueId }).delete().run(server.conn),
+      r.table('issueLinks').filter({ from: issueId }).delete().run(server.conn),
+      r.table('issues').get(issueId).delete().run(server.conn),
+      // TODO: Add comments, attachments
+    ]);
+
+    const errorResponse = results.find(resp => resp.errors > 0);
+    if (errorResponse) {
+      logger.error('Error creating issue', errorResponse.first_error);
+      res.status(500).json({ error: Errors.INTERNAL, details: errorResponse.first_error });
+    } else {
+      res.end();
     }
   }
 });

@@ -83,6 +83,8 @@ export class IssueCompose extends React.Component<Props> {
   public componentWillMount() {
     if (this.props.issue) {
       this.reset();
+    } else {
+      this.resetType();
     }
   }
 

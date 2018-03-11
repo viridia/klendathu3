@@ -14,12 +14,32 @@ const issueWatcher = new RecordWatcher<IssueRecord, Issue>(encodeIssue);
 server.deepstream.record.listen('^issues/.*', async (eventName, isSubscribed, response) => {
   if (isSubscribed) {
     response.accept();
-    const query = url.parse(eventName);
+    const query = url.parse(eventName, true);
     const [, account, project] = query.pathname.split('/', 3);
+
+    // Compute sort key
+    let order: r.Sort = { index: r.desc('id') };
+    let sortKey: string = query.query.sort as string;
+    if (sortKey) {
+      let descending = false;
+      if (sortKey.startsWith('-')) {
+        descending = true;
+        sortKey = sortKey.slice(1);
+      }
+      if (sortKey === 'owner') {
+        sortKey = 'ownerSort';
+      } else if (sortKey === 'reporter') {
+        sortKey = 'reporterSort';
+      }
+      order = descending ? { index: r.desc(sortKey) } : { index: r.asc(sortKey) };
+    }
+    // console.log('order', order, eventName);
+
+    // Run database query and set up changefeed.
     issueListWatcher.subscribe(
       eventName,
       r.table('issues')
-          .orderBy({ index: r.desc('id') })
+          .orderBy(order)
           .filter({ project: `${account}/${project}` })
           .pluck('id')
           .limit(10));

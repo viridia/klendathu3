@@ -26,7 +26,7 @@ export function humanAge(date: Date, brief = false): string {
     }
     return '1 minute ago';
   }
-  if (minutes < 60) {
+  if (minutes <= 90) {
     if (brief) {
       return `${minutes}m`;
     }
@@ -39,7 +39,7 @@ export function humanAge(date: Date, brief = false): string {
     }
     return '1 hour ago';
   }
-  if (hours < 24) {
+  if (hours < 48) {
     if (brief) {
       return `${hours}h`;
     }

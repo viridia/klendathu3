@@ -71,10 +71,11 @@ export class RecordListWatcher<RecordType extends { id?: string }, JSONType> {
   }
 
   protected updateList(change: Change<RecordType>, ws: WatchState): void {
-    if (change.old_offset !== undefined) {
+    console.log(change);
+    if (typeof change.old_offset === 'number') {
       ws.keys.splice(change.old_offset, 1);
     }
-    if (change.new_offset !== undefined) {
+    if (change.new_val) {
       ws.keys.splice(change.new_offset, 0, change.new_val.id);
     }
     if (change.state === 'ready') {
