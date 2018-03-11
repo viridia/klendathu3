@@ -5,9 +5,10 @@ import { createIssue } from '../../network/requests';
 import { IssueCompose } from './IssueCompose';
 import { toast } from 'react-toastify';
 import bind from 'bind-decorator';
-import { IssueInput } from 'klendathu-json-types';
+import { Account, IssueInput } from 'klendathu-json-types';
 
 interface Props extends RouteComponentProps<{}> {
+  account: Account;
   project: Project;
   issues: IssueListQuery;
 }

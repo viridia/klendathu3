@@ -27,6 +27,10 @@
       "description": "Issue owner.",
       "type": "string"
     },
+    "ownerSort": {
+      "description": "Sort key for issue owners.",
+      "type": "string"
+    },
     "cc": {
       "description": "Issue watchers.",
       "type": "array",

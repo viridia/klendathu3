@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Account, Role } from 'klendathu-json-types';
-import { ObservableIssue, issues, Project, ObservableProjectPrefs } from '../../models';
+import { Account, Role, ProjectPrefs } from 'klendathu-json-types';
+import { ObservableIssue, issues, Project } from '../../models';
 import { NavLink, RouteComponentProps } from 'react-router-dom';
 import { ColumnRenderer } from './columns';
 import { Checkbox } from 'react-bootstrap';
@@ -11,7 +11,7 @@ import * as classNames from 'classnames';
 interface Props extends RouteComponentProps<{}> {
   account: Account;
   project: Project;
-  prefs: ObservableProjectPrefs;
+  prefs: ProjectPrefs;
   issueId: string;
   columnRenderers: Map<string, ColumnRenderer>;
   selection: Map<string, boolean>;

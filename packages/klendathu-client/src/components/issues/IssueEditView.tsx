@@ -26,9 +26,7 @@ export class IssueEditView extends React.Component<Props> {
   }
 
   private onSave(issue: ObservableIssue, input: IssueInput): Promise<any> {
-    console.log('saving');
     return updateIssue(issue.id, input).then(resp => {
-      console.log('saved');
       toast.success(`Issue #${issue.index} updated.`);
     });
   }

@@ -54,6 +54,7 @@ const RELATIONS: Relation[] = [
 ];
 
 interface Props extends RouteComponentProps<{}> {
+  account: Account;
   project: Project;
   issues: IssueListQuery;
   issue?: ObservableIssue;
@@ -90,13 +91,12 @@ export class IssueCompose extends React.Component<Props> {
   }
 
   public render() {
-    const { location, issue, project } = this.props;
+    const { issue, project } = this.props;
     const template = this.template;
     if (!template) {
       return null;
     }
     const canSave = !this.busy && this.type && this.issueState && this.summary;
-    const backLink = (location.state && location.state.back) || { pathname: '..' };
     return (
       <section className="kdt issue-compose">
         <div className="card">
@@ -163,7 +163,9 @@ export class IssueCompose extends React.Component<Props> {
                           selection={this.owner}
                           onSelectionChange={this.onChangeOwner}
                       />
-                      <a className="assign-to-me action-link">Assign to me</a>
+                      <a className="assign-to-me action-link" onClick={this.onAssignToMe}>
+                        Assign to me
+                      </a>
                     </td>
                   </tr>
                   <tr>
@@ -280,7 +282,7 @@ export class IssueCompose extends React.Component<Props> {
             {!issue && (<Checkbox checked={this.another} onChange={this.onChangeAnother}>
               Create another
             </Checkbox>)}
-            <LinkContainer to={backLink}>
+            <LinkContainer to={this.backLink}>
               <Button>Cancel</Button>
             </LinkContainer>
             {issue ? (
@@ -372,6 +374,11 @@ export class IssueCompose extends React.Component<Props> {
   }
 
   @action.bound
+  private onAssignToMe(e: any) {
+    this.owner = session.account;
+  }
+
+  @action.bound
   private onChangeCC(cc: Account[]) {
     this.cc.replace(cc);
   }
@@ -457,13 +464,11 @@ export class IssueCompose extends React.Component<Props> {
       attachments: [],
     };
     this.props.onSave(input).then(() => {
-      const { history, location } = this.props;
+      const { history } = this.props;
       this.busy = false;
       this.reset();
       if (!this.another) {
-        // TODO: Calculate this better.
-        const backLink = (location.state && location.state.back) || { pathname: '..' };
-        history.push(backLink);
+        history.push(this.backLink);
       }
     }, (error: RequestError) => {
       switch (error.code) {
@@ -557,5 +562,13 @@ export class IssueCompose extends React.Component<Props> {
       return project.template.getWorkflow(iType.workflow);
     }
     return null;
+  }
+
+  private get backLink(): string {
+    const { account, location, issue, project } = this.props;
+    const backLink = (location.state && location.state.back)
+        || (issue && { pathname: `/${account.uname}/${project.uname}/${issue.index}`})
+        || { pathname: '..' };
+    return backLink;
   }
 }

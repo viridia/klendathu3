@@ -18,6 +18,12 @@ export class ObservableProjectPrefs implements ProjectPrefs {
   private record: deepstreamIO.Record;
 
   constructor(account: string, project: string) {
+    if (!account) {
+      throw Error('Missing account');
+    }
+    if (!project) {
+      throw Error('Missing project');
+    }
     this.record = session.connection.record.getRecord(
         `project-prefs/${account}/${project}/${session.userId}`);
     this.record.subscribe(this.onUpdate, true);
