@@ -34,6 +34,11 @@ export class ObservableProjectPrefs implements ProjectPrefs {
     this.record.discard();
   }
 
+  /** Returns true if we should display this label in hotlists. */
+  public showLabel(label: string) {
+    return this.labels.indexOf(label) >= 0;
+  }
+
   @action.bound
   private onUpdate(data: ProjectPrefs) {
     this.loaded = true;

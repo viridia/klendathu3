@@ -117,7 +117,9 @@
       }
 
       .title {
-        font-weight: bold;
+        .summary {
+          font-weight: bold;
+        }
         > a.child {
           position: relative;
         }

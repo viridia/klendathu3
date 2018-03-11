@@ -18,6 +18,7 @@
 * Project prefs
 * Issue Grouping
 * Workflow Edit
+* Error reporting for bad params in url path.
 
 # Longer term:
 

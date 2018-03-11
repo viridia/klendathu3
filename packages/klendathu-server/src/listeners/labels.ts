@@ -46,7 +46,7 @@ ds.rpc.provide('labels.search', async (args: any, response: deepstreamIO.RPCResp
     query = query.filter((user: any) => user('name').match(pattern));
 
     // Limit to 10 results
-    query = query.orderBy(['name']).limit(limit);
+    query = query.orderBy('name').limit(limit);
 
     // Database search
     const cursor = await query.run(server.conn);

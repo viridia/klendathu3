@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Account, Role, ProjectPrefs } from 'klendathu-json-types';
-import { IssueListQuery, Project } from '../../models';
+import { Account, Role } from 'klendathu-json-types';
+import { IssueListQuery, ObservableProjectPrefs, Project } from '../../models';
 import { ColumnSort } from '../common/ColumnSort';
 import { RouteComponentProps } from 'react-router-dom';
 import { IssueListEntry } from './IssueListEntry';
@@ -23,7 +23,7 @@ import './IssueListView.scss';
 interface Props extends RouteComponentProps<{}> {
   account: Account;
   project: Project;
-  prefs: ProjectPrefs;
+  prefs: ObservableProjectPrefs;
   issues: IssueListQuery;
 }
 

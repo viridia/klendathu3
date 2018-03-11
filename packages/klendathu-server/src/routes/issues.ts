@@ -268,6 +268,7 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
       const ccNext = new Set(input.cc);    // Newly-added items
       input.cc.forEach(cc => ccPrev.delete(cc));
       existing.cc.forEach(cc => ccNext.delete(cc));
+      record.cc = input.cc;
       if (ccNext.size > 0 || ccPrev.size > 0) {
         change.cc = { added: Array.from(ccNext), removed: Array.from(ccPrev) };
         change.at = record.updated;
@@ -276,10 +277,12 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
 
     // Compute which labels have been added or deleted.
     if ('labels' in input) {
+      console.log('updating labels:', input.labels);
       const labelsPrev = new Set(existing.labels); // Removed items
       const labelsNext = new Set(input.labels);    // Newly-added items
       input.labels.forEach(labels => labelsPrev.delete(labels));
       existing.labels.forEach(labels => labelsNext.delete(labels));
+      record.labels = input.labels;
       if (labelsNext.size > 0 || labelsPrev.size > 0) {
         change.labels = { added: Array.from(labelsNext), removed: Array.from(labelsPrev) };
         change.at = record.updated;

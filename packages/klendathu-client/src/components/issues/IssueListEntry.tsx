@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { Account, Role, ProjectPrefs } from 'klendathu-json-types';
-import { ObservableIssue, issues, Project } from '../../models';
+import { Account, Role } from 'klendathu-json-types';
+import { ObservableIssue, ObservableProjectPrefs, issues, Project } from '../../models';
 import { NavLink, RouteComponentProps } from 'react-router-dom';
+import { LabelName } from '../common/LabelName';
 import { ColumnRenderer } from './columns';
 import { Checkbox } from 'react-bootstrap';
 import { action } from 'mobx';
@@ -11,7 +12,7 @@ import * as classNames from 'classnames';
 interface Props extends RouteComponentProps<{}> {
   account: Account;
   project: Project;
-  prefs: ProjectPrefs;
+  prefs: ObservableProjectPrefs;
   issueId: string;
   columnRenderers: Map<string, ColumnRenderer>;
   selection: Map<string, boolean>;
@@ -71,14 +72,14 @@ export class IssueListEntry extends React.Component<Props> {
         <td className="title">
           <NavLink to={linkTarget} className={classNames({ child: level > 0 })} style={style}>
             <span className="summary">{this.issue.summary}</span>
+            {this.issue.labels
+              .filter(l => prefs.showLabel(l))
+              .map(l => <LabelName label={l} key={l} />)}
           </NavLink>
         </td>
       </tr>
     );
     // TODO:
-    // {issue.labels
-    //   .filter(l => labels.has(l))
-    //   .map(l => <LabelName project={project.id} label={l} key={l} />)}
   }
 
   @action.bound
