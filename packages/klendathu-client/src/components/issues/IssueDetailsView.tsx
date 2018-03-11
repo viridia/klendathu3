@@ -62,7 +62,7 @@ export class IssueDetails extends React.Component<Props> {
     const { location, account, project, issue } = this.props;
     const template = project.template;
     const issueType = template.types.find(t => t.id === issue.type);
-    const backLink = (location.state && location.state.back) || { pathname: '..' };
+    const backLink = (location.state && location.state.back) || { pathname: './issues' };
     const [prevIssue, nextIssue] = this.adjacentIssueIds(issue.id);
     return (
       <header>
