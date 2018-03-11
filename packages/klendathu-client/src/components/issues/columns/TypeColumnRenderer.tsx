@@ -12,6 +12,9 @@ export class TypeColumnRenderer extends AbstractColumnRenderer {
 
   public render(issue: ObservableIssue) {
     const typeInfo = this.template.types.find(t => t.id === issue.type);
+    if (!typeInfo) {
+      return <td className="type" key="type">{issue.type}</td>;
+    }
     return (
       <td className="type" key="type">
         <span style={{ backgroundColor: typeInfo.bg }}>{typeInfo.caption}</span>

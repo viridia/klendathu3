@@ -71,7 +71,6 @@ export class RecordListWatcher<RecordType extends { id?: string }, JSONType> {
   }
 
   protected updateList(change: Change<RecordType>, ws: WatchState): void {
-    console.log(change);
     if (typeof change.old_offset === 'number') {
       ws.keys.splice(change.old_offset, 1);
     }

@@ -49,7 +49,6 @@ export class IssueListQuery {
 
   @action.bound
   private onUpdate(elts: string[]) {
-    console.log('num records:', elts.length);
     this.issues.replace(elts);
     this.loaded = true;
   }

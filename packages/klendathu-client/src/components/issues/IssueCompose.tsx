@@ -469,6 +469,7 @@ export class IssueCompose extends React.Component<Props> {
       const { history } = this.props;
       this.busy = false;
       this.reset();
+      console.log('backlink', this.another, this.backLink);
       if (!this.another) {
         history.push(this.backLink);
       }
@@ -495,6 +496,7 @@ export class IssueCompose extends React.Component<Props> {
   private reset() {
     const { issue } = this.props;
     if (issue) {
+      // TODO: load owner, cc, labels, links, etc.
       when('issue loaded', () => issue.loaded, () => {
         this.type = issue.type;
         this.issueState = issue.state;
@@ -525,25 +527,27 @@ export class IssueCompose extends React.Component<Props> {
   @action.bound
   private resetType() {
     // If no type selected, choose the first available.
-    if (!this.type && this.template && this.template.types) {
-      const defaultType = this.template.types.find(t => !t.abstract);
-      if (defaultType) {
-        this.type = defaultType.id;
-      } else {
-        this.type = '';
-        this.issueState = '';
+    when('template loaded', () => this.template && this.template.loaded, () => {
+      if (!this.type) {
+        const defaultType = this.template.types.find(t => !t.abstract);
+        if (defaultType) {
+          this.type = defaultType.id;
+        } else {
+          this.type = '';
+          this.issueState = '';
+        }
       }
-    }
-    if (this.type && !this.issueState) {
-      const workflow = this.workflow;
-      if (workflow) {
-        this.issueState =
-          (workflow.start && workflow.start[0]) ||
-          (workflow.states && workflow.states[0]) || '';
-      } else {
-        this.issueState = '';
+      if (this.type && !this.issueState) {
+        const workflow = this.workflow;
+        if (workflow) {
+          this.issueState =
+            (workflow.start && workflow.start[0]) ||
+            (workflow.states && workflow.states[0]) || '';
+        } else {
+          this.issueState = '';
+        }
       }
-    }
+    });
   }
 
   get template(): Template {
@@ -568,9 +572,8 @@ export class IssueCompose extends React.Component<Props> {
 
   private get backLink(): string {
     const { account, location, issue, project } = this.props;
-    const backLink = (location.state && location.state.back)
-        || (issue && { pathname: `/${account.uname}/${project.uname}/${issue.index}`})
-        || { pathname: '..' };
-    return backLink;
+    return (location.state && location.state.back)
+        || (issue && `/${account.uname}/${project.uname}/${issue.index}`)
+        || `/${account.uname}/${project.uname}/issues`;
   }
 }

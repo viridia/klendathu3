@@ -143,7 +143,7 @@ server.api.post('/issues/:account/:project', async (req, res) => {
         await r.table('issueLinks').insert(linksToInsert).run(server.conn);
         await r.table('issueChanges').insert(changesToInsert).run(server.conn);
       }
-      return row;
+      res.json(record);
     } else if (result.errors > 0) {
       logger.error('Error creating issue', result.first_error);
       res.status(500).json({ error: Errors.INTERNAL, details: result.first_error });

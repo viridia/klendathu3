@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { action, IObservableArray, observable } from 'mobx';
 import {
   IssueType,
   Template as TemplateData,
@@ -16,10 +16,12 @@ interface ReadableMap<K, V> {
 export class Template {
   public readonly id: string;
   @observable public loaded = false;
+  @observable.shallow public types = [] as IObservableArray<IssueType>;
+  @observable.shallow public states = [] as IObservableArray<WorkflowState>;
+  @observable.shallow public workflows = [] as IObservableArray<Workflow>;
 
   @observable.shallow private fieldMap = new Map<string, FieldType>();
   @observable.shallow private stateMap = new Map<string, WorkflowState>();
-  @observable.ref private data: TemplateData = null;
   private record: deepstreamIO.Record;
 
   constructor(templateId: string) {
@@ -28,7 +30,7 @@ export class Template {
     }
     this.id = templateId;
     this.record = session.connection.record.getRecord(`template/${templateId}`);
-    this.record.subscribe(this.onUpdate);
+    this.record.subscribe(this.onUpdate, true);
   }
 
   public release() {
@@ -36,20 +38,12 @@ export class Template {
     this.record.discard();
   }
 
-  get types(): IssueType[] {
-    return this.data ? this.data.types : [];
-  }
-
-  get states(): WorkflowState[] {
-    return this.data ? this.data.states : [];
-  }
-
   get fields(): ReadableMap<string, FieldType> {
     return this.fieldMap;
   }
 
   public getIssueType(id: string): IssueType {
-    return this.data && this.data.types.find(ty => ty.id === id);
+    return this.types.find(ty => ty.id === id);
   }
 
   public getState(id: string): WorkflowState {
@@ -57,11 +51,11 @@ export class Template {
   }
 
   public getWorkflow(id: string): Workflow {
-    return this.data && this.data.workflows.find(wf => wf.name === id);
+    return this.workflows.find(wf => wf.name === id);
   }
 
   public getInheritedIssueType(id: string): IssueType {
-    let iType: IssueType = this.data && this.data.types.find(ty => ty.id === id);
+    let iType: IssueType = this.types.find(ty => ty.id === id);
     if (iType) {
       if (iType.extends) {
         const base = this.getInheritedIssueType(iType.extends);
@@ -86,18 +80,20 @@ export class Template {
 
   @action.bound
   private onUpdate(data: TemplateData) {
-    this.data = data;
+    this.types.replace(data.types);
+    this.states.replace(data.states);
+    this.workflows.replace(data.workflows);
     this.loaded = true;
 
     this.fieldMap.clear();
-    for (const type of this.data.types) {
+    for (const type of data.types) {
       for (const field of type.fields || []) {
         this.fieldMap.set(field.id, field);
       }
     }
 
     this.stateMap.clear();
-    for (const state of this.data.states) {
+    for (const state of data.states) {
       this.stateMap.set(state.id, state);
     }
   }
