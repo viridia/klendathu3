@@ -3,10 +3,14 @@ import { session, request } from '../models/Session';
 import { AxiosError } from 'axios';
 import { RequestError } from './RequestError';
 
+export interface LoginResponse {
+  token: string;
+}
+
 export function handleAxiosError(error: AxiosError) {
   if (error.response) {
-    if (error.response.data.code) {
-      throw new RequestError(error.response.data.code, error.response.data.details);
+    if (error.response.data.error) {
+      throw new RequestError(error.response.data.error, error.response.data.details);
     } else if (error.response.status) {
       switch (error.response.status) {
         case 401: throw new RequestError(Errors.UNAUTHORIZED);
@@ -95,4 +99,10 @@ export function searchIssues(
       callback(resp);
     }
   });
+}
+
+export function createUserAccount(email: string, password: string): Promise<LoginResponse> {
+  return request.post(`/auth/signup`, { email, password }).then(resp => {
+    return resp.data;
+  }, handleAxiosError);
 }

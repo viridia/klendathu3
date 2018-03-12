@@ -5,7 +5,7 @@ import { LeftNav } from '../nav/LeftNav';
 import { SettingsView } from '../settings/SettingsView';
 import { ProjectListView } from '../projects/ProjectListView';
 import { SetupAccountDialog } from '../settings/SetupAccountDialog';
-// import { EmailVerificationDialog } from '../settings/EmailVerificationDialog';
+import { EmailVerificationDialog } from '../settings/EmailVerificationDialog';
 import { IssueCreateView } from '../issues/IssueCreateView';
 import { IssueEditView } from '../issues/IssueEditView';
 import { IssueListView } from '../issues/IssueListView';
@@ -108,7 +108,7 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
             <Route render={() => <ProjectListView memberships={this.memberships} />} />
           </Switch>
         </section>
-        {/*{showEmailVerification && <EmailVerificationDialog />}*/}
+        {showEmailVerification && <EmailVerificationDialog />}
         {!showEmailVerification && showSetupAccount && <SetupAccountDialog />}
       </section>
     );

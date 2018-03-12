@@ -2,6 +2,7 @@ import { History, Location } from 'history';
 import { Account } from 'klendathu-json-types';
 import { observable } from 'mobx';
 import { connect } from '../network/deepstream';
+import { handleAxiosError } from '../network/requests';
 import axios from 'axios';
 import * as qs from 'qs';
 
@@ -57,19 +58,20 @@ export class Session {
     }
   }
 
-  public login(username: string, password: string): Promise<Account> {
-    // TODO: Untested.
-    this.request.post('/api/accounts/login').then(loginResp => {
+  public login(email: string, password: string): Promise<Account> {
+    return this.request.post('/auth/login', { email, password }).then(loginResp => {
       this.token = loginResp.data.token;
       localStorage.setItem('token', this.token);
-      this.request.get('/api/accounts/me').then(resp => {
-        return connect(this.token).then(connection => {
-          this.connection = connection;
-          this.account = resp.data;
-        });
+    }, handleAxiosError).then(() => {
+      return this.request.get('/api/accounts/me').then(resp => {
+        this.account = resp.data;
+      });
+    }, handleAxiosError).then(() => {
+      return connect(this.token).then(connection => {
+        this.connection = connection;
+        return this.account;
       });
     });
-    return null;
   }
 
   /** Reload the user's account info. Used when changing display name or other user props. */

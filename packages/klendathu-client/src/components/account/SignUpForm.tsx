@@ -1,13 +1,13 @@
 import * as React from 'react';
 import bind from 'bind-decorator';
+import { Errors } from 'klendathu-json-types';
 import { Button, ControlLabel, FormControl, FormGroup, HelpBlock } from 'react-bootstrap';
 import { RouteComponentProps } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { action, observable } from 'mobx';
-import { createUserAccount } from '../../network/accountRequest';
+import { createUserAccount } from '../../network/requests';
+import { RequestError } from '../../network';
 import { observer } from 'mobx-react';
-import { Account as AccountData } from 'klendathu-json-types';
-// import { toast } from 'react-toastify';
 
 import './SignUpForm.scss';
 
@@ -94,37 +94,25 @@ export class SignUpForm extends React.Component<RouteComponentProps<{}>> {
       return;
     }
 
-    createUserAccount(this.email, this.password).then((account: AccountData) => {
-      const url = new URL(window.location.toString());
-      url.pathname = '/projects';
-      url.search = '';
-      // user.sendEmailVerification({ url: url.toString() }).then(() => {
-      //   toast.success(`Verification email sent.`);
-      //   this.props.history.replace('/');
-      // });
-    }, error => {
-      console.error(error);
+    createUserAccount(this.email, this.password).then(account => {
+      this.props.history.replace('/');
+    }, (error: RequestError) => {
       switch (error.code) {
-        case 'auth/invalid-email':
-          this.emailError = 'The email address is badly formatted.';
+        case Errors.INVALID_EMAIL:
+          this.emailError = 'Invalid email address.';
           break;
 
-        case 'auth/operation-not-allowed':
-          this.emailError = 'Operation not allowed.';
-          break;
-
-        case 'auth/weak-password':
+        case Errors.PASSWORD_TOO_SHORT:
           this.passwordError = 'The password should be at least 6 characters.';
           break;
 
-        case 'auth/email-already-in-use':
+        case Errors.EXISTS:
           this.passwordError = 'The email address is already in use by another account.';
           break;
 
         default:
-          this.emailError = error.message;
+          this.emailError = error.message || error.code;
           break;
-
       }
     });
   }

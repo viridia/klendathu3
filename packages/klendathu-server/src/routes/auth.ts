@@ -4,7 +4,9 @@ import { Strategy as AnonymousStrategy } from 'passport-anonymous';
 import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import { AccountRecord } from '../db/types';
+import { Errors } from 'klendathu-json-types';
 import { logger } from '../logger';
+import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jwt-simple';
 import * as passport from 'passport';
 import * as r from 'rethinkdb';
@@ -240,6 +242,98 @@ if (process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET) {
       })(req, res, next);
     });
 }
+
+// Signup handler
+server.express.post('/auth/signup', async (req, res) => {
+  const { email, password } = req.body;
+  // TODO: Validate email, username, fullname.
+  if (email.length < 3) {
+    res.status(400).json({ error: Errors.INVALID_EMAIL });
+  // } else if (username.length < 5) {
+  //   res.send({ err: 'username-too-short' });
+  // } else if (username.toLowerCase() !== username) {
+  //   res.send({ err: 'username-lower-case' });
+  // } else if (!username.match(/^[a-z][a-z0-9_\-]+$/)) {
+  //   res.send({ err: 'username-invalid-chars' });
+  } else if (password.length < 5) {
+    res.status(400).json({ error: Errors.PASSWORD_TOO_SHORT });
+  } else {
+    // console.log('signup', username, fullname);
+    const users: AccountRecord[] = await (await r.table('accounts')
+        .filter({ email })
+        .run(server.conn)).toArray();
+    if (users.length > 0) {
+      // User name taken
+      res.status(400).json({ error: Errors.EXISTS });
+    } else {
+      // Compute password hash
+      bcrypt.hash(password, 10, (err, hash) => {
+        if (err) {
+          logger.error('Password hash error:', err);
+          res.status(500).json({ error: Errors.INTERNAL });
+        } else {
+          // console.log(user, fullname);
+          const ur: AccountRecord = {
+            email,
+            type: 'user',
+            display: null,
+            password: hash,
+            photo: null,
+            verified: false,
+          };
+          r.table('accounts').insert(ur).run(server.conn).then(u => {
+            logger.info('User creation successful:', { email });
+            const session: SessionState = {
+              uid: u.generated_keys[0],
+            };
+            const token = jwt.encode(session, jwtOpts.secretOrKey);
+            res.json({ token });
+          }, reason => {
+            logger.error('User creation failed:', { email });
+            res.status(500).json({ error: Errors.INTERNAL });
+          });
+        }
+      });
+    }
+  }
+});
+
+// Login handler
+server.express.post('/auth/login', async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || email.length < 3) {
+    res.status(400).json({ error: Errors.INVALID_EMAIL });
+    return;
+  }
+
+  const users: AccountRecord[] = await (await r.table('accounts')
+      .filter({ email })
+      .run(server.conn)).toArray();
+  if (users.length === 0) {
+    res.status(404).json({ error: Errors.NOT_FOUND });
+  } else if (users.length > 1) {
+    logger.error('Multiple users with the same email:', { email });
+    res.status(500).json({ error: Errors.CONFLICT });
+  } else {
+    const account = users[0];
+    // Compare user password hash with password.
+    bcrypt.compare(password, account.password, (err, same) => {
+      if (same) {
+        logger.info('Login successful:', { email, user: account.uname });
+        const session: SessionState = {
+          uid: account.id,
+        };
+        const token = jwt.encode(session, jwtOpts.secretOrKey);
+        res.json({ token });
+      } else if (err) {
+        logger.error('User login error:', err);
+        res.status(500).json({ error: Errors.INTERNAL });
+      } else {
+        res.status(401).json({ error: Errors.INCORRECT_PASSWORD });
+      }
+    });
+  }
+});
 
 // Authentication endpoint for deepstream
 server.express.post('/auth-user', (req, res, next) => {

@@ -1,6 +1,7 @@
 # TODO:
 
-* User Autocomplete
+* User Autocomplete (need users)
+  * Sign up form
 * Issue Autocomplete
 * Issue Link Edit
 * Issue Edit
@@ -17,11 +18,12 @@
 * Issue Details
 * Mass edit bar
 * Update Project
-* Update Issue
 * Project prefs
 * Issue Grouping
+* Issue Change History
 * Workflow Edit
 * Error reporting for bad params in url path.
+* General error reporting.
 
 # Longer term:
 
@@ -33,7 +35,6 @@
 ## Files with unfinished pieces:
 * LoginForm
 * EmailVerificationDialog
-* MainPage
 * IssueEditView
 * CustomSuggestField
 * ErrorDisplay

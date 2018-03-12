@@ -22,5 +22,5 @@ export interface AccountRecord {
   verified?: boolean;
 
   /** Encrypted password for email accounts. */
-  password?: boolean;
+  password?: string;
 }

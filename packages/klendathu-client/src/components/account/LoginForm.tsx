@@ -7,13 +7,12 @@ import {
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap';
+import { Errors } from 'klendathu-json-types';
 import { LinkContainer } from 'react-router-bootstrap';
 import { RouteComponentProps } from 'react-router-dom';
 import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';
-// import { auth, providers } from '../../firebase';
-// import bind from 'bind-decorator';
-// import * as qs from 'qs';
+import { session } from '../../models';
 
 import './LoginForm.scss';
 
@@ -30,6 +29,8 @@ export class LoginForm extends React.Component<RouteComponentProps<{}>> {
   @observable private visible = false;
 
   public componentWillMount() {
+    // Make sure there's no stored token, so that social login doesn't get confused.
+    session.logout();
     // const { location } = this.props;
     this.visible = true;
     // auth.getRedirectResult().then(result => {
@@ -148,27 +149,20 @@ export class LoginForm extends React.Component<RouteComponentProps<{}>> {
     e.preventDefault();
     this.emailError = '';
     this.passwordError = '';
-    // auth.signInWithEmailAndPassword(this.email, this.password).then(() => {
-    //   this.props.history.replace('/');
-    // }, error => {
-    //   console.error(error);
-    //   switch (error.code) {
-    //     case 'auth/invalid-email':
-    //       this.emailError = 'The email address is badly formatted.';
-    //       break;
-    //
-    //     case 'auth/operation-not-allowed':
-    //       this.emailError = 'Operation not allowed.';
-    //       break;
-    //
-    //     case 'auth/wrong-password':
-    //       this.passwordError = 'The password is invalid or the user does not have a password.';
-    //       break;
-    //
-    //     default:
-    //       this.emailError = error.message;
-    //       break;
-    //   }
-    // });
+    session.login(this.email, this.password).then(result => {
+      this.props.history.replace('/');
+    }, error => {
+      switch (error.code) {
+        case Errors.NOT_FOUND:
+          this.emailError = 'Unknown email address.';
+          break;
+        case Errors.INCORRECT_PASSWORD:
+          this.emailError = 'Incorrect password for this email address.';
+          break;
+        default:
+          this.emailError = error.message || error.code;
+          break;
+      }
+    });
   }
 }
