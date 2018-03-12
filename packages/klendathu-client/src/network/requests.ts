@@ -1,4 +1,4 @@
-import { Errors, Issue, IssueInput, Label, LabelInput } from 'klendathu-json-types';
+import { Account, Errors, Issue, IssueInput, Label, LabelInput } from 'klendathu-json-types';
 import { session, request } from '../models/Session';
 import { AxiosError } from 'axios';
 import { RequestError } from './RequestError';
@@ -95,6 +95,20 @@ export function searchIssues(
       `issues.search`,
       { account, project, token },
       (error: string, resp: Issue[]) => {
+    if (resp && !error) {
+      callback(resp);
+    }
+  });
+}
+
+export function searchAccounts(
+    token: string,
+    options: { project?: string; type?: string, limit?: number },
+    callback: (account: Account[]) => void): void {
+  session.connection.rpc.make(
+      `accounts.search`,
+      { token, ...options },
+      (error: string, resp: Account[]) => {
     if (resp && !error) {
       callback(resp);
     }

@@ -105,7 +105,7 @@ ds.rpc.provide('accounts.search', async (args: any, response: deepstreamIO.RPCRe
   const { token, type, limit = 10 } = args;
   try {
     const pattern = `(?i)\\b${escapeRegExp(token)}`;
-    let query: r.Sequence = r.table('users');
+    let query: r.Sequence = r.table('accounts');
 
     // Limit by type
     if (type) {
@@ -113,9 +113,11 @@ ds.rpc.provide('accounts.search', async (args: any, response: deepstreamIO.RPCRe
     }
 
     // Limit by search token
-    query = query.filter((user: any) => {
-      return user('display').match(pattern) || user('uname').match(pattern);
-    });
+    query = query.filter(
+        (r.row('display') as any).match(pattern).or(
+        (r.row('uname') as any).match(pattern)).or(
+        (r.row('email') as any).match(pattern))
+      );
 
     // Limit to 10 results
     query = query.orderBy(['display', 'uname']).limit(limit);
@@ -123,6 +125,7 @@ ds.rpc.provide('accounts.search', async (args: any, response: deepstreamIO.RPCRe
     // Database search
     const cursor = await query.run(server.conn);
     const accounts = await cursor.toArray<AccountRecord>();
+    console.log(token, pattern, accounts);
     response.send(accounts.map(encodeAccount));
   } catch (error) {
     logger.error(error.message, { token, type });

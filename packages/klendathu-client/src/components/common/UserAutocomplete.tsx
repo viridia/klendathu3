@@ -3,7 +3,7 @@ import { Account } from 'klendathu-json-types';
 import * as React from 'react';
 import { Autocomplete } from '../ac/Autocomplete';
 import { Chip } from '../ac/Chip';
-import { request } from '../../models';
+import { searchAccounts } from '../../network/requests';
 
 interface Props {
   className: string;
@@ -36,9 +36,9 @@ export class UserAutocomplete extends React.Component<Props> {
     if (token.length < 1) {
       callback([]);
     } else {
-      request.get('/api/names', { params: { search: this.token }}).then(resp => {
+      searchAccounts(this.token, { type: 'user', limit: 5 }, accounts => {
         if (token === this.token) {
-          callback(resp.data);
+          callback(accounts);
         }
       });
     }
