@@ -1,7 +1,15 @@
 import * as React from 'react';
-import { IssueListQuery, ObservableIssue, ObservableIssueLinks, Project } from '../../models';
+import {
+  IssueListQuery,
+  ObservableChanges,
+  ObservableComments,
+  ObservableIssue,
+  ObservableIssueLinks,
+  Project,
+} from '../../models';
 import { IssueProvider } from './IssueProvider';
 import { IssueLinks } from './IssueLinks';
+import { IssueChanges } from './IssueChanges';
 import { CommentEdit } from './input/CommentEdit';
 import { Account, CustomValues, DataType, IssueType, Role } from 'klendathu-json-types';
 import { RouteComponentProps } from 'react-router-dom';
@@ -46,23 +54,33 @@ export class IssueDetails extends React.Component<Props> {
   @observable private showDelete = false;
   @observable private busy = false;
   private issueLinks: ObservableIssueLinks;
+  private comments: ObservableComments;
+  private changes: ObservableChanges;
   private issueId: string;
 
   public componentWillMount() {
     this.issueId = this.props.issue.id;
     this.issueLinks = new ObservableIssueLinks(this.issueId);
+    this.comments = new ObservableComments(this.issueId);
+    this.changes = new ObservableChanges(this.issueId);
   }
 
   public componentWillReceiveProps(nextProps: Props) {
     if (nextProps.issue.id !== this.issueId) {
       this.issueLinks.release();
+      this.comments.release();
+      this.changes.release();
       this.issueId = nextProps.issue.id;
       this.issueLinks = new ObservableIssueLinks(this.issueId);
+      this.comments = new ObservableComments(this.issueId);
+      this.changes = new ObservableChanges(this.issueId);
     }
   }
 
   public componentWillUnmount() {
     this.issueLinks.release();
+    this.comments.release();
+    this.changes.release();
   }
 
   public render() {
@@ -237,17 +255,18 @@ export class IssueDetails extends React.Component<Props> {
                   />
                 </td>
               </tr>}
-              {/*{((comments || []).length > 0 || (changes || []).length > 0) && <tr>
+              {(this.comments.length > 0 || this.changes.length > 0) && <tr>
                 <th className="header history">Issue History:</th>
                 <td>
                   <IssueChanges
                       issue={issue}
-                      comments={comments}
-                      changes={changes}
+                      comments={this.comments.comments}
+                      changes={this.changes.changes}
                       project={project}
+                      account={account}
                   />
                 </td>
-              </tr>}*/}
+              </tr>}
               <tr>
                 <th className="header" />
                 <td>

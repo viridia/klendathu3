@@ -6,7 +6,7 @@ import { observer } from 'mobx-react';
 
 interface Props {
   account?: Account;
-  project: Project;
+  project?: Project;
   id: string;
 }
 

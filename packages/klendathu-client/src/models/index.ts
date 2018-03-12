@@ -5,6 +5,8 @@ export { Memberships } from './Memberships';
 export { LabelListQuery } from './LabelListQuery';
 export { LabelStore, labels } from './LabelStore';
 export { ObservableAccount } from './ObservableAccount';
+export { ObservableChanges } from './ObservableChanges';
+export { ObservableComments } from './ObservableComments';
 export { ObservableIssue } from './ObservableIssue';
 export { ObservableIssueLinks } from './ObservableIssueLinks';
 export { ObservableLabel } from './ObservableLabel';

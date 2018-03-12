@@ -4,7 +4,6 @@ import {
   CustomValues,
   Errors,
   IssueInput,
-  Relation,
   Role,
   inverseRelations,
 } from 'klendathu-json-types';
@@ -210,7 +209,7 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
       project: projectId,
       issue: issueId,
       by: user.id,
-      at: null,
+      at: null, // 'at' is also used as a marker to indicate that this record needs to be updated.
     };
 
     // Change type
@@ -362,11 +361,33 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
       const changeRecords: IssueChangeRecord[] = [];
       change.linked = [];
       for (const lnk of input.linked) {
-        const inv = inverseRelation(lnk.relation as Relation);
+        const inv = inverseRelations[lnk.relation];
         const fwd = fwdMap.get(lnk.to);
         const rvs = rvsMap.get(lnk.to);
-        // There's an existing link we need to update
-        if (fwd) {
+        // If there's no existing relationship
+        if (!fwd && !rvs) {
+          toInsert.push({
+            from: issueId,
+            to: lnk.to,
+            relation: lnk.relation,
+          });
+          // Add a change entry for existing link
+          change.linked.push({
+            to: lnk.to,
+            after: lnk.relation,
+          });
+          // Create a change record for the 'to' record
+          changeRecords.push({
+            project: projectId,
+            by: user.id,
+            issue: lnk.to,
+            at: record.updated,
+            linked: [{
+              to: issueId,
+              after: inv,
+            }],
+          });
+        } else if (fwd) {
           // If the relationship changed
           if (fwd.relation !== lnk.relation) {
             // Add a change entry
@@ -379,22 +400,7 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
             fwd.relation = lnk.relation;
             toUpdate.push(fwd);
           }
-        } else {
-          // There was no existing link
-          toInsert.push({
-            from: issueId,
-            to: lnk.to,
-            relation: lnk.relation,
-          });
-          // Add a change entry for existing link
-          change.linked.push({
-            to: lnk.to,
-            after: lnk.relation,
-          });
-        }
-
-        // There's an existing inverse link
-        if (rvs) {
+        } else if (rvs) {
           if (rvs.relation !== inv) {
             // Add a change record to the issue referenced in the inverse link
             changeRecords.push({
@@ -413,25 +419,75 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
             rvs.relation = inv;
             toUpdate.push(rvs);
           }
-        } else {
-          // There was no inverse link, so create a new one
-          toInsert.push({
-            from: lnk.to,
-            to: issueId,
-            relation: inv,
-          });
-          // Create a change record for the new link
-          changeRecords.push({
-            project: projectId,
-            by: user.id,
-            issue: lnk.to,
-            at: record.updated,
-            linked: [{
-              to: issueId,
-              after: inv,
-            }],
-          });
         }
+
+        // There's an existing link we need to update
+        // if (fwd) {
+        //   // If the relationship changed
+        //   if (fwd.relation !== lnk.relation) {
+        //     // Add a change entry
+        //     change.linked.push({
+        //       to: lnk.to,
+        //       before: fwd.relation,
+        //       after: lnk.relation,
+        //     });
+        //     // Update the record
+        //     fwd.relation = lnk.relation;
+        //     toUpdate.push(fwd);
+        //   }
+        // } else {
+        //   // There was no existing link
+        //   toInsert.push({
+        //     from: issueId,
+        //     to: lnk.to,
+        //     relation: lnk.relation,
+        //   });
+        //   // Add a change entry for existing link
+        //   change.linked.push({
+        //     to: lnk.to,
+        //     after: lnk.relation,
+        //   });
+        // }
+        //
+        // // There's an existing inverse link
+        // if (rvs) {
+        //   if (rvs.relation !== inv) {
+        //     // Add a change record to the issue referenced in the inverse link
+        //     changeRecords.push({
+        //       project: projectId,
+        //       by: user.id,
+        //       issue: fwd.to,
+        //       at: record.updated,
+        //       linked: [{
+        //         to: issueId,
+        //         before: rvs.relation,
+        //         after: inv,
+        //       }],
+        //     });
+        //
+        //     // Update the inverse link
+        //     rvs.relation = inv;
+        //     toUpdate.push(rvs);
+        //   }
+        // } else {
+        //   // There was no inverse link, so create a new one
+        //   // toInsert.push({
+        //   //   from: lnk.to,
+        //   //   to: issueId,
+        //   //   relation: inv,
+        //   // });
+        //   // Create a change record for the new link
+        //   changeRecords.push({
+        //     project: projectId,
+        //     by: user.id,
+        //     issue: lnk.to,
+        //     at: record.updated,
+        //     linked: [{
+        //       to: issueId,
+        //       after: inv,
+        //     }],
+        //   });
+        // }
       }
 
       // Remove any entries from the maps that were maintained

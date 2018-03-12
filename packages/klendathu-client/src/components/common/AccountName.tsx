@@ -13,16 +13,24 @@ export class AccountName extends React.Component<Props> {
   private account: ObservableAccount;
 
   public componentWillMount() {
-    this.account = accounts.byId(this.props.id);
+    if (this.props.id) {
+      this.account = accounts.byId(this.props.id);
+    }
   }
 
   public componentWillUnmount() {
-    this.account.release();
+    if (this.account) {
+      this.account.release();
+    }
   }
 
   public render() {
+    if (!this.account) {
+      return <span className="name unassigned">unassigned</span>;
+    }
+
     if (!this.account.loaded) {
-      return <div className="name loading" />;
+      return <span className="name loading" />;
     }
 
     if (this.account.display) {

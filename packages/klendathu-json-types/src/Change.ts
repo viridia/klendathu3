@@ -45,6 +45,8 @@ export interface CustomFieldChange {
 
 /** A change record for an issue. */
 export interface Change {
+  id?: string;
+
   /** ID of the user making this change. */
   by: string;
 
