@@ -11,7 +11,10 @@
     color: lighten($textDarkAccent, 25%);
     margin-right: 5px;
   }
-  > .issue > .id {
-    font-weight: bold;
+  .issue {
+    color: $textDark;
+    > .id {
+      font-weight: bold;
+    }
   }
 }

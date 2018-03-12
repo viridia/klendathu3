@@ -93,7 +93,7 @@ export function searchIssues(
     account: string, project: string, token: string, callback: (issues: Issue[]) => void): void {
   session.connection.rpc.make(
       `issues.search`,
-      { account, project, token },
+      { account, project, token, limit: 10 },
       (error: string, resp: Issue[]) => {
     if (resp && !error) {
       callback(resp);

@@ -31,6 +31,8 @@
 * Update to passport-github2
 * Investigate github webhooks
 * Investigate Jest
+* Think about using a record set rather than a record list for issue list - for sorting of
+  custom fields.
 
 ## Files with unfinished pieces:
 * LoginForm

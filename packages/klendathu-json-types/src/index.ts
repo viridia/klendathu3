@@ -10,13 +10,13 @@ export {
 export { Comment } from './Comment';
 export { CustomValues, Issue, IssueBase, IssueInput } from './Issue';
 export { Errors } from './Errors';
-export { IssueLink } from './IssueLink';
+export { IssueLink, IssueArc } from './IssueLink';
 export { Label, LabelInput } from './Label';
 export { Membership } from './Membership';
 export { Predicate } from './Predicate';
 export { Project } from './Project';
 export { ProjectPrefs, Filter } from './ProjectPrefs';
-export { Relation } from './Relation';
+export { Relation, inverseRelations } from './Relation';
 export { Role } from './Role';
 export {
   DataType,

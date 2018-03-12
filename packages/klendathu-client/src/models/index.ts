@@ -6,6 +6,7 @@ export { LabelListQuery } from './LabelListQuery';
 export { LabelStore, labels } from './LabelStore';
 export { ObservableAccount } from './ObservableAccount';
 export { ObservableIssue } from './ObservableIssue';
+export { ObservableIssueLinks } from './ObservableIssueLinks';
 export { ObservableLabel } from './ObservableLabel';
 export { ObservableProjectPrefs } from './ObservableProjectPrefs';
 export { Project } from './Project';

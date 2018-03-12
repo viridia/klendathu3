@@ -21,6 +21,7 @@ export class ObservableIssue implements IssueBase {
   private refCount: number;
 
   constructor(record: deepstreamIO.Record) {
+    this.id = record.name.split('/').slice(1, 4).join('/');
     this.refCount = 1;
     this.record = record;
     record.subscribe(this.onUpdate, true);

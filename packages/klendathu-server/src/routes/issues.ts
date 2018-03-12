@@ -5,7 +5,8 @@ import {
   Errors,
   IssueInput,
   Relation,
-  Role
+  Role,
+  inverseRelations,
 } from 'klendathu-json-types';
 import {
   AccountRecord,
@@ -24,17 +25,6 @@ import * as issueInputSchema from '../../json-schema/issue-input.schema.json';
 
 const ajv = Ajv();
 const issueInputValidator = ajv.compile(issueInputSchema);
-
-function inverseRelation(relation: Relation): Relation {
-  switch (relation) {
-    case Relation.BLOCKED_BY: return Relation.BLOCKS;
-    case Relation.BLOCKS: return Relation.BLOCKED_BY;
-    case Relation.PART_OF: return Relation.HAS_PART;
-    case Relation.HAS_PART: return Relation.PART_OF;
-    default:
-      return relation;
-  }
-}
 
 // Create a new issue.
 server.api.post('/issues/:account/:project', async (req, res) => {
@@ -126,12 +116,7 @@ server.api.post('/issues/:account/:project', async (req, res) => {
             at: now,
             linked: [{ to: link.to, after: link.relation }],
           });
-          const inv = inverseRelation(link.relation);
-          linksToInsert.push({
-            from: link.to,
-            to: row.id,
-            relation: inv,
-          });
+          const inv = inverseRelations[link.relation];
           changesToInsert.push({
             issue: link.to,
             project: projectId,

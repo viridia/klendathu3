@@ -53,7 +53,7 @@
         "properties": {
           "to": {
             "description": "Issue to link to.",
-            "type": "number"
+            "type": "string"
           },
           "relation": {
             "description": "Relationship between issues.",

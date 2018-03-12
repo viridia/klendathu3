@@ -1,6 +1,7 @@
 import { CustomFieldChange, ListChange, LinkChange, ScalarChange } from 'klendathu-json-types';
 
 export interface IssueChangeRecord {
+  id?: string;
   issue: string;
   project: string;
   by: string;

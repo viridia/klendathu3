@@ -10,7 +10,7 @@ export function connect(authToken: string): Promise<deepstreamIO.Client> {
   connection = deepstream(`${protocol}://${location.host}`, { subscriptionTimeout: 4000 });
   connection.on('connectionStateChanged', connectionState => {
     if (connectionState === 'OPEN') {
-      console.info('Deepstream connection open.');
+      console.debug('Deepstream connection open.');
     }
     // console.info('Deepstream connection state:', connectionState);
   });

@@ -1,7 +1,21 @@
-import { Account, Issue, Label, Project, ProjectPrefs } from 'klendathu-json-types';
+import {
+  Account,
+  Attachment,
+  Change,
+  Comment,
+  Issue,
+  IssueArc,
+  Label,
+  Project,
+  ProjectPrefs,
+} from 'klendathu-json-types';
 import {
   AccountRecord,
+  AttachmentRecord,
+  CommentRecord,
   IssueRecord,
+  IssueChangeRecord,
+  IssueLinkRecord,
   LabelRecord,
   ProjectRecord,
   ProjectPrefsRecord,
@@ -54,5 +68,21 @@ export const encodeProject: (record: ProjectRecord) => Project = record => ({
 });
 
 export function encodeProjectPrefs(record: ProjectPrefsRecord): ProjectPrefs {
+  return record;
+}
+
+export function encodeComment(record: CommentRecord): Comment {
+  return record;
+}
+
+export function encodeAttachment(record: AttachmentRecord): Attachment {
+  return record;
+}
+
+export function encodeIssueLink(record: IssueLinkRecord): IssueArc {
+  return record;
+}
+
+export function encodeIssueChange(record: IssueChangeRecord): Change {
   return record;
 }

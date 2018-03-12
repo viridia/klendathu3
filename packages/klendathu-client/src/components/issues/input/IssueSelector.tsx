@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Issue as IssueData } from 'klendathu-json-types';
 import { IssueListQuery, Project } from '../../../models';
 import { Autocomplete, SearchCallback } from '../../ac/Autocomplete';
-// import { searchIssues } from '../../../requests/issues';
+import { searchIssues } from '../../../network/requests';
 import bind from 'bind-decorator';
 
 import '../../ac/Chip.scss';
@@ -18,7 +18,7 @@ interface Props {
 }
 
 export class IssueSelector extends React.Component<Props> {
-  // private token: string;
+  private token: string;
 
   public render() {
     return (
@@ -38,15 +38,13 @@ export class IssueSelector extends React.Component<Props> {
     if (token.length < 1) {
       callback([]);
     } else {
-      // const { issues } = this.props;
-      // // this.token = token;
-      // const searchResults = issues.search(token);
-      // callback(searchResults.filter(issue => issue.id !== this.props.exclude));
-      // // searchIssues(project.account, project.uname, token).then(issues => {
-      // //   if (this.token === token) {
-      // //     callback(issues.filter(issue => issue.id !== this.props.exclude));
-      // //   }
-      // // });
+      const { project } = this.props;
+      this.token = token;
+      searchIssues(project.account, project.uname, token, issues => {
+        if (this.token === token) {
+          callback(issues.filter(issue => issue.id !== this.props.exclude));
+        }
+      });
     }
   }
 
@@ -54,7 +52,7 @@ export class IssueSelector extends React.Component<Props> {
   private onRenderSuggestion(issue: IssueData) {
     return (
       <span className="issue-ref">
-        <span className="id">#{issue.id}: </span>
+        <span className="id">#{issue.id.split('/')[2]}: </span>
         <span className="summary">{issue.summary}</span>
       </span>
     );

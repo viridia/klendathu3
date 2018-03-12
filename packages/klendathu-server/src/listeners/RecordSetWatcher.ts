@@ -10,6 +10,7 @@ export class RecordSetWatcher<RecordType extends { id?: string }, JSONType>
     extends RecordWatcher<RecordType, JSONType> {
 
   protected updateRecord(recordName: string, change: Change<RecordType>): void {
+    // console.log(change);
     if (change.new_val) {
       (server.deepstream.record as any).setData(
         recordName, change.new_val.id, this.encoder(change.new_val));

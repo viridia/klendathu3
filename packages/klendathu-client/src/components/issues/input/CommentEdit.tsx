@@ -7,7 +7,7 @@ import { observer } from 'mobx-react';
 import './CommentEdit.scss';
 
 interface Props {
-  disabled: boolean;
+  disabled?: boolean;
   onAddComment: (body: string) => void;
 }
 

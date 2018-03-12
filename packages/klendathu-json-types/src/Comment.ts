@@ -1,7 +1,7 @@
 /** A comment on an issue. */
 export interface Comment {
   /** Comment ID. */
-  id?: number;
+  id?: string;
 
   /** Issue this comment is attached to. */
   issue: string;

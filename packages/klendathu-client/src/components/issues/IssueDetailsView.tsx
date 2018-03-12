@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { IssueListQuery, ObservableIssue, Project } from '../../models';
+import { IssueListQuery, ObservableIssue, ObservableIssueLinks, Project } from '../../models';
 import { IssueProvider } from './IssueProvider';
+import { IssueLinks } from './IssueLinks';
+import { CommentEdit } from './input/CommentEdit';
 import { Account, CustomValues, DataType, IssueType, Role } from 'klendathu-json-types';
 import { RouteComponentProps } from 'react-router-dom';
 import { Button, ButtonGroup, Modal } from 'react-bootstrap';
@@ -43,6 +45,25 @@ interface Props extends RouteComponentProps<{ project: string; id: string }> {
 export class IssueDetails extends React.Component<Props> {
   @observable private showDelete = false;
   @observable private busy = false;
+  private issueLinks: ObservableIssueLinks;
+  private issueId: string;
+
+  public componentWillMount() {
+    this.issueId = this.props.issue.id;
+    this.issueLinks = new ObservableIssueLinks(this.issueId);
+  }
+
+  public componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.issue.id !== this.issueId) {
+      this.issueLinks.release();
+      this.issueId = nextProps.issue.id;
+      this.issueLinks = new ObservableIssueLinks(this.issueId);
+    }
+  }
+
+  public componentWillUnmount() {
+    this.issueLinks.release();
+  }
 
   public render() {
     return (
@@ -137,7 +158,7 @@ export class IssueDetails extends React.Component<Props> {
   }
 
   private renderContent() {
-    const { project, issue } = this.props;
+    const { account, project, issue } = this.props;
     const template = project.template;
     const issueType = template.getInheritedIssueType(issue.type);
     const issueState = template.states.find(st => st.id === issue.state);
@@ -199,6 +220,40 @@ export class IssueDetails extends React.Component<Props> {
                   </td>
                 </tr>
               )}
+              {/*{attachments.length > 0 && (
+                <tr>
+                  <th className="header">Attachments:</th>
+                  <td><ShowAttachments attachments={attachments} /></td>
+                </tr>
+              )}*/}
+              {this.issueLinks.size > 0 && <tr>
+                <th className="header linked">Linked Issues:</th>
+                <td>
+                  <IssueLinks
+                      account={account}
+                      project={project}
+                      issues={this.props.issues}
+                      links={this.issueLinks.linkMap}
+                  />
+                </td>
+              </tr>}
+              {/*{((comments || []).length > 0 || (changes || []).length > 0) && <tr>
+                <th className="header history">Issue History:</th>
+                <td>
+                  <IssueChanges
+                      issue={issue}
+                      comments={comments}
+                      changes={changes}
+                      project={project}
+                  />
+                </td>
+              </tr>}*/}
+              <tr>
+                <th className="header" />
+                <td>
+                  <CommentEdit onAddComment={this.onAddComment} />
+                </td>
+              </tr>
             </tbody>
           </table>)}
         </div>
@@ -255,6 +310,14 @@ export class IssueDetails extends React.Component<Props> {
       }
     }
     return result;
+  }
+
+  @action.bound
+  private onAddComment(newComment: string) {
+    // const { project, issue } = this.props;
+    // return addComment(project.id, issue.id, newComment).then(() => {
+    //   this.props.data.refetch();
+    // });
   }
 
   @action.bound
