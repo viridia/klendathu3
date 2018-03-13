@@ -77,7 +77,7 @@ export function createIssue(account: string, project: string, label: IssueInput)
   }, handleAxiosError);
 }
 
-export function updateIssue(issueId: string, issue: IssueInput): Promise<Issue> {
+export function updateIssue(issueId: string, issue: Partial<IssueInput>): Promise<Issue> {
   return request.patch(`/api/issues/${issueId}`, issue).then(resp => {
     return resp.data;
   }, handleAxiosError);

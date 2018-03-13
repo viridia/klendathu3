@@ -4,6 +4,7 @@ import {
   Template as TemplateData,
   FieldType,
   Workflow,
+  WorkflowAction,
   WorkflowState,
 } from 'klendathu-json-types';
 import { session } from '../models';
@@ -18,6 +19,7 @@ export class Template {
   @observable public loaded = false;
   @observable.shallow public types = [] as IObservableArray<IssueType>;
   @observable.shallow public states = [] as IObservableArray<WorkflowState>;
+  @observable.shallow public actions = [] as IObservableArray<WorkflowAction>;
   @observable.shallow public workflows = [] as IObservableArray<Workflow>;
 
   @observable.shallow private fieldMap = new Map<string, FieldType>();
@@ -54,6 +56,17 @@ export class Template {
     return this.workflows.find(wf => wf.name === id);
   }
 
+  public getWorkflowForType(typeId: string): Workflow {
+    let type = this.types.find(ty => ty.id === typeId);
+    while (type) {
+      if (type.workflow) {
+        return this.getWorkflow(type.workflow);
+      }
+      type = this.types.find(ty => ty.id === type.extends);
+    }
+    return null;
+  }
+
   public getInheritedIssueType(id: string): IssueType {
     let iType: IssueType = this.types.find(ty => ty.id === id);
     if (iType) {
@@ -83,6 +96,7 @@ export class Template {
     this.types.replace(data.types);
     this.states.replace(data.states);
     this.workflows.replace(data.workflows);
+    this.actions.replace(data.actions);
     this.loaded = true;
 
     this.fieldMap.clear();

@@ -1,0 +1,37 @@
+@import '../../../styles/colors';
+
+.wf-actions {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+
+  > .wf-action {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 16px;
+
+    > button {
+      display: inline-block;
+      justify-content: center;
+      margin-bottom: 2px;
+      white-space: normal;
+    }
+
+    > .effect {
+      font-size: 90%;
+      margin-left: 32px;
+      text-indent: -16px;
+      color: $textDark;
+
+      > .value {
+        white-space: nowrap;
+      }
+
+      > .none {
+        font-style: italic;
+        color: lighten($textDark, 10%);
+      }
+    }
+  }
+}

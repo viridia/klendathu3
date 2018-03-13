@@ -1,6 +1,12 @@
 import { Comment } from 'klendathu-json-types';
-import { action, observable, IObservableArray } from 'mobx';
+import { action, computed, observable, IObservableArray } from 'mobx';
 import { session } from './Session';
+
+function orderByCreated(a: Comment, b: Comment) {
+  if (a.created < b.created) { return -1; }
+  if (a.created > b.created) { return 1; }
+  return 0;
+}
 
 export class ObservableComments {
   @observable public loaded = true;
@@ -20,6 +26,11 @@ export class ObservableComments {
 
   public get length(): number {
     return this.comments.length;
+  }
+
+  @computed
+  public get sorted(): Comment[] {
+    return this.comments.sort(orderByCreated);
   }
 
   @action.bound

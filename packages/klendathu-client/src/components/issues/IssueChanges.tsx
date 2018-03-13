@@ -183,6 +183,7 @@ export class IssueChanges extends React.Component<Props> {
         result.push([c.at, <Change change={c} key={c.id} project={project} account={account} />]);
       });
     }
+    // TODO: Make this computed
     result.sort(compareEntries);
     return result;
   }

@@ -1,6 +1,12 @@
 import { Change } from 'klendathu-json-types';
-import { action, observable, IObservableArray } from 'mobx';
+import { action, computed, observable, IObservableArray } from 'mobx';
 import { session } from './Session';
+
+function orderByDate(a: Change, b: Change) {
+  if (a.at < b.at) { return -1; }
+  if (a.at > b.at) { return 1; }
+  return 0;
+}
 
 export class ObservableChanges {
   @observable public loaded = true;
@@ -20,6 +26,11 @@ export class ObservableChanges {
 
   public get length(): number {
     return this.changes.length;
+  }
+
+  @computed
+  public get sorted(): Change[] {
+    return this.changes.sort(orderByDate);
   }
 
   @action.bound

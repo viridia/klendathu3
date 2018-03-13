@@ -1,5 +1,5 @@
 {
-  "$id": "http://viridia.org/schemas/klendathu/issue-input.json",
+  "$id": "http://viridia.org/schemas/klendathu/issue-edit.json",
   "type": "object",
   "title": "IssueInput",
   "description": "Used to create or update an issue.",
@@ -117,11 +117,5 @@
       "description": "Whether this issue is visible to non-members.",
       "type": "boolean"
     }
-  },
-  "required": [
-    "type",
-    "state",
-    "summary",
-    "description"
-  ]
+  }
 }

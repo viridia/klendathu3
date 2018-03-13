@@ -1,13 +1,9 @@
 # TODO:
 
-* User Autocomplete (need users)
-  * Sign up form
 * Issue Autocomplete
 * Issue Link Edit
 * Issue Edit
   * Edit form
-  * Version history
-* Marked
 * Comments
 * Attachments - where to store to?
 * Issue links
@@ -24,6 +20,8 @@
 * Workflow Edit
 * Error reporting for bad params in url path.
 * General error reporting.
+* User Autocomplete (need users)
+  * Sign up form
 
 # Longer term:
 

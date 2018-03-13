@@ -1,5 +1,14 @@
 import * as React from 'react';
 import {
+  Account,
+  CustomValues,
+  DataType,
+  IssueInput,
+  IssueType,
+  Role,
+  WorkflowAction,
+} from 'klendathu-json-types';
+import {
   IssueListQuery,
   ObservableChanges,
   ObservableComments,
@@ -11,7 +20,7 @@ import { IssueProvider } from './IssueProvider';
 import { IssueLinks } from './IssueLinks';
 import { IssueChanges } from './IssueChanges';
 import { CommentEdit } from './input/CommentEdit';
-import { Account, CustomValues, DataType, IssueType, Role } from 'klendathu-json-types';
+import { WorkflowActions } from './workflow/WorkflowActions';
 import { RouteComponentProps } from 'react-router-dom';
 import { Button, ButtonGroup, Modal } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
@@ -19,9 +28,10 @@ import { AccountName } from '../common/AccountName';
 import { LabelName } from '../common/LabelName';
 import { RelativeDate } from '../common/RelativeDate';
 import { displayErrorToast } from '../common/displayErrorToast';
-import { deleteIssue } from '../../network/requests';
+import { deleteIssue, updateIssue } from '../../network/requests';
 import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';
+import bind from 'bind-decorator';
 import * as marked from 'marked';
 
 import './IssueDetailsView.scss';
@@ -276,6 +286,14 @@ export class IssueDetails extends React.Component<Props> {
             </tbody>
           </table>)}
         </div>
+        {project.role >= Role.UPDATER && (<aside className="right">
+          <WorkflowActions
+              template={template}
+              changes={this.changes}
+              issue={issue}
+              onExecAction={this.onExecAction}
+          />
+        </aside>)}
       </section>
     );
   }
@@ -378,6 +396,18 @@ export class IssueDetails extends React.Component<Props> {
   private onCancelDelete() {
     this.showDelete = false;
     this.busy = false;
+  }
+
+  @bind
+  private onExecAction(act: WorkflowAction) {
+    const { issue } = this.props;
+    const updates: Partial<IssueInput> = {
+      state: act.state,
+      owner: act.owner,
+    };
+    return updateIssue(issue.id, updates).then(() => {
+      // this.props.data.refetch();
+    });
   }
 }
 

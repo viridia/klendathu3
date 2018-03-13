@@ -1,4 +1,5 @@
 {
+  "$id": "http://viridia.org/schemas/klendathu/template.json",
   "type": "object",
   "title": "Template",
   "description": "Issue template.",

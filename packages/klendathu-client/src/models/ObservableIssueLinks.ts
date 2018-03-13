@@ -2,6 +2,8 @@ import { IssueArc, Relation, inverseRelations } from 'klendathu-json-types';
 import { action, observable, ObservableMap } from 'mobx';
 import { session } from './Session';
 
+// TODO: Sort
+
 export class ObservableIssueLinks {
   @observable public loaded = true;
   @observable public readonly map = new ObservableMap<Relation>();

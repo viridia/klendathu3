@@ -21,9 +21,11 @@ import * as Ajv from 'ajv';
 import * as r from 'rethinkdb';
 
 import * as issueInputSchema from '../../json-schema/issue-input.schema.json';
+import * as issueEditSchema from '../../json-schema/issue-edit.schema.json';
 
 const ajv = Ajv();
 const issueInputValidator = ajv.compile(issueInputSchema);
+const issueEditValidator = ajv.compile(issueEditSchema);
 
 // Create a new issue.
 server.api.post('/issues/:account/:project', async (req, res) => {
@@ -166,7 +168,7 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
   } else if (role < Role.UPDATER) {
     logger.error(`edit issue: user has insufficient privileges.`, details);
     res.status(403).json({ error: Errors.FORBIDDEN });
-  } else if (!issueInputValidator(req.body)) {
+  } else if (!issueEditValidator(req.body)) {
     // TODO: Decode and transform into error objects.
     res.status(400).json({ error: Errors.SCHEMA, details: issueInputValidator.errors });
     logger.error('Schema validation failure:', req.body, issueInputValidator.errors);
