@@ -7,7 +7,7 @@
 * Comments
 * Attachments - where to store to?
 * Issue links
-* Sorting by custom fields.
+* Sorting by custom fields. (Tricky)
 * Filter bar
 * User Selector
 * Issue Compose (finish)

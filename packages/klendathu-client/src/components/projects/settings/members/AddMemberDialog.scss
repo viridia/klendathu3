@@ -1,0 +1,11 @@
+div.add-member {
+  > .modal-content {
+    > .modal-body {
+      display: flex;
+      .autocomplete {
+        margin-right: 8px;
+        width: 15em;
+      }
+    }
+  }
+}

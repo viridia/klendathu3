@@ -11,6 +11,7 @@ import { IssueEditView } from '../issues/IssueEditView';
 import { IssueListView } from '../issues/IssueListView';
 import { IssueDetailsView } from '../issues/IssueDetailsView';
 import { LabelListView } from '../labels/LabelListView';
+import { ProjectSettings } from '../projects/settings';
 import { AccountProvider } from '../common/AccountProvider';
 import { ProjectProvider } from '../common/ProjectProvider';
 import { ToastContainer } from 'react-toastify';
@@ -97,6 +98,11 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
                                 path="/:account/:project/labels"
                                 exact={true}
                                 render={() => (<LabelListView {...models} />)}
+                            />
+                            <Route
+                                path="/:account/:project/settings/:tab?"
+                                exact={true}
+                                render={props => (<ProjectSettings {...props} {...models} />)}
                             />
                           </Switch>
                         )}
