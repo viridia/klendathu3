@@ -107,3 +107,9 @@ a[role=menuitem] {
 div.radio.disabled > label {
   opacity: .5;
 }
+
+.dropdown-menu {
+  hr {
+    margin: 4px 0;
+  }
+}

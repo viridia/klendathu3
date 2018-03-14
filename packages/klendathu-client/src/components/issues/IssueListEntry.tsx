@@ -1,6 +1,12 @@
 import * as React from 'react';
 import { Account, Role } from 'klendathu-json-types';
-import { ObservableIssue, ObservableProjectPrefs, issues, Project } from '../../models';
+import {
+  ObservableIssue,
+  ObservableProjectPrefs,
+  ObservableSet,
+  issues,
+  Project
+} from '../../models';
 import { NavLink, RouteComponentProps } from 'react-router-dom';
 import { LabelName } from '../common/LabelName';
 import { ColumnRenderer } from './columns';
@@ -15,7 +21,7 @@ interface Props extends RouteComponentProps<{}> {
   prefs: ObservableProjectPrefs;
   issueId: string;
   columnRenderers: Map<string, ColumnRenderer>;
-  selection: Map<string, boolean>;
+  selection: ObservableSet;
 }
 
 @observer
@@ -86,7 +92,7 @@ export class IssueListEntry extends React.Component<Props> {
   private onChangeSelection(e: any) {
     const { selection } = this.props;
     if (e.target.checked) {
-      selection.set(this.issue.id, true);
+      selection.add(this.issue.id);
     } else {
       selection.delete(this.issue.id);
     }

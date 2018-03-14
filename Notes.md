@@ -1,5 +1,6 @@
 # TODO:
 
+* Issue changes aren't updating in issue list.
 * Issue Autocomplete
 * Issue Link Edit
 * Issue Edit
@@ -22,6 +23,7 @@
 * General error reporting.
 * User Autocomplete (need users)
   * Sign up form
+* Remove deleted issues from selection. (Or issues not in query).
 
 # Longer term:
 
@@ -38,6 +40,9 @@
 * IssueEditView
 * CustomSuggestField
 * ErrorDisplay
+* IssueDetailsView - attachments and comments.
+* ProjectInfoEdit
+* ProjectSettings
 
 ## Routes:
 

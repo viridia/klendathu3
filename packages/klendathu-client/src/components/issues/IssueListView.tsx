@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { Account, Role } from 'klendathu-json-types';
-import { IssueListQuery, ObservableProjectPrefs, Project } from '../../models';
+import { IssueListQuery, ObservableProjectPrefs, ObservableSet, Project } from '../../models';
 import { ColumnSort } from '../common/ColumnSort';
 import { RouteComponentProps } from 'react-router-dom';
 import { IssueListEntry } from './IssueListEntry';
+import { MassEdit } from '../massedit/MassEdit';
 import {
   ColumnRenderer,
   CustomColumnRenderer,
   DateColumnRenderer,
-  TextColumnRenderer,
+  StateColumnRenderer,
   TypeColumnRenderer,
   UserColumnRenderer,
 } from './columns';
@@ -33,7 +34,7 @@ interface QueryParams { [param: string]: string; }
 export class IssueListView extends React.Component<Props> {
   private queryParams: QueryParams = {};
   private selectAllEl: HTMLInputElement;
-  @observable private selection = new Map<string, boolean>();
+  @observable private selection = new ObservableSet();
 
   public componentWillMount() {
     const { location } = this.props;
@@ -52,7 +53,7 @@ export class IssueListView extends React.Component<Props> {
   }
 
   public render() {
-    const { issues } = this.props;
+    const { issues, project } = this.props;
     if (!issues.loaded) {
       return (
         <section className="kdt content issue-list">
@@ -72,6 +73,7 @@ export class IssueListView extends React.Component<Props> {
     } else {
       return (
         <section className="kdt content issue-list">
+          <MassEdit project={project} selection={this.selection} />
           <div className="card issue">
             <table className="issue">
               {this.renderHeader()}
@@ -157,7 +159,7 @@ export class IssueListView extends React.Component<Props> {
   private onChangeSelectAll(e: any) {
     if (e.target.checked) {
       for (const id of this.props.issues.asList) {
-        this.selection.set(id, true);
+        this.selection.add(id);
       }
     } else {
       this.selection.clear();
@@ -168,7 +170,6 @@ export class IssueListView extends React.Component<Props> {
   private get columnRenderers(): Map<string, ColumnRenderer> {
     const { project } = this.props;
     const columnRenderers = new Map<string, ColumnRenderer>();
-    columnRenderers.set('state', new TextColumnRenderer('State', 'state', 'state pad'));
     columnRenderers.set('reporter',
         new UserColumnRenderer('Reporter', 'reporter', 'reporter pad'));
     columnRenderers.set('owner', new UserColumnRenderer('Owner', 'owner', 'owner pad'));
@@ -176,6 +177,7 @@ export class IssueListView extends React.Component<Props> {
     columnRenderers.set('updated', new DateColumnRenderer('Updated', 'updated', 'updated pad'));
     const template = project.template;
     if (template && template.loaded) {
+      columnRenderers.set('state', new StateColumnRenderer(template));
       columnRenderers.set('type', new TypeColumnRenderer(template));
       for (const type of template.types) {
         if (type.fields) {

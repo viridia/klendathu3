@@ -7,4 +7,8 @@
   padding: 2px 9px 3px 9px;
   border-radius: 9px;
   color: $labelText;
+
+  &.chip {
+    padding: 0 9px;
+  }
 }

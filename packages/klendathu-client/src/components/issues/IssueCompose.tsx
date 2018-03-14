@@ -8,7 +8,6 @@ import {
   IssueInput,
   IssueLink,
   IssueType,
-  Label,
   Relation,
   Role,
   Workflow,
@@ -71,7 +70,7 @@ export class IssueCompose extends React.Component<Props> {
   @observable private another: boolean = false;
   @observable private owner: Account = null;
   @observable.shallow private cc = [] as IObservableArray<Account>;
-  @observable.shallow private labels = [] as IObservableArray<Label>;
+  @observable.shallow private labels = [] as IObservableArray<string>;
   @observable private relation: Relation = Relation.BLOCKED_BY;
   @observable private issueToLink: Issue = null;
   @observable.shallow private issueLinkMap = new Map<string, Relation>();
@@ -386,7 +385,7 @@ export class IssueCompose extends React.Component<Props> {
   }
 
   @action.bound
-  private onChangeLabels(labels: Label[]) {
+  private onChangeLabels(labels: string[]) {
     this.labels.replace(labels);
   }
 
@@ -459,7 +458,7 @@ export class IssueCompose extends React.Component<Props> {
       owner: this.owner ? this.owner.uid : undefined,
       ownerSort: this.owner ? this.owner.uname : undefined,
       cc: this.cc.map(cc => cc.uid),
-      labels: this.labels.map(label => label.id),
+      labels: this.labels,
       linked,
       custom,
       comments: toJS(this.comments),

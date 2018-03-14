@@ -321,8 +321,10 @@ export class Autocomplete<S> extends React.Component<Props<S>> {
           }
         }
         break;
-      case 9: // TAB
       case 27: // ESC
+        this.open = false;
+        break;
+      case 9: // TAB
       default:
         break;
     }

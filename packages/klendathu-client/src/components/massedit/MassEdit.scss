@@ -1,0 +1,82 @@
+@import '../../styles/colors';
+
+$bgColor: #c7b8e6;
+
+.mass-edit.card {
+  background-color: lighten($bgColor, 9%);
+  transition: height 0.3s ease;
+  margin-bottom: 12px !important;
+  height: 0;
+  &.in {
+    display: block;
+    height: auto;
+  }
+  &.collapsing {
+    display: block;
+  }
+
+  > header {
+    display: flex;
+    align-items: center;
+    padding: 7px 12px;
+    background-color: $bgColor;
+    color: $textDarkAccent;
+    border-bottom: 1px solid darken($bgColor, 8%);
+    > .title {
+      flex: 1;
+    }
+    > button {
+      margin-left: 8px;
+    }
+  }
+
+  > .action-list {
+    padding-top: 3px;
+
+    > .mass-action {
+      margin: 4px;
+      display: flex;
+
+      > .dropdown {
+        align-self: center;
+      }
+
+      .dropdown-toggle {
+        min-width: 12em;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-right: 8px;
+      }
+
+      > .label-selector, > .user {
+        flex: 40;
+      }
+
+      > .action-operand {
+        flex: 1;
+
+        .chip {
+          line-height: 22px;
+          margin: 1px;
+        }
+      }
+
+      > .remove {
+        border: none;
+        background: none;
+        opacity: 0.5;
+        outline: none;
+        &:hover {
+          opacity: 1;
+        }
+        > .svg-icon {
+          > svg {
+            width: 16;
+            height: 16;
+          }
+        }
+      }
+    }
+  }
+}

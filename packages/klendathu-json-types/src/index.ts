@@ -8,7 +8,7 @@ export {
   ScalarChange,
 } from './Change';
 export { Comment } from './Comment';
-export { CustomValues, Issue, IssueBase, IssueInput } from './Issue';
+export { CustomValues, Issue, IssueBase, IssueInput, IssueEdit } from './Issue';
 export { Errors } from './Errors';
 export { IssueLink, IssueArc } from './IssueLink';
 export { Label, LabelInput } from './Label';

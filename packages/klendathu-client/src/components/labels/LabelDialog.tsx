@@ -24,7 +24,7 @@ interface Props {
   project: Project;
   label?: Label;
   onHide: () => void;
-  onInsertLabel: (label: Label) => void;
+  onInsertLabel: (label: string) => void;
   visible?: boolean;
 }
 
@@ -177,7 +177,7 @@ export class LabelDialog extends React.Component<Props> {
       promise.then(() => {
         this.busy = false;
         this.props.onHide();
-        this.props.onInsertLabel(updatedLabel);
+        this.props.onInsertLabel(updatedLabel.id);
       });
     }, error => {
       console.error(error);

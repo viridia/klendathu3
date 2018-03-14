@@ -96,6 +96,7 @@
 
       .selected, .id, .type, .state, .owner, .created, .updated {
         text-align: center;
+        white-space: nowrap;
       }
 
       .date {

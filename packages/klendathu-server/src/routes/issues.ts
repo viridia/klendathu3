@@ -4,6 +4,7 @@ import {
   CustomValues,
   Errors,
   IssueInput,
+  IssueEdit,
   Role,
   inverseRelations,
 } from 'klendathu-json-types';
@@ -176,7 +177,7 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
     const projectId = `${account}/${project}`;
     const issueId = `${account}/${project}/${id}`;
     const now = new Date();
-    const input: IssueInput = req.body;
+    const input: IssueEdit = req.body;
 
     //  Ensure that all of the issues we are linking to actually exist.
     if (input.linked) {
@@ -248,7 +249,36 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
     }
 
     // Compute which cc entries have been added or deleted.
-    if ('cc' in input) {
+    if (input.addCC || input.removeCC) {
+      const added: string[] = [];
+      const removed: string[] = [];
+
+      const cc = [...existing.cc];
+      if (input.addCC) {
+        for (const l of input.addCC) {
+          if (cc.indexOf(l) < 0) {
+            added.push(l);
+            cc.push(l);
+          }
+        }
+      }
+
+      if (input.removeCC) {
+        for (const l of input.removeCC) {
+          const index = cc.indexOf(l);
+          if (index >= 0) {
+            removed.push(l);
+            cc.splice(index, 1);
+          }
+        }
+      }
+
+      if (added || removed) {
+        record.cc = cc;
+        change.cc = { added, removed };
+        change.at = record.updated;
+      }
+    } else if ('cc' in input) {
       const ccPrev = new Set(existing.cc); // Removed items
       const ccNext = new Set(input.cc);    // Newly-added items
       input.cc.forEach(cc => ccPrev.delete(cc));
@@ -261,7 +291,36 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
     }
 
     // Compute which labels have been added or deleted.
-    if ('labels' in input) {
+    if (input.addLabels || input.removeLabels) {
+      const added: string[] = [];
+      const removed: string[] = [];
+
+      const labels = [...existing.labels];
+      if (input.addLabels) {
+        for (const l of input.addLabels) {
+          if (labels.indexOf(l) < 0) {
+            added.push(l);
+            labels.push(l);
+          }
+        }
+      }
+
+      if (input.removeLabels) {
+        for (const l of input.removeLabels) {
+          const index = labels.indexOf(l);
+          if (index >= 0) {
+            removed.push(l);
+            labels.splice(index, 1);
+          }
+        }
+      }
+
+      if (added || removed) {
+        record.labels = labels;
+        change.labels = { added, removed };
+        change.at = record.updated;
+      }
+    } else if ('labels' in input) {
       const labelsPrev = new Set(existing.labels); // Removed items
       const labelsNext = new Set(input.labels);    // Newly-added items
       input.labels.forEach(labels => labelsPrev.delete(labels));

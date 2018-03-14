@@ -39,8 +39,36 @@
         "type": "string"
       }
     },
+    "addCC": {
+      "description": "Issue watchers to add.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "removeCC": {
+      "description": "Issue watchers to remove.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "labels": {
       "description": "Issue label ids.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "addLabels": {
+      "description": "Issue label ids to add.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "removeLabels": {
+      "description": "Issue label ids to remove.",
       "type": "array",
       "items": {
         "type": "string"

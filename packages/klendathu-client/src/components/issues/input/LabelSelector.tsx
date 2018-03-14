@@ -1,10 +1,9 @@
 // tslint:disable:max-classes-per-file
 import bind from 'bind-decorator';
-import { Label } from 'klendathu-json-types';
 import { Project } from '../../../models';
 import * as React from 'react';
 import { Autocomplete, SearchCallback } from '../../ac/Autocomplete';
-import { Chip } from '../../ac/Chip';
+import { LabelName } from '../../common/LabelName';
 import { LabelDialog  } from '../../labels/LabelDialog';
 import { action, observable } from 'mobx';
 import { searchLabels } from '../../../network/requests';
@@ -15,11 +14,16 @@ import '../../ac/Chip.scss';
 interface Props {
   className?: string;
   project: Project;
-  selection: Label[];
-  onSelectionChange: (selection: Label[]) => void;
+  selection: string[];
+  onSelectionChange: (selection: string[]) => void;
 }
 
-class AutocompleteLabels extends Autocomplete<Label> {}
+interface LabelOption {
+  name: JSX.Element;
+  id: string;
+}
+
+class AutocompleteLabels extends Autocomplete<string> {}
 
 @observer
 export class LabelSelector extends React.Component<Props> {
@@ -51,7 +55,7 @@ export class LabelSelector extends React.Component<Props> {
   }
 
   @bind
-  private onSearchLabels(token: string, callback: SearchCallback<Label>) {
+  private onSearchLabels(token: string, callback: SearchCallback<string>) {
     const newLabelOption = {
       name: <span>New&hellip;</span>,
       id: '*new*',
@@ -63,15 +67,19 @@ export class LabelSelector extends React.Component<Props> {
       this.token = token;
       searchLabels(project.account, project.uname, token, labels => {
         if (this.token === token) {
-          callback(labels.slice(0, 5), [newLabelOption]);
+          callback(labels.slice(0, 5).map(l => l.id), [newLabelOption]);
         }
       });
     }
   }
 
   @action.bound
-  private onChooseSuggestion(label: Label) {
-    if (label.id === '*new*' && !label.project) {
+  private onChooseSuggestion(label: string) {
+    if (typeof label === 'string') {
+      return false;
+    }
+    const option = label as LabelOption;
+    if (option.id === '*new*') {
       this.showModal = true;
       return true;
     }
@@ -79,7 +87,7 @@ export class LabelSelector extends React.Component<Props> {
   }
 
   @bind
-  private onInsertLabel(label: Label) {
+  private onInsertLabel(label: string) {
     if (label === null || label === undefined) {
       throw new Error('invalid label');
     }
@@ -87,25 +95,30 @@ export class LabelSelector extends React.Component<Props> {
   }
 
   @bind
-  private onRenderSuggestion(label: Label) {
-    return <span key={label.id}>{label.name}</span>;
+  private onRenderSuggestion(label: string) {
+    if (typeof label === 'string') {
+      return <LabelName key={label} label={label} textOnly={true} />;
+    } else {
+      const option = label as LabelOption;
+      return <span key={option.id}>{option.name}</span>;
+    }
   }
 
   @bind
-  private onRenderSelection(label: Label) {
+  private onRenderSelection(label: string) {
     return (
-      <Chip style={{ backgroundColor: label.color }} key={label.id}>{label.name}</Chip>
+      <LabelName key={label} label={label} className="chip" />
     );
   }
 
   @bind
-  private onGetValue(label: Label): string {
-    return label.id;
+  private onGetValue(label: string): string {
+    return label;
   }
 
   @bind
-  private onGetSortKey(label: Label) {
-    return label.name;
+  private onGetSortKey(label: string) {
+    return label;
   }
 
   @action.bound

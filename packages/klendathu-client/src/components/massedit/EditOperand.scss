@@ -1,0 +1,22 @@
+@import '../../styles/colors';
+
+.match-text {
+  padding: 4px 8px;
+  height: 32px;
+}
+
+.select-types {
+  white-space: nowrap;
+  display: flex;
+  flex-wrap: wrap;
+  > .checkbox {
+    margin: 4px 1em 4px 0 !important;
+  }
+}
+
+.select-states {
+  columns: 4;
+  > .checkbox {
+    margin: 4px 1em 4px 0 !important;
+  }
+}

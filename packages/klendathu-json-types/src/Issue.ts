@@ -73,3 +73,11 @@ export interface IssueInput extends IssueBase {
   /** List of comments. */
   comments: string[];
 }
+
+/** An issue. */
+export interface IssueEdit extends IssueInput {
+  addCC?: string[];
+  removeCC: string[];
+  addLabels?: string[];
+  removeLabels?: string[];
+}
