@@ -11,6 +11,7 @@ export class IssueListQuery {
   @observable public loaded = false;
   @observable public error: string = null;
   @observable public sort: string = 'id';
+  @observable public filterParams: { [key: string]: any } = {};
   @observable public descending: boolean = true;
   @observable.shallow private issues = [] as IObservableArray<string>;
   private account: string;
@@ -36,15 +37,21 @@ export class IssueListQuery {
     return this.issues;
   }
 
+  // These are the query params that are sent to the API.
   @computed
   private get queryParams(): string {
-    const query: any = {};
+    const query: any = { ...this.filterParams };
     if (this.sort) {
       if (this.sort !== 'id' || !this.descending) {
         query.sort = `${this.descending ? '-' : ''}${this.sort}`;
       }
     }
-    return qs.stringify(query, { addQueryPrefix: true, sort: alphabeticalSort });
+    return qs.stringify(query, {
+      addQueryPrefix: true,
+      sort: alphabeticalSort,
+      encoder: encodeURI,
+      arrayFormat: 'repeat',
+    });
   }
 
   @action.bound

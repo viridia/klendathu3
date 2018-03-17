@@ -39,6 +39,9 @@ export class ObservableIssue implements IssueBase {
   }
 
   public release() {
+    if (this.refCount === 0) {
+      throw Error('over-release');
+    }
     this.refCount -= 1;
     if (this.refCount === 0) {
       this.record.unsubscribe(this.onUpdate);

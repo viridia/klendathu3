@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Account, FieldType, IssueEdit } from 'klendathu-json-types';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
-import { defaultValueForType, Project } from '../../models';
+import { defaultOperandValue, Project } from '../../models';
 import { EditOperand } from './EditOperand';
 import { observer } from 'mobx-react';
 import bind from 'bind-decorator';
@@ -143,7 +143,7 @@ export class MassAction extends React.Component<Props> {
     if (!action || newAction.type !== action.type) {
       onChange(index, {
         ...newAction,
-        value: defaultValueForType(project.template, newAction.type, newAction.customField),
+        value: defaultOperandValue(project.template, newAction.type, newAction.customField),
       });
     // } else {
     //   onChange(index, { ...newAction, value: action.value });

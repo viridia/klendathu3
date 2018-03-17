@@ -1,5 +1,5 @@
 import { FieldType } from 'klendathu-json-types';
-import { Project, Template } from '../../models';
+import { Project, Template, OperandType } from '../../models';
 import * as React from 'react';
 import { DropdownButton, FormControl, MenuItem } from 'react-bootstrap';
 import { UserAutocomplete } from '../common/UserAutocomplete';
@@ -12,7 +12,7 @@ import { observer } from 'mobx-react';
 import './EditOperand.scss';
 
 interface Props {
-  type: string;
+  type: OperandType;
   value: any;
   project: Project;
   template: Template;
@@ -29,7 +29,7 @@ export class EditOperand extends React.Component<Props> {
       return null;
     }
     switch (type) {
-      case 'searchText':
+      case OperandType.SEARCH_TEXT:
         return (
           <FormControl
               className="match-text"
@@ -38,7 +38,7 @@ export class EditOperand extends React.Component<Props> {
               onChange={(e: any) => onChange(e.target.value)}
           />
         );
-      case 'text':
+      case OperandType.TEXT:
         return (
           <FormControl
               className="match-text"
@@ -47,13 +47,13 @@ export class EditOperand extends React.Component<Props> {
               onChange={(e: any) => onChange(e.target.value)}
           />
         );
-      case 'stateSet': {
+      case OperandType.STATE_SET: {
         return <StateSetEditor template={template} value={value} />;
       }
-      case 'typeSet': {
+      case OperandType.TYPE_SET: {
         return <TypeSetEditor template={template} value={value} />;
       }
-      case 'state': {
+      case OperandType.STATE: {
         const items = template.states.map(st => (
           <MenuItem eventKey={st.id} key={st.id}>{st.caption}</MenuItem>
         ));
@@ -68,7 +68,7 @@ export class EditOperand extends React.Component<Props> {
             {items}
           </DropdownButton>);
       }
-      case 'type': {
+      case OperandType.TYPE: {
         const items = template.types.map(t => (
           !t.abstract && <MenuItem eventKey={t.id} key={t.id}>{t.caption}</MenuItem>
         ));
@@ -83,7 +83,7 @@ export class EditOperand extends React.Component<Props> {
             {items}
           </DropdownButton>);
       }
-      case 'label': {
+      case OperandType.LABEL: {
         return (
           <LabelSelector
               className="labels inline"
@@ -92,7 +92,7 @@ export class EditOperand extends React.Component<Props> {
               onSelectionChange={onChange}
           />);
       }
-      case 'user': {
+      case OperandType.USER: {
         return (
           <UserAutocomplete
               className="user inline"
@@ -101,17 +101,17 @@ export class EditOperand extends React.Component<Props> {
               onSelectionChange={onChange}
           />);
       }
-      case 'users': {
+      case OperandType.USERS: {
         return (
           <UserAutocomplete
               className="user inline"
               placeholder="(none)"
-              selection={value.slice()}
+              selection={value ? value.slice() : []}
               multiple={true}
               onSelectionChange={onChange}
           />);
       }
-      case 'enum': {
+      case OperandType.ENUM: {
         return <EnumSetEditor field={customField} value={value} />;
       }
       default:

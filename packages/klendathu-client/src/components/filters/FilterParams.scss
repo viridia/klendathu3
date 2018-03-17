@@ -1,0 +1,116 @@
+@import '../../styles/colors';
+
+section.filter-params {
+  background-color: lighten($bg1, 5%);
+  margin-bottom: 12px !important;
+
+  > header {
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    background-color: $bg2;
+    color: $textDarkAccent;
+    border-bottom: 0;
+
+    > .separator {
+      flex: 2;
+    }
+
+    > .search-group {
+      position: relative;
+      flex: 1;
+
+      > form {
+        display: flex;
+        margin: 0;
+
+        > .search {
+          flex: 1;
+          background-color: lighten($bg1, 5%);
+          border-color: desaturate($bg4, 30%);
+          color: black;
+          padding: 2px 32px 2px 8px;
+          height: 28px;
+          &::-webkit-input-placeholder {
+            color: desaturate($bg3, 30%);
+          }
+        }
+
+        > .clear {
+          position: absolute;
+          padding: 2px;
+          top: 2px;
+          bottom: 2px;
+          right: 2px;
+          border: none;
+          background-color: transparent;
+          outline: none;
+          > .svg-icon > svg {
+            fill: desaturate($bg4, 30%);
+          }
+          &:hover > .svg-icon > svg {
+            fill: desaturate($bg6, 30%);
+          }
+        }
+      }
+    }
+  }
+
+  > .term-list {
+    transition: height 0.2s ease;
+    height: 0;
+    &.in {
+      display: block;
+      height: auto;
+    }
+    &.collapsing {
+      display: block;
+    }
+
+    > .filter-term {
+      margin: 4px;
+      display: flex;
+
+      > .dropdown {
+        align-self: flex-start;
+      }
+
+      .dropdown-toggle {
+        min-width: 12em;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-right: 8px;
+      }
+
+      > .filter-value {
+        flex: 1;
+
+        .chip {
+          line-height: 22px;
+          margin: 1px;
+        }
+      }
+
+      > button {
+        margin-left: 8px;
+      }
+
+      > .remove {
+        border: none;
+        background: none;
+        opacity: 0.5;
+        outline: none;
+        &:hover {
+          opacity: 1;
+        }
+        > .svg-icon {
+          > svg {
+            width: 16;
+            height: 16;
+          }
+        }
+      }
+    }
+  }
+}

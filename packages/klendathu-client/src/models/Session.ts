@@ -33,10 +33,11 @@ export class Session {
 
   public resume(location: Location, history: History) {
     this.token = localStorage.getItem('token');
+    const query = qs.parse(location.search, { ignoreQueryPrefix: true });
     if (!this.token) {
-      const query = qs.parse(location.search.slice(1));
       if (query.token) {
         this.token = query.token;
+        delete query.token;
       } else {
         history.replace('/account/login');
         return;
@@ -48,8 +49,12 @@ export class Session {
           this.connection = connection;
           this.account = resp.data;
           localStorage.setItem('token', this.token);
-          //  TODO: Preserve query params, except for token.
-          history.push(location.pathname);
+          const search = qs.stringify(query, {
+            addQueryPrefix: true,
+            encoder: encodeURI,
+            arrayFormat: 'repeat',
+          });
+          history.push(`${location.pathname}${search}`);
         });
       }, error => {
         console.error(error.response);

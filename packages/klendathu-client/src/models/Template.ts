@@ -11,6 +11,7 @@ import { session } from '../models';
 
 interface ReadableMap<K, V> {
   get(key: K): V;
+  forEach(callback: (value: V, key: K) => void): void;
 }
 
 /** A reference to a project template by it's name. */

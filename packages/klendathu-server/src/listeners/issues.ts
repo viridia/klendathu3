@@ -1,5 +1,5 @@
 import { server } from '../Server';
-import { Attachment, Change, Comment, Issue, IssueArc } from 'klendathu-json-types';
+import { Attachment, Change, Comment, Issue, IssueArc, Predicate } from 'klendathu-json-types';
 import {
   AttachmentRecord,
   IssueChangeRecord,
@@ -31,15 +31,62 @@ const issueLinksWatcher = new RecordSetWatcher<IssueLinkRecord, IssueArc>(encode
 const commentsWatcher = new RecordSetWatcher<CommentRecord, Comment>(encodeComment);
 const changesWatcher = new RecordSetWatcher<IssueChangeRecord, Change>(encodeIssueChange);
 
+function toScalar(value: string | string[]): string {
+  if (typeof value === 'string') {
+    return value;
+  } else {
+    return value[0];
+  }
+}
+
+function toArray(value: string | string[]): string[] {
+  if (typeof value === 'string') {
+    return [value];
+  } else {
+    return value;
+  }
+}
+
+function stringPredicate(
+    field: r.Expression<string>,
+    pred: string | string[],
+    value: string | string[]): r.Expression<boolean> {
+  switch (pred) {
+    case Predicate.CONTAINS:
+      return (field as any).match(`(?i)${escapeRegExp(toScalar(value))}`);
+    case Predicate.EQUALS:
+      return field.eq(toScalar(value));
+    case Predicate.NOT_CONTAINS:
+      return (field as any).match(`(?i)${escapeRegExp(toScalar(value))}`).not();
+    case Predicate.NOT_EQUALS:
+      return field.ne(toScalar(value));
+    case Predicate.STARTS_WITH:
+      return (field as any).match(`^(?i)${escapeRegExp(toScalar(value))}`);
+    case Predicate.ENDS_WITH:
+      return (field as any).match(`(?i)${escapeRegExp(toScalar(value))}$`);
+    case Predicate.IN: {
+      const values = toArray(value);
+      return values.reduce((expr: r.Expression<boolean>, v) => {
+        const term = field.eq(v);
+        return expr ? expr.or(term) : term;
+      }, null);
+    }
+
+    default:
+      logger.error('Invalid string predicate:', pred);
+      return null;
+  }
+}
+
 server.deepstream.record.listen('^issues/.*', async (eventName, isSubscribed, response) => {
   if (isSubscribed) {
     response.accept();
-    const query = url.parse(eventName, true);
-    const [, account, project] = query.pathname.split('/', 3);
+    const topicUrl = url.parse(eventName, true);
+    const [, account, project] = topicUrl.pathname.split('/', 3);
 
     // Compute sort key
     let order: r.Sort = { index: r.desc('id') };
-    let sortKey: string = query.query.sort as string;
+    let sortKey: string = topicUrl.query.sort as string;
     if (sortKey) {
       let descending = false;
       if (sortKey.startsWith('-')) {
@@ -55,14 +102,132 @@ server.deepstream.record.listen('^issues/.*', async (eventName, isSubscribed, re
     }
     // console.log('order', order, eventName);
 
+    let dbQuery = r.table('issues')
+        .orderBy(order)
+        .filter({ project: `${account}/${project}` });
+
+    // Build the query expression
+    const filters: Array<r.Expression<boolean>> = [];
+
+    // If they are not a project member, only allow public issues to be viewed.
+    // if (role < Role.VIEWER) {
+    //   filters.push(r.row('isPublic'));
+    // }
+
+    const args = topicUrl.query;
+    // console.log(args);
+
+    // Search by token
+    if (args.search) {
+      const re = `(?i)\\b${escapeRegExp(toScalar(args.search.toString()))}`;
+      filters.push((r as any).or(
+        (r.row('summary') as any).match(re),
+        (r.row('description') as any).match(re),
+        // TODO: other fields - comments, etc.
+      ));
+    }
+
+    // By Type
+    if (args.type) {
+      const types = toArray(args.type);
+      if (types.length === 1) {
+        filters.push(r.row('type').eq(types[0]));
+      } else {
+        filters.push((r.row('type') as any).do((type: string) => r.expr(types).contains(type)));
+      }
+    }
+
+    // By State
+    if (args.state) {
+      const states = toArray(args.state);
+      if (states.length === 1) {
+        filters.push(r.row('state').eq(states[0]));
+      } else {
+        filters.push((r.row('state') as any).do((state: string) => r.expr(states).contains(state)));
+      }
+    }
+
+    // By Summary
+    if (args.summary) {
+      const test = stringPredicate(r.row('summary'), args.summaryPred, args.summary);
+      if (test) {
+        filters.push(test);
+      }
+    }
+
+    // By Description
+    if (args.description) {
+      const test = stringPredicate(r.row('description'), args.descriptionPred, args.description);
+      if (test) {
+        filters.push(test);
+      }
+    }
+
+    // By Reporter
+    if (args.reporter) {
+      filters.push((r.row('reporter') as any)
+          .do((reporter: string) => r.expr(toScalar(args.reporter)).contains(reporter)));
+    }
+
+    // By Owner
+    if (args.owner) {
+      filters.push((r.row('owner') as any)
+          .do((owner: string) => r.expr(toScalar(args.owner)).contains(owner)));
+    }
+
+    // Match any label
+    if (args.labels) {
+      const labels = toArray(args.labels).map(l => `${account}/${project}/${l}`);
+      if (labels) {
+        const e = labels.reduce((expr: r.Expression<boolean>, label) => {
+          const term = r.row('labels').contains(label);
+          return expr ? expr.or(term) : term;
+        }, null);
+        if (e) {
+          filters.push(e);
+        }
+      }
+    }
+
+    // Match any cc
+    if (args.cc) {
+      const cc = toArray(args.cc).map(l => `${account}/${project}/${l}`);
+      if (cc) {
+        const e = cc.reduce((expr: r.Expression<boolean>, uid) => {
+          const term = r.row('cc').contains(uid);
+          return expr ? expr.or(term) : term;
+        }, null);
+        if (e) {
+          filters.push(e);
+        }
+      }
+    }
+
+    // Other things we might want to search by:
+    // comments / commenter
+    // created (date range)
+    // updated
+
+    for (const key in args) {
+      if (key.startsWith('custom.')) {
+        const fieldId = key.slice(7);
+        const pred = args[`pred.${fieldId}`] as Predicate || Predicate.CONTAINS;
+        const expr = stringPredicate(r.row('custom')(fieldId), pred, args[key]);
+        if (expr) {
+          console.log(expr.toString());
+          filters.push(expr);
+        }
+      }
+    }
+
+    if (filters.length > 0) {
+      dbQuery = dbQuery.filter((r as any).and(...filters));
+    }
+
     // Run database query and set up changefeed.
     issueListWatcher.subscribe(
       eventName,
-      r.table('issues')
-          .orderBy(order)
-          .filter({ project: `${account}/${project}` })
-          .pluck('id')
-          .limit(10));
+      dbQuery.pluck('id').limit(50));
   } else {
     issueListWatcher.unsubscribe(eventName);
   }

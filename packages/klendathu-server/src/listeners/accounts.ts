@@ -125,7 +125,6 @@ ds.rpc.provide('accounts.search', async (args: any, response: deepstreamIO.RPCRe
     // Database search
     const cursor = await query.run(server.conn);
     const accounts = await cursor.toArray<AccountRecord>();
-    console.log(token, pattern, accounts);
     response.send(accounts.map(encodeAccount));
   } catch (error) {
     logger.error(error.message, { token, type });

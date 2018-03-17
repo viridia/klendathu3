@@ -2,12 +2,14 @@ import * as React from 'react';
 import bind from 'bind-decorator';
 import { ObservableSet, Template } from '../../../models';
 import { Checkbox } from 'react-bootstrap';
+import { observer } from 'mobx-react';
 
 interface Props {
   template: Template;
   value: ObservableSet;
 }
 
+@observer
 export class StateSetEditor extends React.Component<Props> {
   public render() {
     const { template, value } = this.props;

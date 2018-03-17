@@ -1,14 +1,16 @@
 import * as React from 'react';
-import bind from 'bind-decorator';
 import { FieldType } from 'klendathu-json-types';
 import { Checkbox } from 'react-bootstrap';
 import { ObservableSet } from '../../../models';
+import { action } from 'mobx';
+import { observer } from 'mobx-react';
 
 interface Props {
   field: FieldType;
   value: ObservableSet;
 }
 
+@observer
 export class EnumSetEditor extends React.Component<Props> {
   public render() {
     const { field, value } = this.props;
@@ -22,7 +24,7 @@ export class EnumSetEditor extends React.Component<Props> {
     );
   }
 
-  @bind
+  @action.bound
   private onChange(e: any) {
     const { value } = this.props;
     if (e.target.checked) {

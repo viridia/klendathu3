@@ -34,6 +34,14 @@ export class IssueListEntry extends React.Component<Props> {
   }
 
   public componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.issueId !== this.issue.id) {
+      const issue = issues.get(nextProps.issueId);
+      this.issue.release();
+      this.issue = issue;
+    }
+  }
+
+  public componentWillUnmount() {
     this.issue.release();
   }
 

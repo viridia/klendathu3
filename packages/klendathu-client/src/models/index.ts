@@ -17,4 +17,4 @@ export { ProjectListQuery } from './ProjectListQuery';
 export { ProjectStore, projects } from './ProjectStore';
 export { Session, session, request } from './Session';
 export { Template } from './Template';
-export { defaultValueForType } from './defaultValueForType';
+export { defaultOperandValue, OperandType } from './OperandType';

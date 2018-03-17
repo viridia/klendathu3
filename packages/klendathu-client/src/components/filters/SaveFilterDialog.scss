@@ -1,0 +1,13 @@
+@import '../../styles/colors';
+
+div.save-filter {
+  width: 400px;
+  > .modal-content {
+    flex: 1;
+    > .modal-body {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+}

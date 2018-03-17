@@ -5,6 +5,7 @@ import { ColumnSort } from '../common/ColumnSort';
 import { RouteComponentProps } from 'react-router-dom';
 import { IssueListEntry } from './IssueListEntry';
 import { MassEdit } from '../massedit/MassEdit';
+import { FilterParams } from '../filters/FilterParams';
 import {
   ColumnRenderer,
   CustomColumnRenderer,
@@ -13,6 +14,7 @@ import {
   TypeColumnRenderer,
   UserColumnRenderer,
 } from './columns';
+import { descriptors } from '../filters/FilterTermDescriptor';
 import { Checkbox } from 'react-bootstrap';
 import { action, computed, observable } from 'mobx';
 import { observer } from 'mobx-react';
@@ -54,7 +56,7 @@ export class IssueListView extends React.Component<Props> {
 
   public render() {
     const { issues, project } = this.props;
-    if (!issues.loaded) {
+    if (!issues.loaded || !project.template.loaded) {
       return (
         <section className="kdt content issue-list">
           <div className="card issue">
@@ -65,6 +67,7 @@ export class IssueListView extends React.Component<Props> {
     } else if (issues.length === 0) {
       return (
         <section className="kdt content issue-list">
+          <FilterParams {...this.props} />
           <div className="card issue">
             <div className="no-issues">No issues found</div>
           </div>
@@ -73,6 +76,7 @@ export class IssueListView extends React.Component<Props> {
     } else {
       return (
         <section className="kdt content issue-list">
+          <FilterParams {...this.props} />
           <MassEdit project={project} selection={this.selection} />
           <div className="card issue">
             <table className="issue">
@@ -151,7 +155,11 @@ export class IssueListView extends React.Component<Props> {
     const sort = `${descending ? '-' : ''}${column}`;
     history.replace({
       ...this.props.location,
-      search: `?${qs.stringify({ ...this.queryParams, sort })}`,
+      search: qs.stringify({ ...this.queryParams, sort }, {
+        addQueryPrefix: true,
+        encoder: encodeURI,
+        arrayFormat: 'repeat',
+      }),
     });
   }
 
@@ -206,6 +214,13 @@ export class IssueListView extends React.Component<Props> {
     const { sort, descending } = this.sortOrder();
     issues.sort = sort;
     issues.descending = descending;
+    issues.filterParams = {};
+    issues.filterParams.search = this.queryParams.search;
+    for (const key of Object.getOwnPropertyNames(this.queryParams)) {
+      if (key in descriptors || key.startsWith('custom.') || key.startsWith('pred.')) {
+        issues.filterParams[key] = this.queryParams[key];
+      }
+    }
   }
 
   // Checkbox 'indeterminate' state can only be set programmatically.

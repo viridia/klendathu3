@@ -35,7 +35,7 @@ export class MassEdit extends React.Component<Props> {
                 disabled={this.actions.length === 0}
                 onClick={this.onSave}
             >
-              Save All Changes
+              Apply Changes
             </Button>
           </header>
           <section className="action-list">

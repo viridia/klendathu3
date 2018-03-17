@@ -16,11 +16,16 @@
     > .issue {
       width: 100%;
 
+      tbody {
+        border-bottom: 4px solid transparent;
+      }
+
       th {
         font-size: 90%;
       }
 
       td, th {
+        vertical-align: top;
         a {
           padding: 5px 7px;
           display: block;
@@ -33,7 +38,7 @@
       }
 
       td.pad {
-        padding: 8px 7px;
+        padding: 8px 7px 8px 7px;
       }
 
       td.id {
@@ -47,7 +52,7 @@
           justify-content: center;
           border-radius: 3px;
           padding: 4px 9px 5px 9px;
-          margin: 3px;
+          margin: 4px 0 0;
           vertical-align: middle;
           line-height: 1.2em;
         }
@@ -58,12 +63,14 @@
         vertical-align: middle;
         position: relative;
         button {
-          margin: 0;
+          margin: 0 0 0 12px;
           width: 100%;
           background-color: transparent;
           border: none;
           outline: none;
           > .sort {
+            display: inline-block;
+            width: 12px;
             color: desaturate(lighten($bg6, 25%), 20%);
           }
         }

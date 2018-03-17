@@ -49,6 +49,7 @@ export class RecordWatcher<RecordType extends { id?: string }, JSONType> {
   }
 
   protected updateRecord(recordName: string, change: Change<RecordType>): void {
+    // console.log('change:', recordName, change);
     if (change.new_val) {
       (server.deepstream.record as any).setData(recordName, this.encoder(change.new_val));
     } else {

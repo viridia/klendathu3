@@ -1,10 +1,12 @@
 export enum Predicate {
   // String predicates
   IN = 'IN',
+  CONTAINS = 'CONTAINS',
   EQUALS = 'EQUALS',
-  NOT_IN = 'NOT_IN',
-  NOT_EQUALS = 'NOT_EQUALS',
   MATCH = 'MATCH',
+  NOT_IN = 'NOT_IN',
+  NOT_CONTAINS = 'NOT_CONTAINS',
+  NOT_EQUALS = 'NOT_EQUALS',
   NOT_MATCH = 'NOT_MATCH',
   STARTS_WITH = 'STARTS_WITH',
   ENDS_WITH = 'ENDS_WITH',
@@ -12,4 +14,6 @@ export enum Predicate {
   GREATER_EQUAL = 'GREATER_EQUAL',
   LESS = 'LESS',
   LESS_EQUAL = 'LESS_EQUAL',
+  HAS_ANY = 'HAS_ANY',
+  HAS_ALL = 'HAS_ALL',
 }

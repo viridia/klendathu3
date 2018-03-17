@@ -18,10 +18,11 @@ export class ColumnSort extends React.Component<Props> {
     return (
       <button className={className} onClick={this.onClick}>
         {children}
-        {sortKey === column &&
+        {sortKey === column ?
           (descending
             ? <span className="sort descend">&#x25bc;</span>
-            : <span className="sort ascend">&#x25b2;</span>)}
+            : <span className="sort ascend">&#x25b2;</span>)
+          : <span className="sort">&nbsp;</span>}
       </button>
     );
   }

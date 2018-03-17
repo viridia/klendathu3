@@ -13,10 +13,10 @@ export class StateColumnRenderer extends AbstractColumnRenderer {
   public render(issue: ObservableIssue) {
     const stateInfo = this.template.states.find(s => s.id === issue.state);
     if (!stateInfo) {
-      return <td className="state" key="state">{issue.state}</td>;
+      return <td className="state pad" key="state">{issue.state}</td>;
     }
     return (
-      <td className="state" key="state">{stateInfo.caption}</td>
+      <td className="state pad" key="state">{stateInfo.caption}</td>
     );
   }
 }

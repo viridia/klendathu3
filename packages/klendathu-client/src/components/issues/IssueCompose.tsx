@@ -442,9 +442,7 @@ export class IssueCompose extends React.Component<Props> {
     this.busy = true;
     const custom: CustomValues = {};
     for (const field of this.issueType.fields) {
-      if (this.custom.has(field.id)) {
-        custom[field.id] = this.custom.get(field.id);
-      }
+      custom[field.id] = this.custom.has(field.id) ? this.custom.get(field.id) : field.default;
     }
     const linked: IssueLink[] = [];
     this.issueLinkMap.forEach((value, key) => {
