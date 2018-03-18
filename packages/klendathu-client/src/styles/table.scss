@@ -1,5 +1,11 @@
 @import './colors';
 
+table {
+  &.fullwidth {
+    width: 100%;
+  }
+}
+
 td, th {
   &.center {
     text-align: center;
@@ -9,5 +15,9 @@ td, th {
   }
   &.right {
     text-align: right;
+  }
+
+  &.pad {
+    padding: 8px 7px 8px 7px;
   }
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Role } from 'klendathu-json-types';
 
-const roleNames: { [role: number]: string } = {
+export const roleNames: { [role: number]: string } = {
   [Role.NONE]: 'None',
   [Role.VIEWER]: 'Viewer',
   [Role.REPORTER]: 'Reporter',

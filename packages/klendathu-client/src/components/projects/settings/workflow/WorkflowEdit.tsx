@@ -1,14 +1,11 @@
-import bind from 'bind-decorator';
-import { Project, Workflow } from 'common/api';
 import * as React from 'react';
+import bind from 'bind-decorator';
+import { Project, Workflow } from 'klendathu-json-types';
 import { Button  } from 'react-bootstrap';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { workflowEdit } from '../../../../store/actions';
-import { saveWorkflow } from '../../../../store/reducers/workflow';
-import './workflow.scss';
 import WorkflowDiagram from './WorkflowDiagram';
 import WorkflowList from './WorkflowList';
+
+import './workflow.scss';
 
 // WorkflowEdit.propTypes = {
   // workflow: React.PropTypes.shape({
@@ -41,7 +38,7 @@ interface DispatchProps {
 
 type Props = OwnProps & StateProps & DispatchProps;
 
-class WorkflowEdit extends React.Component<Props> {
+export class WorkflowEdit extends React.Component<Props> {
   public componentDidMount() {
     // const workflow = this.props.project.workflow;
     // if (workflow.name !== this.props.name ||
@@ -77,12 +74,3 @@ class WorkflowEdit extends React.Component<Props> {
     // this.props.saveWorkflow(this.props.project.name, this.props.name);
   }
 }
-
-export default connect<StateProps, DispatchProps, OwnProps>(
-  state => ({
-    name: state.workflow.name,
-    modified: state.workflow.modified,
-    // project: state.workflows.$project,
-  }),
-  dispatch => bindActionCreators({ workflowEdit, saveWorkflow }, dispatch),
-)(WorkflowEdit);

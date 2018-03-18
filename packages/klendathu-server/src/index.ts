@@ -16,6 +16,7 @@ import './routes/templates';
 import './listeners/accounts';
 import './listeners/issues';
 import './listeners/labels';
+import './listeners/memberships';
 import './listeners/projects';
 import './listeners/projectPrefs';
 import './listeners/templates';

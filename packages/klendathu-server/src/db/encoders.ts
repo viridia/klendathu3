@@ -6,6 +6,7 @@ import {
   Issue,
   IssueArc,
   Label,
+  Membership,
   Project,
   ProjectPrefs,
 } from 'klendathu-json-types';
@@ -17,6 +18,7 @@ import {
   IssueChangeRecord,
   IssueLinkRecord,
   LabelRecord,
+  MembershipRecord,
   ProjectRecord,
   ProjectPrefsRecord,
 } from './types';
@@ -84,5 +86,9 @@ export function encodeIssueLink(record: IssueLinkRecord): IssueArc {
 }
 
 export function encodeIssueChange(record: IssueChangeRecord): Change {
+  return record;
+}
+
+export function encodeMembership(record: MembershipRecord): Membership {
   return record;
 }

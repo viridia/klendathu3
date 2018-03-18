@@ -1,16 +1,9 @@
+import * as React from 'react';
 import bind from 'bind-decorator';
 import * as classNames from 'classnames';
-import { WorkflowState } from 'common/api';
-// import * as Immutable from 'immutable';
-import * as React from 'react';
+import { WorkflowState } from 'klendathu-json-types';
 import { Checkbox, ControlLabel, FormControl } from 'react-bootstrap';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import {
-  addTransition, removeTransition, workflowUpdateState,
-} from '../../../../store/actions';
-import { WorkflowEditState } from '../../../../store/reducers/workflow';
-import DiscloseButton from '../../../common/DiscloseButton';
+import { DiscloseButton } from '../../../common/DiscloseButton';
 import './workflow.scss';
 
 interface OwnProps {
@@ -34,7 +27,7 @@ interface State {
   caption: string;
 }
 
-class StateCard extends React.Component<Props, State> {
+export class StateCard extends React.Component<Props, State> {
   constructor(props: Props, context: any) {
     super(props, context);
     this.state = {
@@ -143,11 +136,3 @@ class StateCard extends React.Component<Props, State> {
     this.props.workflowUpdateState([state.id, { ...state, caption: this.state.caption }]);
   }
 }
-
-export default connect<StateProps, DispatchProps, OwnProps>(
-  (state: { workflow: WorkflowEditState }) => ({
-    states: state.workflow.states,
-  }),
-  dispatch => bindActionCreators(
-      { addTransition, removeTransition, workflowUpdateState }, dispatch),
-)(StateCard);

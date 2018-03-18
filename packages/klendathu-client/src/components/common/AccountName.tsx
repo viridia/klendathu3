@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 interface Props {
   id: string;
   full?: boolean;
+  uname?: boolean;
 }
 
 /** Component which displays the name of an account. */
@@ -25,12 +26,22 @@ export class AccountName extends React.Component<Props> {
   }
 
   public render() {
+    const { uname } = this.props;
+
     if (!this.account) {
       return <span className="name unassigned">unassigned</span>;
     }
 
     if (!this.account.loaded) {
       return <span className="name loading" />;
+    }
+
+    if (uname) {
+      return (
+        <span className="name">
+          <span className="uname">{this.account.uname}</span>
+        </span>
+      );
     }
 
     if (this.account.display) {

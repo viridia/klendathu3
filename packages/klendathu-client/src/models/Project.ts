@@ -36,6 +36,11 @@ export class Project {
     this.record.discard();
   }
 
+  /** Return the fully-qualified database key for this project. */
+  get id() {
+    return `${this.account}/${this.uname}`;
+  }
+
   @computed
   get template(): Template {
     const templateId = this.templateId || 'default';

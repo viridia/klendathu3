@@ -1,5 +1,6 @@
 import { Workflow } from 'common/api';
 import * as React from 'react';
+
 import './workflow.scss';
 
 interface Props {

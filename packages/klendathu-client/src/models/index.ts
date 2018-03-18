@@ -10,6 +10,7 @@ export { ObservableComments } from './ObservableComments';
 export { ObservableIssue } from './ObservableIssue';
 export { ObservableIssueLinks } from './ObservableIssueLinks';
 export { ObservableLabel } from './ObservableLabel';
+export { ObservableMemberList } from './ObservableMemberList';
 export { ObservableProjectPrefs } from './ObservableProjectPrefs';
 export { ObservableSet } from './ObservableSet';
 export { Project } from './Project';

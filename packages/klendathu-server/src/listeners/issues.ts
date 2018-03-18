@@ -214,7 +214,7 @@ server.deepstream.record.listen('^issues/.*', async (eventName, isSubscribed, re
         const pred = args[`pred.${fieldId}`] as Predicate || Predicate.CONTAINS;
         const expr = stringPredicate(r.row('custom')(fieldId), pred, args[key]);
         if (expr) {
-          console.log(expr.toString());
+          // console.log(expr.toString());
           filters.push(expr);
         }
       }

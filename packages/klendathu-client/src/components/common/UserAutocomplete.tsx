@@ -6,7 +6,7 @@ import { Chip } from '../ac/Chip';
 import { searchAccounts } from '../../network/requests';
 
 interface Props {
-  className: string;
+  className?: string;
   placeholder?: string;
   autoFocus?: boolean;
   multiple?: boolean;

@@ -1,5 +1,9 @@
 # TODO:
 
+* Attachments
+* Project Members
+* Saved filters
+* Filter links in left nav
 * Issue changes aren't updating in issue list.
 * Issue Autocomplete
 * Issue Link Edit
@@ -9,13 +13,11 @@
 * Attachments - where to store to?
 * Issue links
 * Sorting by custom fields. (Tricky)
-* Filter bar
 * User Selector
 * Issue Compose (finish)
 * Issue Details
-* Mass edit bar
 * Update Project
-* Project prefs
+* Project prefs panels - columns, members, Workflow, etc.
 * Issue Grouping
 * Issue Change History
 * Workflow Edit
@@ -24,6 +26,9 @@
 * User Autocomplete (need users)
   * Sign up form
 * Remove deleted issues from selection. (Or issues not in query).
+* Graph view
+* State view
+* DS Valves
 
 # Longer term:
 
@@ -70,9 +75,10 @@
 * A way to easily reference tickets in commit messages. (Just paste the url)
 * Make certain fields editable without going into edit mode.
 * Think about email spam. (Once we have email)
+  * Aggregate changes; Don't show trivial changes.
 * Think about a global change history that would avoid the need for email spam.
 * Gantt and ticket relationships.
-* Auto-linked tickets.
+* Auto-linked tickets. (Add 'create linked' in sidebar actions.)
 * Think about how to make it easier to manage ticket relationships.
   * Drag links between cards?
   * Murally-style dragging of cards?  I kind of like that idea...

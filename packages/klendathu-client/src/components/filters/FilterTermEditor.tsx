@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import { Predicate } from 'klendathu-json-types';
-// import { updateFilterTerm } from '../../store/filter';
 import { Project, OperandType, defaultOperandValue } from '../../models';
 import { EditOperand } from '../massedit/EditOperand';
 import { FilterTerm } from './FilterTerm';

@@ -1,17 +1,16 @@
-import bind from 'bind-decorator';
+import * as React from 'react';
 import { Project, ProjectPrefs, Template } from 'common/api';
 import * as Immutable from 'immutable';
 import * as PropTypes from 'prop-types';
-import * as React from 'react';
 import { DefaultChildProps, graphql } from 'react-apollo';
 import { Button } from 'react-bootstrap';
 import { toastr } from 'react-redux-toastr';
-import { setProjectPrefs } from '../../../../store/reducers/projectPrefs';
+// import { setProjectPrefs } from '../../../../store/reducers/projectPrefs';
 import { Column } from './Column';
 import ColumnList from './ColumnList';
-import './ColumnSettings.scss';
+import bind from 'bind-decorator';
 
-import * as ProjectPrefsQuery from '../../../../graphql/queries/projectPrefs.graphql';
+import './ColumnSettings.scss';
 
 interface Props {
   project: Project;

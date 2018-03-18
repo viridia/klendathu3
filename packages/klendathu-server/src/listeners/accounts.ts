@@ -4,70 +4,20 @@ import { AccountRecord } from '../db/types';
 import { escapeRegExp } from '../db/helpers';
 import { encodeAccount } from '../db/encoders';
 import { logger } from '../logger';
+import { RecordWatcher } from './RecordWatcher';
 import * as r from 'rethinkdb';
-import bind from 'bind-decorator';
 
 const ds = server.deepstream;
 
-interface Change<T> {
-  old_val?: T;
-  new_val?: T;
-}
-
-class ActiveQuery<RecordType extends { id?: string }, JSONType> {
-  private cursor: r.Cursor;
-  private record: deepstreamIO.Record;
-  private encoder: (record: RecordType) => JSONType;
-
-  constructor(
-      cursor: r.Cursor,
-      record: deepstreamIO.Record,
-      encoder: (record: RecordType) => JSONType) {
-    this.cursor = cursor;
-    this.record = record;
-    this.encoder = encoder;
-    this.cursor.each(this.onChange);
-  }
-
-  public close() {
-    this.cursor.close();
-    this.record.delete();
-  }
-
-  @bind
-  private onChange(err: Error, change: Change<RecordType>) {
-    if (change) {
-      if (change.old_val && !change.new_val) {
-        this.record.set({});
-      } else {
-        this.record.set(this.encoder(change.new_val));
-      }
-    }
-  }
-}
-
-const activeQueries: Map<string, ActiveQuery<AccountRecord, Account>> = new Map();
+const accountWatcher = new RecordWatcher<AccountRecord, Account>(encodeAccount);
 
 ds.record.listen('^accounts/.*', async (eventName, isSubscribed, response) => {
   if (isSubscribed) {
     response.accept();
-    const record = ds.record.getRecord(eventName);
     const id = eventName.split('/', 2)[1];
-    if (!activeQueries.get(eventName)) {
-      const projectsCursor = await r.table('accounts')
-          .filter({ id })
-          .changes({ includeInitial: true, squash: true } as any)
-          .run(server.conn);
-      const activeQuery = new ActiveQuery(projectsCursor, record, encodeAccount);
-      activeQueries.set(eventName, activeQuery);
-    }
+    accountWatcher.subscribe(eventName, r.table('accounts').get(id));
   } else {
-    // console.log('not subscribed:', eventName);
-    const aq = activeQueries.get(eventName);
-    if (aq) {
-      aq.close();
-      activeQueries.delete(eventName);
-    }
+    accountWatcher.unsubscribe(eventName);
   }
 });
 
@@ -118,6 +68,8 @@ ds.rpc.provide('accounts.search', async (args: any, response: deepstreamIO.RPCRe
         (r.row('uname') as any).match(pattern)).or(
         (r.row('email') as any).match(pattern))
       );
+
+    console.log(query.toString());
 
     // Limit to 10 results
     query = query.orderBy(['display', 'uname']).limit(limit);

@@ -71,6 +71,12 @@
       "bg": "#addcff"
     },
     {
+      "id": "internal_feature",
+      "caption": "Internal Feature",
+      "extends": "issue",
+      "bg": "#c9e79c"
+    },
+    {
       "id": "internal_cleanup",
       "caption": "Internal Cleanup",
       "extends": "issue",
