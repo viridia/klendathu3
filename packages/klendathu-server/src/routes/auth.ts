@@ -312,6 +312,11 @@ server.express.post('/auth/login', handleAsyncErrors(async (req, res) => {
     res.status(500).json({ error: Errors.CONFLICT });
   } else {
     const account = users[0];
+    if (!account.password) {
+      res.status(401).json({ error: Errors.INCORRECT_PASSWORD });
+      return;
+    }
+
     // Compare user password hash with password.
     bcrypt.compare(password, account.password, (err, same) => {
       if (same) {

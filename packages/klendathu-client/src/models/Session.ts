@@ -70,8 +70,8 @@ export class Session {
     }, handleAxiosError).then(() => {
       return this.request.get('/api/accounts/me').then(resp => {
         this.account = resp.data;
-      });
-    }, handleAxiosError).then(() => {
+      }, handleAxiosError);
+    }).then(() => {
       return connect(this.token).then(connection => {
         this.connection = connection;
         return this.account;

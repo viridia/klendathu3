@@ -13,6 +13,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import { session } from '../../models';
+import { RequestError } from '../../network/RequestError';
 
 import './LoginForm.scss';
 
@@ -151,7 +152,7 @@ export class LoginForm extends React.Component<RouteComponentProps<{}>> {
     this.passwordError = '';
     session.login(this.email, this.password).then(result => {
       this.props.history.replace('/');
-    }, error => {
+    }, (error: RequestError) => {
       switch (error.code) {
         case Errors.NOT_FOUND:
           this.emailError = 'Unknown email address.';

@@ -167,6 +167,11 @@
             "description": "Text name of the action.",
             "type": "string"
           },
+          "target": {
+            "description": "Whether to operate on this issue, a new issue, or a copy.",
+            "type": "string",
+            "enum": ["self", "copy", "new"]
+          },
           "state": {
             "description": "State to transition to.",
             "type": "string"

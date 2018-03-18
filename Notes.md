@@ -24,7 +24,6 @@
 * Error reporting for bad params in url path.
 * General error reporting.
 * User Autocomplete (need users)
-  * Sign up form
 * Remove deleted issues from selection. (Or issues not in query).
 * Graph view
 * State view

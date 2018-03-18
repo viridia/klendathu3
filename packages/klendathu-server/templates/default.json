@@ -71,12 +71,6 @@
       "bg": "#addcff"
     },
     {
-      "id": "internal_feature",
-      "caption": "Internal Feature",
-      "extends": "issue",
-      "bg": "#c9e79c"
-    },
-    {
       "id": "internal_cleanup",
       "caption": "Internal Cleanup",
       "extends": "issue",
@@ -139,17 +133,6 @@
         "working_as_intended",
         "deferred",
         "cannot_reproduce"
-      ]
-    },
-    {
-      "id": "review",
-      "caption": "In Review",
-      "closed": false,
-      "transitions": [
-        "assigned",
-        "in_progress",
-        "qa",
-        "verified"
       ]
     },
     {
@@ -263,18 +246,7 @@
           "type": "issue"
         }
       ],
-      "linked": { "relation": "duplicate", "to": "{dup_of}" }
-    },
-    {
-      "caption": "Finish: In Review",
-      "state": "review",
-      "ask": [
-        {
-          "id": "reviewer",
-          "caption": "Reviewer:",
-          "type": "user"
-        }
-      ]
+      "linked": { "relation": "DUPLICATE", "to": "{dup_of}" }
     },
     {
       "caption": "Finish: QA",
@@ -301,6 +273,16 @@
     {
       "caption": "Unassign",
       "owner": "{none}"
+    },
+    {
+      "caption": "Clone",
+      "target": "copy",
+      "state": "new"
+    },
+    {
+      "caption": "Create linked",
+      "target": "new",
+      "linked": { "relation": "BLOCKED_BY", "to": "{self}" }
     }
   ],
   "workflows": [

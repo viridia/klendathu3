@@ -26,7 +26,7 @@
     },
     "owner": {
       "description": "Issue owner.",
-      "type": "string"
+      "type": ["string", "null"]
     },
     "ownerSort": {
       "description": "Sort key for issue owners.",

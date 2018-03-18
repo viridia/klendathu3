@@ -69,8 +69,6 @@ ds.rpc.provide('accounts.search', async (args: any, response: deepstreamIO.RPCRe
         (r.row('email') as any).match(pattern))
       );
 
-    console.log(query.toString());
-
     // Limit to 10 results
     query = query.orderBy(['display', 'uname']).limit(limit);
 
