@@ -116,19 +116,19 @@ export function searchAccounts(
 }
 
 export function createUserAccount(email: string, password: string): Promise<LoginResponse> {
-  return request.post(`/auth/signup`, { email, password }).then(resp => {
-    return resp.data;
-  }, handleAxiosError);
+  return request.post(`/auth/signup`, { email, password })
+  .then(resp => resp.data, handleAxiosError);
 }
 
 export function sendVerifyEmail(email: string): Promise<LoginResponse> {
-  return request.post(`/auth/sendverify`, { email }).then(resp => {
-    return resp.data;
-  }, handleAxiosError);
+  return request.post(`/auth/sendverify`, { email }).then(resp => resp.data, handleAxiosError);
 }
 
-export function verifyEmail(email: string,  token: string): Promise<LoginResponse> {
-  return request.post(`/auth/verify`, { email, token }).then(resp => {
-    return resp.data;
-  }, handleAxiosError);
+export function verifyEmail(email: string, token: string): Promise<LoginResponse> {
+  return request.post(`/auth/verify`, { email, token }).then(resp => resp.data, handleAxiosError);
+}
+
+export function changeAccountInfo(uname: string, display: string): Promise<undefined> {
+  return request.patch(`/api/accounts/me`, { uname, display })
+  .then(resp => resp.data, handleAxiosError);
 }

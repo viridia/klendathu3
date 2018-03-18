@@ -1,9 +1,19 @@
 import * as React from 'react';
-import { Button, ControlLabel, Form, FormControl, FormGroup, Modal } from 'react-bootstrap';
+import {
+  Button,
+  ControlLabel,
+  Form,
+  FormControl,
+  FormGroup,
+  HelpBlock,
+  Modal,
+} from 'react-bootstrap';
+import { Errors } from 'klendathu-json-types';
 import { UsernameEditor } from './UsernameEditor';
 import { action, observable } from 'mobx';
 import { observer } from 'mobx-react';
-import { session, request } from '../../models';
+import { session } from '../../models';
+import { changeAccountInfo } from '../../network/requests';
 
 const noop: () => void = () => null;
 
@@ -11,6 +21,7 @@ const noop: () => void = () => null;
 export class SetupAccountDialog extends React.Component<undefined> {
   @observable private busy = false;
   @observable private username: string = '';
+  @observable private usernameError: string = '';
   @observable private available = false;
   @observable private displayName: string = '';
 
@@ -49,6 +60,8 @@ export class SetupAccountDialog extends React.Component<undefined> {
                   placeholder="How you want your name to be displayed"
                   autoFocus={true}
               />
+              <FormControl.Feedback />
+              <HelpBlock>{this.usernameError}</HelpBlock>
             </FormGroup>
             <UsernameEditor
                 initialValue=""
@@ -89,12 +102,27 @@ export class SetupAccountDialog extends React.Component<undefined> {
   @action.bound
   private onClickSave() {
     this.busy = true; // Note we never set this to false because dialog should auto-close.
-    request.patch(`/api/accounts/me`, {
-      uname: this.username,
-      display: this.displayName,
-    }).then(() => {
-      // Reload the account data.
+    changeAccountInfo(this.username, this.displayName).then(() => {
       session.reload();
+    }, error => {
+      switch (error.code) {
+        case Errors.USERNAME_TOO_SHORT:
+          this.usernameError = 'Username must be at least 5 characters';
+          break;
+        case Errors.USERNAME_LOWER_CASE:
+          this.usernameError = 'Username must be all lower case';
+          break;
+        case Errors.USERNAME_INVALID_CHARS:
+          this.usernameError = 'Invalid character in username';
+          break;
+        case Errors.EXISTS:
+        case Errors.CONFLICT:
+          this.usernameError = 'Username already exists';
+          break;
+        default:
+          this.usernameError = error.message;
+          break;
+      }
     });
   }
 }

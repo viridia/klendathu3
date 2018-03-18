@@ -251,12 +251,6 @@ server.express.post('/auth/signup', handleAsyncErrors(async (req, res) => {
   // TODO: Validate email, username, fullname.
   if (email.length < 3) {
     res.status(400).json({ error: Errors.INVALID_EMAIL });
-  // } else if (username.length < 5) {
-  //   res.send({ err: 'username-too-short' });
-  // } else if (username.toLowerCase() !== username) {
-  //   res.send({ err: 'username-lower-case' });
-  // } else if (!username.match(/^[a-z][a-z0-9_\-]+$/)) {
-  //   res.send({ err: 'username-invalid-chars' });
   } else if (password.length < 5) {
     res.status(400).json({ error: Errors.PASSWORD_TOO_SHORT });
   } else {

@@ -1,5 +1,5 @@
 import { server } from '../Server';
-import { Account } from 'klendathu-json-types';
+import { Account, Errors } from 'klendathu-json-types';
 import { AccountRecord } from '../db/types';
 import { logger } from '../logger';
 import * as r from 'rethinkdb';
@@ -43,7 +43,16 @@ server.api.patch('/accounts/me', async (req, res) => {
   }
   if (body.uname) {
     if (restrictedNames.has(body.uname)) {
-      res.status(409).json({ error: 'name-exists' });
+      res.status(409).json({ error: Errors.EXISTS });
+      return;
+    } else if (body.uname.length < 5) {
+      res.status(409).json({ error: Errors.USERNAME_TOO_SHORT });
+      return;
+    } else if (body.uname.toLowerCase() !== body.uname) {
+      res.status(409).json({ error: Errors.USERNAME_LOWER_CASE });
+      return;
+    } else if (!body.uname.match(/^[a-z][a-z0-9_\-]+$/)) {
+      res.status(409).json({ error: Errors.USERNAME_INVALID_CHARS });
       return;
     }
     newAccount.uname = body.uname;
