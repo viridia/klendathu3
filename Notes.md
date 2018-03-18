@@ -48,6 +48,7 @@
 * IssueDetailsView - attachments and comments.
 * ProjectInfoEdit
 * ProjectSettings
+* AddMemberDialog
 
 ## Routes:
 

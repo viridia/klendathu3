@@ -25,6 +25,9 @@ export function displayErrorToast(error: RequestError) {
     case Errors.CONFLICT:
       toast.error('Conflict with existing resources.');
       break;
+    case Errors.INVALID_TOKEN:
+      toast.error('Invalid or expired security token.');
+      break;
     default:
       toast.error(error.message);
       break;

@@ -23,6 +23,7 @@
     "deepstream.io-client-js": "^2.3.0",
     "file-loader": "^1.1.11",
     "fork-ts-checker-webpack-plugin": "^0.4.1",
+    "form-data": "^2.3.2",
     "history": "^4.7.2",
     "klendathu-json-types": "^0.0.1",
     "lru-cache": "^4.1.1",

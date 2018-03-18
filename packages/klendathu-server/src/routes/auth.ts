@@ -11,9 +11,11 @@ import * as jwt from 'jwt-simple';
 import * as passport from 'passport';
 import * as r from 'rethinkdb';
 import * as qs from 'qs';
+import * as crypto from 'crypto';
 import { URL } from 'url';
-
 import { server } from '../Server';
+import { sendEmailVerify } from '../mail';
+import { handleAsyncErrors } from './errors';
 
 const jwtOpts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -244,7 +246,7 @@ if (process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET) {
 }
 
 // Signup handler
-server.express.post('/auth/signup', async (req, res) => {
+server.express.post('/auth/signup', handleAsyncErrors(async (req, res) => {
   const { email, password } = req.body;
   // TODO: Validate email, username, fullname.
   if (email.length < 3) {
@@ -296,10 +298,10 @@ server.express.post('/auth/signup', async (req, res) => {
       });
     }
   }
-});
+}));
 
 // Login handler
-server.express.post('/auth/login', async (req, res) => {
+server.express.post('/auth/login', handleAsyncErrors(async (req, res) => {
   const { email, password } = req.body;
   if (!email || email.length < 3) {
     res.status(400).json({ error: Errors.INVALID_EMAIL });
@@ -333,7 +335,89 @@ server.express.post('/auth/login', async (req, res) => {
       }
     });
   }
-});
+}));
+
+// Send verify email address
+server.express.post('/auth/sendverify', handleAsyncErrors(async (req, res) => {
+  const { email } = req.body;
+  // TODO: Validate email, username, fullname.
+  if (email.length < 3) {
+    res.status(400).json({ error: Errors.INVALID_EMAIL });
+    return;
+  }
+
+  const accounts: AccountRecord[] = await (await r.table('accounts')
+      .filter({ email })
+      .run(server.conn)).toArray();
+  if (accounts.length === 0) {
+    logger.error('Attempt to verify unknown email:', { email });
+    res.status(404).json({ error: Errors.NOT_FOUND });
+  } else if (accounts.length > 1) {
+    logger.error('Multiple users with the same email:', { email });
+    res.status(500).json({ error: Errors.CONFLICT });
+  } else {
+    const account = accounts[0];
+    if (account.type !== 'user') {
+      logger.error('Attempt to verify email for organization:', { email });
+      res.status(404).json({ error: Errors.NOT_FOUND });
+      return;
+    }
+
+    account.verificationToken = crypto.randomBytes(20).toString('hex');
+
+    await r.table('accounts')
+        .get(account.id)
+        .update({ verificationToken: account.verificationToken })
+        .run(server.conn);
+
+    sendEmailVerify(account).then(() => {
+      logger.info('Sent verification email to:', account.email);
+      res.end();
+    }, error => {
+      res.status(500).json(error);
+    });
+  }
+}));
+
+// Send verify email address
+server.express.post('/auth/verify', handleAsyncErrors(async (req, res) => {
+  const { email, token } = req.body;
+  // TODO: Validate email, username, fullname.
+  if (email.length < 3) {
+    res.status(400).json({ error: Errors.INVALID_EMAIL });
+    return;
+  }
+
+  const accounts: AccountRecord[] = await (await r.table('accounts')
+      .filter({ email })
+      .run(server.conn)).toArray();
+  if (accounts.length === 0) {
+    logger.error('Attempt to verify unknown email:', { email });
+    res.status(404).json({ error: Errors.NOT_FOUND });
+  } else if (accounts.length > 1) {
+    logger.error('Multiple users with the same email:', { email });
+    res.status(500).json({ error: Errors.CONFLICT });
+  } else {
+    const account = accounts[0];
+    if (account.type !== 'user') {
+      logger.error('Attempt to verify email for organization:', { email });
+      res.status(404).json({ error: Errors.NOT_FOUND });
+      return;
+    }
+
+    if (account.verificationToken !== token) {
+      await r.table('accounts')
+          .get(account.id)
+          .update({ verificationToken: null, verified: true })
+          .run(server.conn);
+      logger.info('Account verified:', { email });
+      res.end();
+    } else {
+      logger.error('Invalid token:', { email, token });
+      res.status(404).json({ error: Errors.INVALID_TOKEN });
+    }
+  }
+}));
 
 // Authentication endpoint for deepstream
 server.express.post('/auth-user', (req, res, next) => {

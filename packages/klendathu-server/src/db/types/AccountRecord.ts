@@ -23,4 +23,7 @@ export interface AccountRecord {
 
   /** Encrypted password for email accounts. */
   password?: string;
+
+  /** Token used for verifying email address or recovering password. */
+  verificationToken?: string;
 }

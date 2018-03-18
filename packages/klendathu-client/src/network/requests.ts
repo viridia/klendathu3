@@ -120,3 +120,15 @@ export function createUserAccount(email: string, password: string): Promise<Logi
     return resp.data;
   }, handleAxiosError);
 }
+
+export function sendVerifyEmail(email: string): Promise<LoginResponse> {
+  return request.post(`/auth/sendverify`, { email }).then(resp => {
+    return resp.data;
+  }, handleAxiosError);
+}
+
+export function verifyEmail(email: string,  token: string): Promise<LoginResponse> {
+  return request.post(`/auth/verify`, { email, token }).then(resp => {
+    return resp.data;
+  }, handleAxiosError);
+}

@@ -19,4 +19,5 @@ export enum Errors {
   USERNAME_INVALID_CHARS = 'username-invalid-chars',
   PASSWORD_TOO_SHORT = 'password-too-short',
   INCORRECT_PASSWORD = 'incorrect-password',
+  INVALID_TOKEN = 'invalid-token',
 }

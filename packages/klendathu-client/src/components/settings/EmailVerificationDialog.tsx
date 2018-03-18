@@ -2,7 +2,9 @@ import * as React from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { observer } from 'mobx-react';
 import { session } from '../../models';
-// import { toast } from 'react-toastify';
+import { sendVerifyEmail } from '../../network/requests';
+import { displayErrorToast } from '../common/displayErrorToast';
+import { toast } from 'react-toastify';
 import bind from 'bind-decorator';
 
 const noop: () => void = () => null;
@@ -34,11 +36,8 @@ export class EmailVerificationDialog extends React.Component<undefined> {
 
   @bind
   private onClickSend() {
-    const url = new URL(window.location.toString());
-    url.pathname = '/projects';
-    url.search = '';
-    // authModel.user.sendEmailVerification({ url: url.toString() }).then(() => {
-    //   toast.success(`Verification email sent.`);
-    // });
+    sendVerifyEmail(session.account.email).then(() => {
+      toast.success(`Verification email sent.`);
+    }, displayErrorToast);
   }
 }

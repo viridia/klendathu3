@@ -3,6 +3,7 @@ import { Route, RouteComponentProps, Switch } from 'react-router-dom';
 // import { Header } from '../header/Header';
 import { LoginForm } from './LoginForm';
 import { SignUpForm } from './SignUpForm';
+import { VerifyEmailForm } from './VerifyEmailForm';
 import { ToastContainer } from 'react-toastify';
 
 import './AccountPage.scss';
@@ -23,6 +24,7 @@ export class AccountPage extends React.Component<RouteComponentProps<{}>> {
           <Switch>
             <Route path="/account/login" component={LoginForm} />
             <Route path="/account/register" component={SignUpForm} />
+            <Route path="/account/verify" component={VerifyEmailForm} />
             {/*<Route path="/account/activate" />*/}
             <Route path="/account/recover" />
             <Route path="/account/reset" />
