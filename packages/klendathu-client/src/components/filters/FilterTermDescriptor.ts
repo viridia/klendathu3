@@ -23,10 +23,19 @@ function toArray(value: string | string[]): string[] {
 }
 
 export interface FilterTermDescriptor {
+  /** Display name of this fiter term. */
   caption: string;
+
+  /** Data type of filter operand. */
   type: OperandType;
+
+  /** If this filter term is defined by a custom template field. */
   customField?: FieldType;
+
+  /** Construct a query string from the filter terms. */
   buildQuery: (query: Query, term: FilterTerm) => void;
+
+  /** Get filter term operand from query string. */
   parseQuery: (query: Query, term: FilterTerm, project: Project) => void;
 }
 
@@ -165,13 +174,6 @@ export const descriptors: { [type: string]: FilterTermDescriptor } = {
       }
     }
   },
-  // keywords: {
-  //   caption: 'Keywords',
-  //   type: 'text[]',
-  //   buildQuery: (query, term) => {
-  //     console.log(term);
-  //   },
-  // },
 };
 
 export function getDescriptor(project: Project, fieldId: string): FilterTermDescriptor {

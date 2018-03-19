@@ -8,6 +8,7 @@ import './routes/auth';
 import './routes/accounts';
 import './routes/issues';
 import './routes/labels';
+import './routes/memberships';
 import './routes/names';
 import './routes/projects';
 import './routes/projectPrefs';

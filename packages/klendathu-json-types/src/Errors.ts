@@ -12,6 +12,7 @@ export enum Errors {
   MISSING_NAME = 'missing-name',
   MISSING_COLOR = 'missing-color',
   MISSING_LABEL = 'missing-label',
+  INVALID_ROLE = 'invalid-role',
 
   INVALID_EMAIL = 'invalid-email',
   USERNAME_TOO_SHORT = 'username-too-short',

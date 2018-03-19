@@ -43,6 +43,11 @@ $buttonInfoColor: lighten(#f3e5f5, 5%);
 $buttonInfoBg: #9d8de8;
 $buttonInfoBorder: darken($buttonInfoBg, 10%);
 
+// Danger button
+$buttonDangerColor: lighten(#f3e5f5, 5%);
+$buttonDangerBg: #e830ad;
+$buttonDangerBorder: darken($buttonDangerBg, 10%);
+
 // Menus
 $dropdownLinkActiveBg: $bg1;
 

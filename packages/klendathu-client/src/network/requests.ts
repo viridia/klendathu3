@@ -1,4 +1,4 @@
-import { Account, Errors, Issue, IssueInput, Label, LabelInput } from 'klendathu-json-types';
+import { Account, Errors, Issue, IssueInput, Label, LabelInput, Role } from 'klendathu-json-types';
 import { session, request } from '../models/Session';
 import { AxiosError } from 'axios';
 import { RequestError } from './RequestError';
@@ -131,4 +131,36 @@ export function verifyEmail(email: string, token: string): Promise<LoginResponse
 export function changeAccountInfo(uname: string, display: string): Promise<undefined> {
   return request.patch(`/api/accounts/me`, { uname, display })
   .then(resp => resp.data, handleAxiosError);
+}
+
+export function setProjectRole(
+    accountId: string, project: string, userId: string, role: Role): Promise<undefined> {
+  return request.post(`/api/projects/${accountId}/${project}/members/${userId}`, { role })
+  .then(resp => {
+    return resp.data;
+  }, handleAxiosError);
+}
+
+export function removeProjectRole(
+    accountId: string, project: string, userId: string): Promise<undefined> {
+  return request.delete(`/api/projects/${accountId}/${project}/members/${userId}`)
+  .then(resp => {
+    return resp.data;
+  }, handleAxiosError);
+}
+
+export function setOrganizationRole(
+    accountId: string, userId: string, role: Role): Promise<undefined> {
+  return request.post(`/api/organizations/${accountId}/members/${userId}`, { role })
+  .then(resp => {
+    return resp.data;
+  }, handleAxiosError);
+}
+
+export function removeOrganizationRole(
+    accountId: string, project: string, userId: string): Promise<undefined> {
+  return request.delete(`/api/organizations/${accountId}/members/${userId}`)
+  .then(resp => {
+    return resp.data;
+  }, handleAxiosError);
 }

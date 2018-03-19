@@ -5,7 +5,7 @@
 * Saved filters
 * Filter links in left nav
 * Issue changes aren't updating in issue list.
-* Issue Autocomplete
+* Issue Autocomplete / project-specific
 * Issue Link Edit
 * Issue Edit
   * Edit form
@@ -23,11 +23,12 @@
 * Workflow Edit
 * Error reporting for bad params in url path.
 * General error reporting.
-* User Autocomplete (need users)
-* Remove deleted issues from selection. (Or issues not in query).
+* Remove deleted issues from selection set. (Or issues not in query).
 * Graph view
 * State view
 * DS Valves
+* Milestones
+* AND / Or search for labels
 
 # Longer term:
 
@@ -83,3 +84,4 @@
   * Drag links between cards?
   * Murally-style dragging of cards?  I kind of like that idea...
 * Cloudwatch-style collapsing columns.
+* Filter terms: multiple label clauses - each clause is OR, each term is AND.

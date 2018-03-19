@@ -1,21 +1,21 @@
 import * as r from 'rethinkdb';
+import { logger } from '../logger';
 
 /* Function that takes a RethinkDB cursor, and returns a promise which resolves to either
-   the first result, or to null if there were no results. */
-export function optional<T>(): (cursor: r.Cursor) => Promise<T> {
+   the first result, or to null if there were no results. Throws an exception if there
+   was more than one result. */
+export function zeroOrOne<T>(details?: any): (cursor: r.Cursor) => Promise<T> {
   return (cursor: r.Cursor): Promise<T> => {
     return new Promise<T>((resolve, reject) => {
-      cursor.each((err, row) => {
-        if (err) {
-          reject(err);
-          return false;
+      cursor.toArray().then(rows => {
+        if (rows.length > 1) {
+          logger.error('Expected exactly one result:', details);
+          throw Error('Conflicting database records');
+        } else if (rows.length === 0) {
+          resolve(null);
         } else {
-          resolve(row);
-          return false;
+          resolve(rows[0]);
         }
-      }, () => {
-        resolve(null);
-        return null;
       });
     });
   };
