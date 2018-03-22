@@ -228,7 +228,7 @@ export class IssueListView extends React.Component<Props> {
         const desc = descriptors[key];
         let value: any = this.queryParams[key];
         if (desc && desc.type === OperandType.USER && value === 'me') {
-          value = session.account.uid;
+          value = session.account.uname;
         } else if (desc && desc.type === OperandType.STATE_SET && value === 'open') {
           value = project.template.states.filter(st => !st.closed).map(st => st.id);
         }

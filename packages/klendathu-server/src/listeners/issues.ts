@@ -12,7 +12,7 @@ import {
   encodeIssueLink,
   encodeIssueChange,
 } from '../db/encoders';
-import { escapeRegExp } from '../db/helpers';
+import { escapeRegExp, zeroOrOne } from '../db/helpers';
 import { RecordWatcher } from './RecordWatcher';
 import { RecordListWatcher } from './RecordListWatcher';
 import { RecordSetWatcher } from './RecordSetWatcher';
@@ -73,6 +73,14 @@ function stringPredicate(
       logger.error('Invalid string predicate:', pred);
       return null;
   }
+}
+
+async function lookupUsers(users: string | string[]): Promise<string[]> {
+  const unames = toArray(users);
+  const accounts = await Promise.all(unames.map(uname => {
+    return r.table('accounts').filter({ uname }).run(server.conn).then(zeroOrOne<Account>());
+  }));
+  return accounts.filter(a => a).map(a => a.id);
 }
 
 server.deepstream.record.listen('^issues/.*', async (eventName, isSubscribed, response) => {
@@ -163,14 +171,16 @@ server.deepstream.record.listen('^issues/.*', async (eventName, isSubscribed, re
 
     // By Reporter
     if (args.reporter) {
+      const users = await lookupUsers(args.reporter);
       filters.push((r.row('reporter') as any)
-          .do((reporter: string) => r.expr(toArray(args.reporter)).contains(reporter)));
+          .do((reporter: string) => r.expr(users).contains(reporter)));
     }
 
     // By Owner
     if (args.owner) {
+      const users = await lookupUsers(args.owner);
       filters.push((r.row('owner') as any)
-          .do((owner: string) => r.expr(toArray(args.owner)).contains(owner)));
+          .do((owner: string) => r.expr(users).contains(owner)));
     }
 
     // Match any label
@@ -189,7 +199,7 @@ server.deepstream.record.listen('^issues/.*', async (eventName, isSubscribed, re
 
     // Match any cc
     if (args.cc) {
-      const cc = toArray(args.cc).map(l => `${account}/${project}/${l}`);
+      const cc = await lookupUsers(args.cc);
       if (cc) {
         const e = cc.reduce((expr: r.Expression<boolean>, uid) => {
           const term = r.row('cc').contains(uid);
