@@ -60,14 +60,14 @@
   }
 
   .ac-single {
-    width: 15em;
+    width: 13em;
     display: inline-flex;
     margin-right: 1rem;
   }
 
   .ac-multi-group {
     display: flex;
-    width: 15em;
+    width: 13em;
   }
 
   .ac-multi {
@@ -76,6 +76,10 @@
 
   .linked-group {
     align-items: stretch;
+  }
+
+  .label-selector {
+    width: 100%;
   }
 
   // Allows ac-issue to be absolute so that content doesn't stretch the table.

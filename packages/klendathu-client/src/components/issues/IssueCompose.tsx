@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
   Account,
+  Attachment,
   CustomValues,
   DataType,
   Errors,
@@ -34,9 +35,12 @@ import { AutoNavigate } from '../common/AutoNavigate';
 import { UserAutocomplete } from '../common/UserAutocomplete';
 import { IssueLinks } from './IssueLinks';
 import { relationNames } from '../common/relationNames';
+import { displayErrorToast } from '../common/displayErrorToast';
 import { RequestError } from '../../network';
+import { getFileInfoList } from '../../network/requests';
 import { RouteComponentProps } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
+import { UploadAttachments } from '../files/UploadAttachments';
 import { action, computed, IObservableArray, observable, toJS, when } from 'mobx';
 import { observer } from 'mobx-react';
 import { toast } from 'react-toastify';
@@ -75,8 +79,9 @@ export class IssueCompose extends React.Component<Props> {
   @observable private issueToLink: Issue = null;
   @observable.shallow private issueLinkMap = new Map<string, Relation>();
   @observable private custom = new Map<string, string | number | boolean>();
-  @observable private comments: string[] = [];
+  @observable private comments = [] as IObservableArray<string>;
   @observable private busy = false;
+  @observable private attachments = [] as IObservableArray<Attachment>;
   private prevState: string = '';
 
   public componentWillMount() {
@@ -243,15 +248,15 @@ export class IssueCompose extends React.Component<Props> {
                       </div>
                     </td>
                   </tr>
-                  {/*<tr>
+                  <tr>
                     <th className="header"><ControlLabel>Attach files:</ControlLabel></th>
                     <td>
                       <UploadAttachments
-                        ref={el => { this.attachments = el; }}
+                        attachments={this.attachments}
                         project={project}
                       />
                     </td>
-                  </tr>*/}
+                  </tr>
                   <tr>
                     <th className="header"><ControlLabel>Comments:</ControlLabel></th>
                     <td>
@@ -448,6 +453,7 @@ export class IssueCompose extends React.Component<Props> {
     this.issueLinkMap.forEach((value, key) => {
       linked.push({ to: key, relation: value });
     });
+    const attachments: string[] = this.attachments.map(a => a.id);
     const input: IssueInput = {
       type: this.type,
       state: this.issueState,
@@ -460,7 +466,7 @@ export class IssueCompose extends React.Component<Props> {
       linked,
       custom,
       comments: toJS(this.comments),
-      attachments: [],
+      attachments,
     };
     this.props.onSave(input).then(() => {
       const { history } = this.props;
@@ -471,17 +477,11 @@ export class IssueCompose extends React.Component<Props> {
       }
     }, (error: RequestError) => {
       switch (error.code) {
-        case Errors.INTERNAL:
-          toast.error('Internal error');
-          break;
-        case Errors.UNKNOWN:
-          toast.error('Unknown error');
-          break;
         case Errors.SCHEMA:
           toast.error('Schema validation failure');
           break;
         default:
-          toast.error(error.message);
+          displayErrorToast(error);
           break;
       }
       this.busy = false;
@@ -498,12 +498,17 @@ export class IssueCompose extends React.Component<Props> {
         this.issueState = issue.state;
         this.summary = issue.summary;
         this.description = issue.description;
-        this.custom.clear();
         // this.owner = issue.owner;
         // this.cc = issue.cc;
-        // this.labels.replace(issue.labels);
+        this.labels.replace(issue.labels);
+        this.custom.clear();
         for (const key of Object.getOwnPropertyNames(issue.custom)) {
           this.custom.set(key, issue.custom[key]);
+        }
+        if (issue.attachments) {
+          getFileInfoList(issue.attachments.slice(), files => {
+            this.attachments.replace(files);
+          });
         }
         // this.issueLinkMap.clear();
       });
@@ -516,6 +521,8 @@ export class IssueCompose extends React.Component<Props> {
       this.labels.replace([]);
       this.custom.clear();
       this.issueLinkMap.clear();
+      this.comments.clear();
+      this.attachments.clear();
       // this.public = false;
     }
   }

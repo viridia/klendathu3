@@ -10,7 +10,6 @@ import {
 } from 'klendathu-json-types';
 import {
   AccountRecord,
-  // AttachmentRecord,
   CommentRecord,
   IssueChangeRecord,
   IssueLinkRecord,
@@ -83,19 +82,16 @@ server.api.post('/issues/:account/:project', async (req, res) => {
       custom: input.custom,
       isPublic: !!input.isPublic,
       position: input.position || null,
+      attachments: input.attachments || [],
     };
 
-    // attachments: input.attachments || [],
-    // comments: (args.input.comments || []).map((comment, index) => ({
-    //   id: index,
-    //   body: comment.body,
-    //   author: context.user.id,
-    //   created: now,
-    //   updated: now,
-    // })),
-
-    // TODO: Insert comments
-    // TODO: Insert attachments
+    const commentsToInsert: CommentRecord[] = (input.comments || []).map(comment => ({
+      issue: issueId,
+      author: user.id,
+      body: comment,
+      created: now,
+      updated: now,
+    }));
 
     const result = await r.table('issues')
         .insert(record, { returnChanges: true })
@@ -129,6 +125,7 @@ server.api.post('/issues/:account/:project', async (req, res) => {
         }
         await r.table('issueLinks').insert(linksToInsert).run(server.conn);
         await r.table('issueChanges').insert(changesToInsert).run(server.conn);
+        await r.table('comments').insert(commentsToInsert).run(server.conn);
       }
       res.json(record);
     } else if (result.errors > 0) {
@@ -361,29 +358,21 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
       }
     }
 
-    // TODO: Attachments
-    // if ('attachments' in input) {
-    //   for (const a of input.attachments) {
-    //     const attachment: AttachmentRecord = {
-    //       issue: issueId,
-    //       url
-    //     }
-    //
-    //   }
-    //   const existingAttachments = existing.attachments || [];
-    //   record.attachments = input.attachments;
-    //   const attachmentsPrev = new Set(existingAttachments);
-    //   const attachmentsNext = new Set(input.attachments);
-    //   input.attachments.forEach(attachments => attachmentsPrev.delete(attachments));
-    //   existingAttachments.forEach(attachments => attachmentsNext.delete(attachments));
-    //   if (attachmentsNext.size > 0 || attachmentsPrev.size > 0) {
-    //     change.attachments = {
-    //       added: Array.from(attachmentsNext),
-    //       removed: Array.from(attachmentsPrev),
-    //     };
-    //     change.at = record.updated;
-    //   }
-    // }
+    if ('attachments' in input) {
+      const existingAttachments = existing.attachments || [];
+      record.attachments = input.attachments;
+      const attachmentsPrev = new Set(existingAttachments);
+      const attachmentsNext = new Set(input.attachments);
+      input.attachments.forEach(attachments => attachmentsPrev.delete(attachments));
+      existingAttachments.forEach(attachments => attachmentsNext.delete(attachments));
+      if (attachmentsNext.size > 0 || attachmentsPrev.size > 0) {
+        change.attachments = {
+          added: Array.from(attachmentsNext),
+          removed: Array.from(attachmentsPrev),
+        };
+        change.at = record.updated;
+      }
+    }
 
     // Patch comments list.
     // Note that we don't include comments in the change log since the comments themselves can

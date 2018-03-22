@@ -1,7 +1,7 @@
 # TODO:
 
 * Attachments
-* Project Members
+* Attachments - where to store to?
 * Saved filters
 * Filter links in left nav
 * Issue changes aren't updating in issue list.
@@ -10,25 +10,27 @@
 * Issue Edit
   * Edit form
 * Comments
-* Attachments - where to store to?
 * Issue links
-* Sorting by custom fields. (Tricky)
+* Sorting by custom fields. (Tricky without a database index - perhaps can't use lists.)
 * User Selector
 * Issue Compose (finish)
 * Issue Details
 * Update Project
-* Project prefs panels - columns, members, Workflow, etc.
+* Project prefs panels - columns, Workflow, etc.
 * Issue Grouping
-* Issue Change History
 * Workflow Edit
 * Error reporting for bad params in url path.
-* General error reporting.
+* Issue Change History (global)
 * Remove deleted issues from selection set. (Or issues not in query).
 * Graph view
 * State view
 * DS Valves
 * Milestones
 * AND / Or search for labels
+* Clone issue
+* Create linked issue
+* Nginx setup
+* HTTPS
 
 # Longer term:
 
@@ -41,8 +43,8 @@
 
 ## Files with unfinished pieces:
 * LoginForm
-* EmailVerificationDialog
 * IssueEditView
+* IssueCompose - reset to edit
 * CustomSuggestField
 * ErrorDisplay
 * IssueDetailsView - attachments and comments.

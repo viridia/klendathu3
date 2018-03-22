@@ -1,3 +1,6 @@
-import { Attachment } from 'klendathu-json-types';
-
-export type AttachmentRecord = Attachment;
+export interface AttachmentRecord {
+  id?: string;
+  attachmentId: string;
+  issue?: string;
+  comment?: string;
+}

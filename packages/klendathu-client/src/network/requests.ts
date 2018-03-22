@@ -1,4 +1,13 @@
-import { Account, Errors, Issue, IssueInput, Label, LabelInput, Role } from 'klendathu-json-types';
+import {
+  Account,
+  Attachment,
+  Errors,
+  Issue,
+  IssueInput,
+  Label,
+  LabelInput,
+  Role,
+} from 'klendathu-json-types';
 import { session, request } from '../models/Session';
 import { AxiosError } from 'axios';
 import { RequestError } from './RequestError';
@@ -163,4 +172,21 @@ export function removeOrganizationRole(
   .then(resp => {
     return resp.data;
   }, handleAxiosError);
+}
+
+export function getFileInfo(id: string, callback: (attachment: Attachment) => void): void {
+  session.connection.rpc.make(`file.info`, { id }, (error: string, resp: Attachment) => {
+    if (resp && !error) {
+      callback(resp);
+    }
+  });
+}
+
+export function getFileInfoList(
+    idList: string[], callback: (attachments: Attachment[]) => void): void {
+  session.connection.rpc.make(`file.info.list`, idList, (error: string, resp: Attachment[]) => {
+    if (resp && !error) {
+      callback(resp);
+    }
+  });
 }

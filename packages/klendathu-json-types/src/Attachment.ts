@@ -7,10 +7,10 @@ export interface Attachment {
   filename: string;
 
   /** ID of issue this is attached to. */
-  issue?: string;
+  // issue?: string;
 
   /** ID of comment this is attached to. */
-  comment?: string;
+  // comment?: string;
 
   /** URL to download the attachment. */
   url: string;

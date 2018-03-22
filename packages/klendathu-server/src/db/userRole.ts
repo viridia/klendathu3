@@ -16,27 +16,30 @@ export async function getProjectAndRole(
     return { projectRecord: null, role: Role.NONE };
   }
 
-  if (projectRecord.owner === user.id) {
-    return { projectRecord, role: Role.OWNER };
-  }
+  if (user) {
+    if (projectRecord.owner === user.id) {
+      return { projectRecord, role: Role.OWNER };
+    }
 
-  const membership = await r.table('memberships')
-    .filter({ project: projectId, user: user.id })
-    .run(server.conn)
-    .then(zeroOrOne<MembershipRecord>({ projectId, user: user.id }));
-
-  if (membership) {
-    return { projectRecord, role: membership.role };
-  }
-
-  const owner = await r.table('accounts').get<AccountRecord>(projectRecord.owner).run(server.conn);
-  if (owner.type === 'organization') {
-    const orgMembership = await r.table('memberships')
-      .filter({ organization: owner.id, user: user.id })
+    const membership = await r.table('memberships')
+      .filter({ project: projectId, user: user.id })
       .run(server.conn)
-      .then(zeroOrOne<MembershipRecord>({ table: 'accounts', projectId, user: user.id }));
-    if (orgMembership) {
-      return { projectRecord, role: orgMembership.role };
+      .then(zeroOrOne<MembershipRecord>({ projectId, user: user.id }));
+
+    if (membership) {
+      return { projectRecord, role: membership.role };
+    }
+
+    const owner = await r.table('accounts')
+        .get<AccountRecord>(projectRecord.owner).run(server.conn);
+    if (owner.type === 'organization') {
+      const orgMembership = await r.table('memberships')
+        .filter({ organization: owner.id, user: user.id })
+        .run(server.conn)
+        .then(zeroOrOne<MembershipRecord>({ table: 'accounts', projectId, user: user.id }));
+      if (orgMembership) {
+        return { projectRecord, role: orgMembership.role };
+      }
     }
   }
 

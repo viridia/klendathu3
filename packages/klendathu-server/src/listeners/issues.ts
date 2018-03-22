@@ -1,7 +1,6 @@
 import { server } from '../Server';
 import { Attachment, Change, Comment, Issue, IssueArc, Predicate } from 'klendathu-json-types';
 import {
-  AttachmentRecord,
   IssueChangeRecord,
   CommentRecord,
   IssueRecord,
@@ -10,7 +9,6 @@ import {
 import {
   encodeIssue,
   encodeComment,
-  encodeAttachment,
   encodeIssueLink,
   encodeIssueChange,
 } from '../db/encoders';
@@ -26,7 +24,6 @@ const ds = server.deepstream;
 
 const issueListWatcher = new RecordListWatcher<IssueRecord, Issue>(encodeIssue);
 const issueWatcher = new RecordWatcher<IssueRecord, Issue>(encodeIssue);
-const attachmentsWatcher = new RecordSetWatcher<AttachmentRecord, Attachment>(encodeAttachment);
 const issueLinksWatcher = new RecordSetWatcher<IssueLinkRecord, IssueArc>(encodeIssueLink);
 const commentsWatcher = new RecordSetWatcher<CommentRecord, Comment>(encodeComment);
 const changesWatcher = new RecordSetWatcher<IssueChangeRecord, Change>(encodeIssueChange);
@@ -110,6 +107,7 @@ server.deepstream.record.listen('^issues/.*', async (eventName, isSubscribed, re
     const filters: Array<r.Expression<boolean>> = [];
 
     // If they are not a project member, only allow public issues to be viewed.
+    // TODO: This doesn't work because we don't have access to 'role' in deepstream listeners.
     // if (role < Role.VIEWER) {
     //   filters.push(r.row('isPublic'));
     // }
@@ -270,19 +268,6 @@ server.deepstream.record.listen('^comments/.*', async (eventName, isSubscribed, 
   }
 });
 
-server.deepstream.record.listen('^attachments/.*', async (eventName, isSubscribed, response) => {
-  if (isSubscribed) {
-    response.accept();
-    const query = url.parse(eventName, true);
-    const [, account, project, id] = query.pathname.split('/', 4);
-    attachmentsWatcher.subscribe(
-      eventName,
-      r.table('attachments').filter({ issue: `${account}/${project}/${id}` }));
-  } else {
-    attachmentsWatcher.unsubscribe(eventName);
-  }
-});
-
 server.deepstream.record.listen('^issue.changes/.*', async (eventName, isSubscribed, response) => {
   if (isSubscribed) {
     response.accept();
@@ -324,4 +309,44 @@ ds.rpc.provide('issues.search', async (args: any, response: deepstreamIO.RPCResp
     logger.error(error.message, { token, account, project, limit });
     response.error('database-error');
   }
+});
+
+/** Look up an attachment. */
+ds.rpc.provide('file.info', async (args: any, response: deepstreamIO.RPCResponse) => {
+  const { id } = args;
+  try {
+    const record = await server.bucket.getFile({ filename: id });
+    const attachment: Attachment = {
+      id,
+      url: `/api/file/${id}`,
+      filename: record.metadata.filename,
+      thumbnail: record.metadata.thumb ? `/api/file/${id}-thumb` : undefined,
+      type: record.metadata.contentType,
+    };
+    response.send(attachment);
+  } catch (error) {
+    logger.error(error.message, { id });
+    response.error('database-error');
+  }
+});
+
+/** Look up an array of attachments by id. */
+ds.rpc.provide('file.info.list', async (args: string[], response: deepstreamIO.RPCResponse) => {
+  const attachments: Attachment[] = await Promise.all(args.map(async id => {
+    try {
+      const record = await server.bucket.getFile({ filename: id });
+      const attachment: Attachment = {
+        id,
+        url: `/api/file/${id}`,
+        filename: record.metadata.filename,
+        thumbnail: record.metadata.thumb ? `/api/file/${id}-thumb` : undefined,
+        type: record.metadata.contentType,
+      };
+      return attachment;
+    } catch (error) {
+      logger.error(error.message, { id });
+      return null;
+    }
+  }));
+  response.send(attachments.filter(a => a));
 });

@@ -25,6 +25,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Button, ButtonGroup, Modal } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { AccountName } from '../common/AccountName';
+import { ShowAttachments } from '../files/ShowAttachments';
 import { LabelName } from '../common/LabelName';
 import { RelativeDate } from '../common/RelativeDate';
 import { displayErrorToast } from '../common/displayErrorToast';
@@ -248,12 +249,12 @@ export class IssueDetails extends React.Component<Props> {
                   </td>
                 </tr>
               )}
-              {/*{attachments.length > 0 && (
+              {issue.attachments.length > 0 && (
                 <tr>
                   <th className="header">Attachments:</th>
-                  <td><ShowAttachments attachments={attachments} /></td>
+                  <td><ShowAttachments attachments={issue.attachments} /></td>
                 </tr>
-              )}*/}
+              )}
               {this.issueLinks.size > 0 && <tr>
                 <th className="header linked">Linked Issues:</th>
                 <td>

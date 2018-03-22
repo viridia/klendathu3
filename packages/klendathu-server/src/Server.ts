@@ -4,7 +4,7 @@ import * as deepstream from 'deepstream.io-client-js';
 import * as bodyParser from 'body-parser';
 import * as r from 'rethinkdb';
 import { logger } from './logger';
-import { connect } from './db/connect';
+import { connect, connectBucket } from './db/connect';
 
 export class Server {
   public httpServer: http.Server;
@@ -13,6 +13,7 @@ export class Server {
   public api: express.Router;
   public deepstream: deepstreamIO.Client;
   public conn: r.Connection;
+  public bucket: any;
 
   constructor() {
     this.logErrors = true;
@@ -37,6 +38,7 @@ export class Server {
     this.conn = await connect();
     this.httpServer = this.express.listen(port);
     this.deepstream.login({ Authorization: `Token ${process.env.SERVER_AUTH_SECRET}` });
+    this.bucket = await connectBucket();
   }
 
   public stop() {

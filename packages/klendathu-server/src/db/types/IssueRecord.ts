@@ -18,7 +18,7 @@ export interface IssueRecord {
   labels: string[];
   custom: CustomValues;
   // comments: CommentEntry[];
-  // attachments: string[];
+  attachments: string[];
   isPublic?: boolean;
   position?: [number, number];
 }

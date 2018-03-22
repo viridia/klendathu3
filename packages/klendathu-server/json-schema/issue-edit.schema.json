@@ -106,25 +106,7 @@
       "description": "List of attached files.",
       "type": "array",
       "items": {
-        "type": "object",
-        "properties": {
-          "url": {
-            "description": "URL of attachment.",
-            "type": "string"
-          },
-          "filename": {
-            "description": "Filename of attachment.",
-            "type": "string"
-          },
-          "type": {
-            "description": "MIME type.",
-            "type": "string"
-          }
-        },
-        "required": [
-          "filename",
-          "type"
-        ]
+        "type": "string"
       }
     },
     "custom": {

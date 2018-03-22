@@ -32,6 +32,9 @@ export interface IssueBase {
   /** List of custom fields for this issue. */
   custom: CustomValues;
 
+  /** List of attachments. */
+  attachments: string[];
+
   /** Whether this issue should be visible to non-members of the project. */
   isPublic?: boolean;
 
@@ -66,9 +69,6 @@ export interface IssueInput extends IssueBase {
 
   /** List of issues linked to this one. */
   linked: IssueLink[];
-
-  /** List of attachments. */
-  attachments: string[];
 
   /** List of comments. */
   comments: string[];
