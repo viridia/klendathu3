@@ -84,6 +84,11 @@ function Change({ change, project, account }:
       </li>);
   }
 
+  function stateName(state: string) {
+    const st = project.template.getState(state);
+    return st.caption || state;
+  }
+
   return (
     <section className="change">
       <header className="change-header">
@@ -104,9 +109,9 @@ function Change({ change, project, account }:
         {change.state && (
           <li className="field-change">
             state: <span className="state">
-              {change.state.before}
+              {stateName(change.state.before)}
             </span> to <span className="state">
-              {change.state.after}
+              {stateName(change.state.after)}
             </span>
           </li>)}
         {change.summary && (<li className="field-change">

@@ -1,7 +1,5 @@
 # TODO:
 
-* Attachments
-* Attachments - where to store to?
 * Saved filters
 * Filter links in left nav
 * Issue changes aren't updating in issue list.
