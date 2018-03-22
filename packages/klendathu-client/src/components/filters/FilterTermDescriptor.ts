@@ -1,4 +1,11 @@
-import { accounts, Project, OperandType, ObservableSet, defaultOperandValue } from '../../models';
+import {
+  accounts,
+  session,
+  Project,
+  OperandType,
+  ObservableSet,
+  defaultOperandValue,
+} from '../../models';
 import { Account, DataType, FieldType, Predicate } from 'klendathu-json-types';
 import { FilterTerm } from './FilterTerm';
 
@@ -132,9 +139,13 @@ export const descriptors: { [type: string]: FilterTermDescriptor } = {
     parseQuery(query, term, project) {
       term.value = null;
       if (query.owner) {
-        accounts.byName(toScalar(query.owner)).then(account => {
-          term.value = account;
-        });
+        if (query.owner === 'me') {
+          term.value = session.account;
+        } else {
+          accounts.byName(toScalar(query.owner)).then(account => {
+            term.value = account;
+          });
+        }
       }
     },
   },

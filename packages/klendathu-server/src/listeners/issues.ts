@@ -164,13 +164,13 @@ server.deepstream.record.listen('^issues/.*', async (eventName, isSubscribed, re
     // By Reporter
     if (args.reporter) {
       filters.push((r.row('reporter') as any)
-          .do((reporter: string) => r.expr(toScalar(args.reporter)).contains(reporter)));
+          .do((reporter: string) => r.expr(toArray(args.reporter)).contains(reporter)));
     }
 
     // By Owner
     if (args.owner) {
       filters.push((r.row('owner') as any)
-          .do((owner: string) => r.expr(toScalar(args.owner)).contains(owner)));
+          .do((owner: string) => r.expr(toArray(args.owner)).contains(owner)));
     }
 
     // Match any label

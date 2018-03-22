@@ -10,6 +10,7 @@ import './LeftNav.scss';
 import LabelIcon from '../../../icons/ic_label.svg';
 import ListIcon from '../../../icons/ic_list.svg';
 import PersonIcon from '../../../icons/ic_person.svg';
+import BookmarkIcon from '../../../icons/ic_bookmark.svg';
 import SettingsIcon from '../../../icons/ic_settings.svg';
 
 type Props = RouteComponentProps<{ account: string, project: string }>;
@@ -33,7 +34,12 @@ export class ProjectNavLinks extends React.Component<Props> {
           <LabelIcon /> Labels
         </NavLink>
         <AccountProvider account={account}>
-          {acc => <LabelLinks {...this.props} account={acc} project={project} />}
+          {acc => <>
+            <LabelLinks {...this.props} account={acc} project={project} />
+            <NavLink to={{ pathname: `/${account}/${project}/filters` }}>
+              <BookmarkIcon /> Saved Filters
+            </NavLink>
+          </>}
         </AccountProvider>
         <NavLink to={{ pathname: `/${account}/${project}/settings` }}>
           <SettingsIcon /> Settings

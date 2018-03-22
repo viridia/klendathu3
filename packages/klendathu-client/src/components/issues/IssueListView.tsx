@@ -1,6 +1,13 @@
 import * as React from 'react';
 import { Account, Role } from 'klendathu-json-types';
-import { IssueListQuery, ObservableProjectPrefs, ObservableSet, Project } from '../../models';
+import {
+  IssueListQuery,
+  ObservableProjectPrefs,
+  ObservableSet,
+  OperandType,
+  Project,
+  session,
+} from '../../models';
 import { ColumnSort } from '../common/ColumnSort';
 import { RouteComponentProps } from 'react-router-dom';
 import { IssueListEntry } from './IssueListEntry';
@@ -210,7 +217,7 @@ export class IssueListView extends React.Component<Props> {
 
   @action
   private updateQuery() {
-    const { issues } = this.props;
+    const { issues, project } = this.props;
     const { sort, descending } = this.sortOrder();
     issues.sort = sort;
     issues.descending = descending;
@@ -218,7 +225,14 @@ export class IssueListView extends React.Component<Props> {
     issues.filterParams.search = this.queryParams.search;
     for (const key of Object.getOwnPropertyNames(this.queryParams)) {
       if (key in descriptors || key.startsWith('custom.') || key.startsWith('pred.')) {
-        issues.filterParams[key] = this.queryParams[key];
+        const desc = descriptors[key];
+        let value: any = this.queryParams[key];
+        if (desc && desc.type === OperandType.USER && value === 'me') {
+          value = session.account.uid;
+        } else if (desc && desc.type === OperandType.STATE_SET && value === 'open') {
+          value = project.template.states.filter(st => !st.closed).map(st => st.id);
+        }
+        issues.filterParams[key] = value;
       }
     }
   }
