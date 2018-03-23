@@ -12,6 +12,9 @@ import ListIcon from '../../../icons/ic_list.svg';
 import PersonIcon from '../../../icons/ic_person.svg';
 import BookmarkIcon from '../../../icons/ic_bookmark.svg';
 import SettingsIcon from '../../../icons/ic_settings.svg';
+import DependenciesIcon from '../../../icons/ic_gantt.svg';
+import ProgressIcon from '../../../icons/ic_progress.svg';
+import HistoryIcon from '../../../icons/ic_history.svg';
 
 type Props = RouteComponentProps<{ account: string, project: string }>;
 
@@ -41,6 +44,15 @@ export class ProjectNavLinks extends React.Component<Props> {
             </NavLink>
           </>}
         </AccountProvider>
+        <NavLink to={{ pathname: `/${account}/${project}/progress` }}>
+          <ProgressIcon /> Progress
+        </NavLink>
+        <NavLink to={{ pathname: `/${account}/${project}/dependencies` }}>
+          <DependenciesIcon /> Dependencies
+        </NavLink>
+        <NavLink to={{ pathname: `/${account}/${project}/history` }}>
+          <HistoryIcon /> Changes
+        </NavLink>
         <NavLink to={{ pathname: `/${account}/${project}/settings` }}>
           <SettingsIcon /> Settings
         </NavLink>

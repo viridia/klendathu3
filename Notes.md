@@ -1,5 +1,6 @@
 # TODO:
 
+* Project List
 * Saved filters
 * Filter links in left nav
 * Issue changes aren't updating in issue list.
@@ -9,7 +10,7 @@
   * Edit form
 * Comments
 * Issue links
-* Sorting by custom fields. (Tricky without a database index - perhaps can't use lists.)
+* Sorting by custom fields. (Tricky without a database index - perhaps can't use ds lists.)
 * User Selector
 * Issue Compose (finish)
 * Issue Details
@@ -22,13 +23,14 @@
 * Remove deleted issues from selection set. (Or issues not in query).
 * Graph view
 * State view
-* DS Valves
+* Deepstream Valves
 * Milestones
 * AND / Or search for labels
 * Clone issue
 * Create linked issue
 * Nginx setup
 * HTTPS
+* Hierarchy view in issue list
 
 # Longer term:
 

@@ -5,6 +5,9 @@ export interface Filter {
 
   /** JSON-encoded filter expression. */
   value: string;
+
+  /** Which view this was (issues, progress, etc.). */
+  view?: string;
 }
 
 /** Stores the project-specific settings for a user: role, prefs, etc. */

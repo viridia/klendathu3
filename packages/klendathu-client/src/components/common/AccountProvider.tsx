@@ -30,6 +30,6 @@ export class AccountProvider extends React.Component<Props> {
 
   public render() {
     const { children } = this.props;
-    return this.account ? children(this.account) : null;
+    return this.account && this.account.type ? children(this.account) : null;
   }
 }

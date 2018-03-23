@@ -39,6 +39,7 @@ $leftNavIconSize: 24px;
   li.label-item, li.filter-item, li.project-item {
     margin: 4px 0;
     > a {
+      color: $leftNavFg;
       text-decoration: none;
       &.active {
         font-weight: bold;

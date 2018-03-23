@@ -23,6 +23,16 @@ export class LabelLinks extends React.Component<Props> {
     this.prefs = new ObservableProjectPrefs(account.uid, project);
   }
 
+  public componentWillReceiveProps(nextProps: Props) {
+    const { account, project } = nextProps;
+    if (account !== this.props.account || project !== this.props.project) {
+      this.query.release();
+      this.prefs.release();
+      this.query = new LabelListQuery(account.uid, project);
+      this.prefs = new ObservableProjectPrefs(account.uid, project);
+    }
+  }
+
   public componentWillUnmount() {
     this.query.release();
     this.prefs.release();

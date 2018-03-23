@@ -62,7 +62,10 @@ export class IssueListView extends React.Component<Props> {
   }
 
   public render() {
-    const { issues, project } = this.props;
+    const { account, issues, project } = this.props;
+    if (!account) {
+      return null;
+    }
     if (!issues.loaded || !project.template.loaded) {
       return (
         <section className="kdt content issue-list">
