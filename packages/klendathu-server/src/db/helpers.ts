@@ -21,6 +21,7 @@ export function zeroOrOne<T>(details?: any): (cursor: r.Cursor) => Promise<T> {
   };
 }
 
+/* Create the specified databases, if they do not already exist. */
 export function ensureDbsExist(conn: r.Connection, dbNames: string[]) {
   return r.dbList().run(conn).then(existing => {
     const promises: any[] = [];
@@ -33,6 +34,7 @@ export function ensureDbsExist(conn: r.Connection, dbNames: string[]) {
   });
 }
 
+/* Create the specified tables, if they do not already exist. */
 export function ensureTablesExist(conn: r.Connection, dbName: string, tables: string[]) {
   const db = r.db(dbName);
   return db.tableList().run(conn).then(existing => {
@@ -46,6 +48,7 @@ export function ensureTablesExist(conn: r.Connection, dbName: string, tables: st
   });
 }
 
+/* Create the specified indices, if they do not already exist. */
 export function ensureIndicesExist(
     conn: r.Connection,
     dbName: string,

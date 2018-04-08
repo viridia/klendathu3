@@ -16,9 +16,6 @@ module.exports = {
     chunkFilename: '[name]-[chunkhash].js',
   },
   resolve: {
-    // alias: {
-    //   common: path.resolve(__dirname, 'common/'),
-    // },
     extensions: ['.ts', '.tsx', '.js'],
   },
   plugins: [
@@ -28,19 +25,15 @@ module.exports = {
       },
     }),
     new webpack.LoaderOptionsPlugin({ minimize: !debug, debug }),
-    // new ExtractTextPlugin('style.css'), // doesn't work with react-hot-loader
     new ForkTsCheckerWebpackPlugin({ tslint: path.resolve(__dirname, '../../tslint.json') }),
   ],
-  devtool: debug ? 'cheap-eval-source-map' : 'source-map',
   module: {
     rules: [
       {
-        // All files with a '.ts' or '.tsx' extension.
         test: /\.tsx?$/,
         include: [
           path.resolve(__dirname, 'src'),
-          // path.resolve(__dirname, '../types'),
-          // path.resolve(__dirname, 'common'),
+          path.resolve(__dirname, 'node_modules/factory-types'),
         ],
         use: [
           {
@@ -52,9 +45,7 @@ module.exports = {
           },
           {
             loader: 'ts-loader',
-            options: {
-              transpileOnly: true
-            }
+            options: { transpileOnly: true }
           }
         ]
       },
