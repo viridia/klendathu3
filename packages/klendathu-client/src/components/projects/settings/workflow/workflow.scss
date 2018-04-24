@@ -1,4 +1,8 @@
-@import '../../../defines/base';
+@import '../../../../styles/colors';
+
+.workflow-columns {
+  display: flex;
+}
 
 .workflow-list {
   flex: 1;

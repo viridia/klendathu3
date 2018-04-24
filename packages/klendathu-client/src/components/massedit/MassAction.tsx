@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Account, FieldType, IssueEdit } from 'klendathu-json-types';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
-import { defaultOperandValue, Project } from '../../models';
+import { defaultOperandValue, Project, OperandType } from '../../models';
 import { EditOperand } from './EditOperand';
 import { observer } from 'mobx-react';
 import bind from 'bind-decorator';
@@ -11,7 +11,7 @@ import CloseIcon from '../../../icons/ic_close.svg';
 interface ActionType {
   id: string;
   caption: string;
-  type: string;
+  type: OperandType;
   apply: (update: Partial<IssueEdit>, value: any) => void;
   customField?: FieldType;
 }
@@ -34,7 +34,7 @@ export class MassAction extends React.Component<Props> {
     {
       id: 'addLabel',
       caption: 'Add Label',
-      type: 'label',
+      type: OperandType.LABEL,
       apply: (update: Partial<IssueEdit>, value: string[]) => {
         update.addLabels = [].concat(update.addLabels || [], value.slice());
       },
@@ -42,7 +42,7 @@ export class MassAction extends React.Component<Props> {
     {
       id: 'removeLabel',
       caption: 'Remove Label',
-      type: 'label',
+      type: OperandType.LABEL,
       apply: (update: Partial<IssueEdit>, value: string[]) => {
         update.removeLabels = [].concat(update.removeLabels || [], value.slice());
       },
@@ -50,7 +50,7 @@ export class MassAction extends React.Component<Props> {
     {
       id: 'state',
       caption: 'Change State',
-      type: 'state',
+      type: OperandType.STATE,
       apply: (update: Partial<IssueEdit>, value: string) => {
         update.state = value;
       },
@@ -58,7 +58,7 @@ export class MassAction extends React.Component<Props> {
     {
       id: 'type',
       caption: 'Change Type',
-      type: 'type',
+      type: OperandType.TYPE,
       apply: (update: Partial<IssueEdit>, value: string) => {
         update.type = value;
       },
@@ -66,7 +66,7 @@ export class MassAction extends React.Component<Props> {
     {
       id: 'owner',
       caption: 'Change Owner',
-      type: 'user',
+      type: OperandType.USER,
       apply: (update: Partial<IssueEdit>, value: Account) => {
         const user = value ? value.uid : null;
         update.owner = user;
@@ -75,7 +75,7 @@ export class MassAction extends React.Component<Props> {
     {
       id: 'addCC',
       caption: 'Add CC',
-      type: 'users',
+      type: OperandType.USERS,
       apply: (update: Partial<IssueEdit>, value: Account[]) => {
         update.addCC = value.map(l => l.uid);
         return true;
@@ -84,7 +84,7 @@ export class MassAction extends React.Component<Props> {
     {
       id: 'removeCC',
       caption: 'Remove CC',
-      type: 'users',
+      type: OperandType.USERS,
       apply: (update: Partial<IssueEdit>, value: Account[]) => {
         update.removeCC = value.map(l => l.uid);
       },

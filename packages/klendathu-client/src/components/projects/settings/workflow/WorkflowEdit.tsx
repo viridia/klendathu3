@@ -1,9 +1,9 @@
 import * as React from 'react';
 import bind from 'bind-decorator';
-import { Project, Workflow } from 'klendathu-json-types';
+import { Project } from '../../../../models';
 import { Button  } from 'react-bootstrap';
 import WorkflowDiagram from './WorkflowDiagram';
-import WorkflowList from './WorkflowList';
+import { WorkflowList } from './WorkflowList';
 
 import './workflow.scss';
 
@@ -22,23 +22,13 @@ import './workflow.scss';
 //   saveWorkflow: React.PropTypes.func.isRequired,
 // };
 
-interface OwnProps {
+interface Props {
   project: Project;
-  workflow: Workflow;
 }
-
-interface StateProps {
-  name: string;
-  modified: boolean;
-}
-
-interface DispatchProps {
-  workflowEdit: (wf: Workflow) => void;
-}
-
-type Props = OwnProps & StateProps & DispatchProps;
 
 export class WorkflowEdit extends React.Component<Props> {
+  private modified: boolean;
+
   public componentDidMount() {
     // const workflow = this.props.project.workflow;
     // if (workflow.name !== this.props.name ||
@@ -48,21 +38,21 @@ export class WorkflowEdit extends React.Component<Props> {
   }
 
   public render() {
-    const { name, project, workflow } = this.props;
-    if (project) {
+    const { project } = this.props;
+    if (!project && !project.template.loaded) {
       return <section className="settings-tab-pane" />;
     }
     return (
       <section className="settings-tab-pane">
         <header>
-          <span className="title">Workflow: {project.name}/{name}</span>
-          <Button bsStyle="primary" disabled={!this.props.modified} onClick={this.onSave}>
+          <span className="title">Workflow: {project.uname}/{project.template.id}</span>
+          <Button bsStyle="primary" disabled={!this.modified} onClick={this.onSave}>
             Save
           </Button>
         </header>
-        <div className="columns">
-          <WorkflowList />
-          <WorkflowDiagram workflow={workflow} />
+        <div className="workflow-columns">
+          <WorkflowList states={project.template.states} />
+          <WorkflowDiagram template={project.template} />
         </div>
       </section>
     );

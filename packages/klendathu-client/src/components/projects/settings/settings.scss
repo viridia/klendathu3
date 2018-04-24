@@ -1,5 +1,9 @@
 @import '../../../styles/colors';
 
+.project-panel {
+  flex: 1;
+}
+
 .settings-tab-pane {
   display: flex;
   flex-direction: column;

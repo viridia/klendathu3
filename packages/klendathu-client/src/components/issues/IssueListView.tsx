@@ -10,6 +10,7 @@ import {
 } from '../../models';
 import { ColumnSort } from '../common/ColumnSort';
 import { RouteComponentProps } from 'react-router-dom';
+import { LinkContainer } from 'react-router-bootstrap';
 import { IssueListEntry } from './IssueListEntry';
 import { MassEdit } from '../massedit/MassEdit';
 import { FilterParams } from '../filters/FilterParams';
@@ -22,11 +23,13 @@ import {
   UserColumnRenderer,
 } from './columns';
 import { descriptors } from '../filters/FilterTermDescriptor';
-import { Checkbox } from 'react-bootstrap';
+import { Checkbox, Dropdown, MenuItem } from 'react-bootstrap';
 import { action, computed, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import bind from 'bind-decorator';
 import * as qs from 'qs';
+
+import MenuIcon from '../../../icons/ic_menu.svg';
 
 import './IssueListView.scss';
 
@@ -109,7 +112,7 @@ export class IssueListView extends React.Component<Props> {
   }
 
   private renderHeader() {
-    const { project, prefs } = this.props;
+    const { account, project, prefs } = this.props;
     const { sort, descending } = this.sortOrder();
     return (
       <thead>
@@ -128,6 +131,7 @@ export class IssueListView extends React.Component<Props> {
           <th className="id">
             <ColumnSort
                 column="id"
+                className="sort"
                 sortKey={sort}
                 descending={descending}
                 onChangeSort={this.onChangeSort}
@@ -146,12 +150,27 @@ export class IssueListView extends React.Component<Props> {
             <section>
               <ColumnSort
                   column="summary"
+                  className="sort"
                   sortKey={sort}
                   descending={descending}
                   onChangeSort={this.onChangeSort}
               >
                 Summary
               </ColumnSort>
+              <Dropdown id="issue-menu" pullRight={true}>
+                <Dropdown.Toggle noCaret={true}>
+                  <MenuIcon />
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {/*<MenuItem
+                      className={classNames({ checked: query.subtasks !== undefined })}
+                      onClick={this.onToggleSubtasks}>Show Subtasks</MenuItem>*/}
+
+                  <LinkContainer to={`/${account.uname}/${project.uname}/settings/columns`}>
+                    <MenuItem>Arrange Columns&hellip;</MenuItem>
+                  </LinkContainer>
+                </Dropdown.Menu>
+              </Dropdown>
             </section>
           </th>
         </tr>

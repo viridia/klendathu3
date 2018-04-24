@@ -15,7 +15,7 @@ export { Label, LabelInput } from './Label';
 export { Membership } from './Membership';
 export { Predicate } from './Predicate';
 export { Project } from './Project';
-export { ProjectPrefs, Filter } from './ProjectPrefs';
+export { ProjectPrefs, ProjectPrefsInput, Filter } from './ProjectPrefs';
 export { Relation, inverseRelations } from './Relation';
 export { Role } from './Role';
 export {

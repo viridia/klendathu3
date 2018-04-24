@@ -1,0 +1,16 @@
+{
+  "$id": "http://viridia.org/schemas/klendathu/project-prefs-input.json",
+  "type": "object",
+  "title": "ProjectPrefsInput",
+  "description": "Used to update project preferences.",
+  "additionalProperties": false,
+  "properties": {
+    "columns": {
+      "description": "List of visible columns.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

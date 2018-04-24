@@ -1,86 +1,89 @@
 import * as classNames from 'classnames';
 import * as React from 'react';
-import { DropTarget } from 'react-dnd';
 import * as ReactDOM from 'react-dom';
-import { Column, DraggedColumn } from './Column';
-import ColumnEntry from './ColumnEntry';
+import { Column } from './Column';
+import { ColumnEntry } from './ColumnEntry';
+import { action, observable } from 'mobx';
+import { observer } from 'mobx-react';
+import bind from 'bind-decorator';
 
-interface OwnProps {
+interface Props {
   columns: Column[];
   isVisible?: boolean;
   onDrop: (id: string, index: number, visible: boolean, makeVisible: boolean) => void;
 }
 
-interface Props extends OwnProps {
-  isOver?: boolean;
-  connectDropTarget: (children: JSX.Element) => JSX.Element;
-}
-
-interface State {
-  insertionIndex?: number;
-}
-
 /** A list of columns (either visible or available) */
-class ColumnList extends React.Component<Props, State> {
-  constructor() {
-    super();
-    this.state = {
-      insertionIndex: null,
-    };
-  }
-
-  public drop({ id, isVisible }: DraggedColumn) {
-    this.props.onDrop(id, this.state.insertionIndex, isVisible, this.props.isVisible);
-  }
+@observer
+export class ColumnList extends React.Component<Props> {
+  @observable private insertionIndex: number = null;
+  @observable private isOver: boolean = false;
 
   public render() {
-    const { columns, isOver, isVisible, connectDropTarget } = this.props;
-    const { insertionIndex } = this.state;
-    return connectDropTarget(
-      <section className={classNames('field-list', { dragOver: isOver })} >
+    const { columns, isVisible } = this.props;
+    return (
+      <section
+          className={classNames('field-list', { dragOver: this.isOver })}
+          onDragOver={this.onDragOver}
+          onDragLeave={this.onDragLeave}
+          onDrop={this.onDrop}
+      >
         {columns.map((column, index) =>
           (<li
               key={column.id}
               className={classNames({
-                insertBefore: isOver && insertionIndex === 0 && index === 0,
-                insertAfter: isOver && insertionIndex === index + 1,
+                insertBefore: this.isOver && this.insertionIndex === 0 && index === 0,
+                insertAfter: this.isOver && this.insertionIndex === index + 1,
               })}
           >
             <ColumnEntry column={column} isVisible={isVisible} />
           </li>))}
-      </section>,
+      </section>
     );
   }
-}
 
-export default DropTarget<OwnProps>(
-  'column', {
-    canDrop(props, monitor) {
-      const item = monitor.getItem() as DraggedColumn;
-      return item.isVisible || props.isVisible;
-    },
-    hover(props, monitor, component) {
-      if (!monitor.isOver()) {
-        component.setState({ insertionIndex: null });
-      }
-      const pos = monitor.getClientOffset();
-      const nodes = ReactDOM.findDOMNode(component).querySelectorAll('li'); // eslint-disable-line
-      let index = nodes.length;
-      let i = 0;
-      for (const node of nodes) {
-        if (pos.y < node.offsetTop + (node.offsetHeight / 2)) {
-          index = i;
-          break;
+  @action.bound
+  private onDragOver(e: React.DragEvent<any>) {
+    for (const type of e.dataTransfer.types) {
+      if (type.startsWith('column/')) {
+        const [, , visible] = type.split('/');
+        const isVisible = visible === 'true';
+        this.isOver = isVisible || this.props.isVisible;
+        if (this.isOver) {
+          e.preventDefault();
         }
-        i += 1;
+        const el = ReactDOM.findDOMNode(this) as HTMLElement;
+        const nodes = el.querySelectorAll('li');
+        let index = nodes.length;
+        let i = 0;
+        const pos = e.clientY;
+        for (const node of nodes) {
+          if (pos < node.offsetTop + (node.offsetHeight / 2)) {
+            index = i;
+            break;
+          }
+          i += 1;
+        }
+        this.insertionIndex = index;
       }
-      component.setState({ insertionIndex: index });
-    },
-    drop(props, monitor, component) {
-      (component as any).drop(monitor.getItem());
-    },
-  }, (connect, monitor) => ({
-    connectDropTarget: connect.dropTarget(),
-    isOver: monitor.isOver() && monitor.canDrop(),
-  }),
-)(ColumnList);
+    }
+  }
+
+  @bind
+  private onDragLeave(e: React.DragEvent<any>) {
+    this.isOver = false;
+  }
+
+  @bind
+  private onDrop(e: React.DragEvent<any>) {
+    e.preventDefault();
+    this.isOver = false;
+    for (const type of e.dataTransfer.types) {
+      if (type.startsWith('column/')) {
+        const [, id, visible] = type.split('/');
+        const isVisible = visible === 'true';
+        this.props.onDrop(id, this.insertionIndex, isVisible, this.props.isVisible);
+      }
+    }
+  }
+}

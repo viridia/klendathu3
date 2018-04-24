@@ -11,6 +11,7 @@ interface Props {
 export function WorkflowList({ states }: Props) {
   return (
     <section className="workflow-list">
-      {states.map(state => <StateCard key={state.id} state={state} />)}
-    </section>);
+      {states.map(state => <StateCard key={state.id} state={state} states={states} />)}
+    </section>
+  );
 }

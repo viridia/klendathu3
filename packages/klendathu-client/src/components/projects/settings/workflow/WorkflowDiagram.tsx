@@ -1,17 +1,16 @@
-import { Workflow } from 'common/api';
+import { Template } from '../../../../models';
 import * as React from 'react';
 
 import './workflow.scss';
 
 interface Props {
-  workflow: Workflow;
+  template: Template;
 }
 
-export default function WorkflowDiagram({ workflow }: Props) {
-  const states = workflow && workflow.states ? workflow.states : [];
+export default function WorkflowDiagram({ template }: Props) {
   return (
     <section className="workflow-diagram">
-      {states.map(st => (
+      {template.states.map(st => (
         <div className="workflow-node" key={st.id}>{st.caption}</div>
       ))}
     </section>

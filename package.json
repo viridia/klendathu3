@@ -7,7 +7,7 @@
   "dependencies": {
     "typescript": "^2.7.2"
   },
-  "name": "klendathu3",
+  "name": "klendathu",
   "version": "0.0.1",
   "description": "Flexible bug-tracking and project management system.",
   "main": "index.js",

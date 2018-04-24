@@ -22,6 +22,7 @@ export abstract class AbstractColumnRenderer implements ColumnRenderer {
       <th className={this.className} key={this.fieldName}>
         <ColumnSort
             column={this.fieldName}
+            className="sort"
             sortKey={sort}
             descending={descending}
             onChangeSort={onChangeSort}

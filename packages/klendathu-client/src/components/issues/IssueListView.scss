@@ -59,16 +59,19 @@
         vertical-align: middle;
         position: relative;
         button {
-          margin: 0 0 0 12px;
           width: 100%;
           background-color: transparent;
           border: none;
           outline: none;
+          box-shadow: none;
           > .sort {
             display: inline-block;
             width: 12px;
             color: desaturate(lighten($bg6, 25%), 20%);
           }
+        }
+        button.sort {
+          margin: 0 0 0 12px;
         }
       }
 
@@ -116,7 +119,7 @@
         }
       }
 
-      .custom, .title {
+      .title {
         text-align: left;
       }
 

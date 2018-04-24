@@ -1,74 +1,42 @@
 import * as React from 'react';
-import { Project, ProjectPrefs, Template } from 'common/api';
-import * as Immutable from 'immutable';
-import * as PropTypes from 'prop-types';
-import { DefaultChildProps, graphql } from 'react-apollo';
+import { Project, ObservableProjectPrefs } from '../../../../models';
+import { updateProjectPrefs } from '../../../../network/requests';
+import { displayErrorToast } from '../../../common/displayErrorToast';
 import { Button } from 'react-bootstrap';
-import { toastr } from 'react-redux-toastr';
-// import { setProjectPrefs } from '../../../../store/reducers/projectPrefs';
 import { Column } from './Column';
-import ColumnList from './ColumnList';
+import { ColumnList } from './ColumnList';
+import { computed, IObservableArray, observable } from 'mobx';
+import { observer } from 'mobx-react';
 import bind from 'bind-decorator';
 
 import './ColumnSettings.scss';
 
 interface Props {
   project: Project;
-  template: Template;
-}
-
-interface Data {
-  projectPrefs: ProjectPrefs;
-}
-
-interface State {
-  visible: Immutable.List<string>;
-  original: Immutable.List<string>;
-  busy: boolean;
+  prefs: ObservableProjectPrefs;
 }
 
 /** Component which allows editing the list of columns. */
-class ColumnSettings extends React.Component<DefaultChildProps<Props, Data>, State> {
-  public static contextTypes = {
-    profile: PropTypes.shape({}),
-  };
+@observer
+export class ColumnSettings extends React.Component<Props> {
+  @observable private busy = false;
+  @observable private visible = ['type', 'state', 'owner', 'updated'] as IObservableArray<string>;
+  @observable private original = [] as IObservableArray<string>;
 
-  private columns: Column[];
-  private columnMap: Map<string, Column>;
-
-  constructor(props: DefaultChildProps<Props, Data>) {
+  constructor(props: Props) {
     super(props);
-    this.buildColumnList();
-    let visible = Immutable.List.of('type', 'state', 'owner', 'updated');
-    if (this.props.data && this.props.data.projectPrefs &&
-        this.props.data.projectPrefs.columns) {
-      visible = Immutable.List(this.props.data.projectPrefs.columns);
-    }
-    this.state = {
-      visible,
-      original: visible,
-      busy: false,
-    };
-  }
-
-  public componentWillReceiveProps(nextProps: DefaultChildProps<Props, Data>) {
-    if (nextProps.data && nextProps.data.projectPrefs &&
-        nextProps.data.projectPrefs.columns) {
-      const columns = Immutable.List(nextProps.data.projectPrefs.columns)
-          .filter(id => this.columnMap.has(id)) as Immutable.List<string>;
-      this.setState({ visible: columns, original: columns });
-    }
+    this.original.replace(props.prefs.columns);
+    this.visible.replace(props.prefs.columns);
   }
 
   public render() {
-    const { projectPrefs, loading } = this.props.data;
-    const { visible } = this.state;
-    if (loading || !projectPrefs) {
+    const { prefs } = this.props;
+    if (!prefs || !prefs.loaded) {
       return <section className="settings-tab-pane" />;
     }
-    const visibleColumns = visible.map(id => this.columnMap.get(id)).toArray();
-    const availableColumns = this.columns.filter(col => visible.indexOf(col.id) < 0);
-    const canSave = !Immutable.is(this.state.visible, this.state.original) && !this.state.busy;
+    const visibleColumns = this.visible.map(id => this.columnMap.get(id));
+    const availableColumns = this.columns.filter(col => this.visible.indexOf(col.id) < 0);
+    const canSave = this.isChanged && !this.busy;
     return (
       <section className="settings-tab-pane">
         <header>
@@ -94,42 +62,54 @@ class ColumnSettings extends React.Component<DefaultChildProps<Props, Data>, Sta
   private onSave(e: any) {
     const { project } = this.props;
     e.preventDefault();
-    this.setState({ busy: true });
-    return setProjectPrefs(project.id, {
-      columns: this.state.visible.toArray(),
+    this.busy = true;
+    return updateProjectPrefs(project.account, project.uname, {
+      columns: this.visible.slice(),
     }).then(() => {
-      this.setState({ busy: false, original: this.state.visible });
-    }, error => {
-      console.error(error);
-      if (error.response && error.response.data && error.response.data.err) {
-        toastr.error('Operation failed.', `Server returned '${error.response.data.err}'`);
-      } else {
-        toastr.error('Operation failed.', error.message);
-      }
-    });
+      this.busy = false;
+    }, displayErrorToast);
   }
 
   @bind
-  private onDrop(id: string, index: number, visible: boolean, makeVisible: boolean) {
-    if (visible) {
-      const oldIndex = this.state.visible.indexOf(id);
-      if (!makeVisible) {
-        this.setState({ visible: this.state.visible.delete(oldIndex) });
-        return;
+  private onDrop(lcId: string, index: number, visible: boolean, makeVisible: boolean) {
+    // Because DnD lowercases drag types.
+    const col = this.columns.find(c => c.id.toLowerCase() === lcId);
+    if (col) {
+      if (visible) {
+        const oldIndex = this.visible.indexOf(col.id);
+        if (!makeVisible) {
+          this.visible.splice(oldIndex, 1);
+          return;
+        }
+        let newIndex = index;
+        if (oldIndex > 0 && oldIndex < index) {
+          newIndex -= 1;
+        }
+        this.visible.splice(oldIndex, 1);
+        this.visible.splice(newIndex, 0, col.id);
+      } else {
+        this.visible.splice(index, 0, col.id);
       }
-      let newIndex = index;
-      if (oldIndex > 0 && oldIndex < index) {
-        newIndex -= 1;
-      }
-      this.setState({ visible: this.state.visible.delete(oldIndex).insert(newIndex, id) });
-    } else {
-      this.setState({ visible: this.state.visible.insert(index, id) });
     }
   }
 
-  private buildColumnList() {
-    const { template } = this.props;
-    this.columns = [
+  @computed
+  private get isChanged() {
+    if (this.original.length !== this.visible.length) {
+      return true;
+    }
+    for (let i = 0; i < this.original.length; i += 1) {
+      if (this.original[i] !== this.visible[i]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @computed
+  private get columns(): Column[] {
+    const { project } = this.props;
+    const columns: Column[] = [
       { id: 'created', title: 'Created' },
       { id: 'updated', title: 'Updated' },
       { id: 'type', title: 'Type' },
@@ -137,22 +117,23 @@ class ColumnSettings extends React.Component<DefaultChildProps<Props, Data>, Sta
       { id: 'owner', title: 'Owner' },
       { id: 'state', title: 'State' },
     ];
-    this.columnMap = new Map();
-    this.columns.forEach(col => { this.columnMap.set(col.id, col); });
-    if (template) {
-      for (const type of template.types) {
+    if (project.template) {
+      for (const type of project.template.types) {
         for (const field of (type.fields || [])) {
           const columnId = `custom.${field.id}`;
-          if (!this.columnMap.has(columnId)) {
-            this.columns.push({ id: columnId, title: field.caption });
-            this.columnMap.set(columnId, { id: columnId, title: field.caption });
+          if (!columns.find(col => col.id === columnId)) {
+            columns.push({ id: columnId, title: field.caption });
           }
         }
       }
     }
+    return columns;
+  }
+
+  @computed
+  private get columnMap(): Map<string, Column> {
+    const columnMap = new Map();
+    this.columns.forEach(col => { columnMap.set(col.id, col); });
+    return columnMap;
   }
 }
-
-export default graphql(ProjectPrefsQuery, {
-  options: ({ project }: Props) => ({ variables: { project: project.id } }),
-})(ColumnSettings);

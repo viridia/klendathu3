@@ -1,20 +1,21 @@
 import bind from 'bind-decorator';
 import { Account, Role } from 'klendathu-json-types';
-import { Project } from '../../../models';
+import { Project, ObservableProjectPrefs } from '../../../models';
 import * as React from 'react';
 import { Tab, Tabs } from 'react-bootstrap';
 import { RouteComponentProps } from 'react-router-dom';
-// import { ColumnSettings } from './columns/ColumnSettings';
+import { ColumnSettings } from './columns/ColumnSettings';
 import { ProjectMemberList } from './members/ProjectMemberList';
 import { ProjectInfoEdit } from './ProjectInfoEdit';
 // import { ProjectTemplateEdit } from './ProjectTemplateEdit';
-// import { WorkflowEdit } from './workflow/WorkflowEdit';
+import { WorkflowEdit } from './workflow/WorkflowEdit';
 
 import './settings.scss';
 
 interface Props extends RouteComponentProps<{ tab?: string }> {
   account: Account;
   project: Project;
+  prefs: ObservableProjectPrefs;
   // template: Template;
   // workflow: Workflow;
 }
@@ -33,6 +34,7 @@ export class ProjectSettings extends React.Component<Props> {
         <Tabs
             activeKey={activeKey}
             onSelect={this.handleSelect}
+            className="project-panel"
             animation={false}
             id="project-panel"
         >
@@ -40,7 +42,7 @@ export class ProjectSettings extends React.Component<Props> {
             <ProjectInfoEdit {...this.props} />
           </Tab>
           <Tab eventKey="columns" title="Columns">
-            {/*<ColumnSettings {...this.props} />*/}
+            <ColumnSettings {...this.props} />
           </Tab>
           <Tab eventKey="members" title="Members">
             <ProjectMemberList {...this.props} />
@@ -49,7 +51,7 @@ export class ProjectSettings extends React.Component<Props> {
             {/*<ProjectTemplateEdit {...this.props} />*/}
           </Tab>)}
           {project.role >= Role.MANAGER && (<Tab eventKey="workflow" title="Workflow">
-            {/*<WorkflowEdit {...this.props} />*/}
+            <WorkflowEdit {...this.props} />
           </Tab>)}
         </Tabs>
       </section>

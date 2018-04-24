@@ -24,3 +24,9 @@ export interface ProjectPrefs {
   /** List of saved queries. */
   filters: Filter[];
 }
+
+/** Used to update project prefs. */
+export interface ProjectPrefsInput {
+  /** List of columns to display in the issue list. */
+  columns?: string[];
+}

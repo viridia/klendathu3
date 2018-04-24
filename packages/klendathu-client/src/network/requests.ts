@@ -7,6 +7,7 @@ import {
   Label,
   LabelInput,
   Role,
+  ProjectPrefsInput,
 } from 'klendathu-json-types';
 import { session, request } from '../models/Session';
 import { AxiosError } from 'axios';
@@ -76,6 +77,13 @@ export function addPrefsLabel(account: string, project: string, label: string): 
 
 export function removePrefsLabel(account: string, project: string, label: string): Promise<Label> {
   return request.delete(`/api/project-prefs/${account}/${project}/label/${label}`).then(resp => {
+    return resp.data;
+  }, handleAxiosError);
+}
+
+export function updateProjectPrefs(account: string, project: string, input: ProjectPrefsInput):
+    Promise<Label> {
+  return request.patch(`/api/project-prefs/${account}/${project}`, input).then(resp => {
     return resp.data;
   }, handleAxiosError);
 }

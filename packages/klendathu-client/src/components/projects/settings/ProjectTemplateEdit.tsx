@@ -1,5 +1,5 @@
 import bind from 'bind-decorator';
-import { Project } from 'klendathu-json-types';
+import { Project } from '../../../models';
 import * as React from 'react';
 import { Button } from 'react-bootstrap';
 // import { saveProject } from '../../store/projects';
@@ -23,7 +23,7 @@ export default class ProjectTemplateEdit extends React.Component<Props> {
     return (
       <section className="settings-tab-pane">
         <header>
-          <span className="title">Issue templates for {project.name}</span>
+          <span className="title">Issue templates for {project.title}</span>
           <Button bsStyle="primary" disabled={!modified} onClick={this.onSave}>
             Save
           </Button>

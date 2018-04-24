@@ -29,6 +29,7 @@ export class CustomColumnRenderer implements ColumnRenderer {
         <ColumnSort
             column={`custom.${this.field.id}`}
             sortKey={sort}
+            className="sort"
             descending={descending}
             onChangeSort={onChangeSort}
         >
@@ -40,7 +41,7 @@ export class CustomColumnRenderer implements ColumnRenderer {
 
   public render(issue: ObservableIssue) {
     if (issue.custom && this.field.id in issue.custom) {
-      return <td className={this.className}>{issue.custom[this.field.id]}</td>;
+      return <td key={this.field.id} className={this.className}>{issue.custom[this.field.id]}</td>;
     }
     return <td className="custom" key={this.field.id} />;
   }
