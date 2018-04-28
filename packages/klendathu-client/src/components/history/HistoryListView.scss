@@ -1,0 +1,39 @@
+@import '../../styles/colors';
+
+.kdt.history-list {
+  flex: 1;
+  overflow-y: auto;
+  margin-right: 2px;
+  margin-top: 2px;
+
+  .no-changes {
+    margin: 1rem 2rem;
+    font-style: italic;
+  }
+
+  .card {
+    padding: 1rem 1rem 0 1rem;
+    .history-list-entry  {
+      margin-bottom: 1rem;
+
+      header {
+        font-weight: bold;
+        > a {
+          color: $textDark;
+        }
+      }
+    }
+
+    .history-list-entry {
+      .issue-header {
+        padding-bottom: 2px;
+        margin-bottom: 2px;
+        border-bottom: 1px solid #888;
+      }
+      .change-header {
+        font-size: 1.7rem;
+        color: lighten($textDark, 20%);
+      }
+    }
+  }
+}

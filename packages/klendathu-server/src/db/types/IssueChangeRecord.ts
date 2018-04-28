@@ -17,6 +17,11 @@ export interface IssueChangeRecord {
     added?: string[];
     removed?: string[];
   };
+  comments?: {
+    added: number;
+    updated: number;
+    removed: number;
+  };
   custom?: CustomFieldChange[];
   linked?: LinkChange[];
 }

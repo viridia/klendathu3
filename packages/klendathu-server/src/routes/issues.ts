@@ -87,6 +87,7 @@ server.api.post('/issues/:account/:project', async (req, res) => {
 
     const commentsToInsert: CommentRecord[] = (input.comments || []).map(comment => ({
       issue: issueId,
+      project: projectId,
       author: user.id,
       body: comment,
       created: now,
@@ -375,19 +376,23 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
     }
 
     // Patch comments list.
-    // Note that we don't include comments in the change log since the comments themselves can
-    // serve that purpose.
     if ('comments' in input) {
       for (const c of input.comments) {
         // Insert a new comment from this author.
         const comment: CommentRecord = {
           issue: issueId,
+          project: projectId,
           author: user.id,
           body: c,
           created: now,
           updated: now,
         };
         r.table('comment').insert(comment).run(server.conn);
+        if (!change.comments) {
+          change.comments = { added: 0, updated: 0, removed: 0 };
+          change.at = record.updated;
+        }
+        change.comments.added += 1;
       }
     }
 

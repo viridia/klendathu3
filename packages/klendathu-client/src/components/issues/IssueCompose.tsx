@@ -161,7 +161,7 @@ export class IssueCompose extends React.Component<Props> {
                     </td>
                   </tr>
                   <tr>
-                    <th className="header"><ControlLabel>Assign to:</ControlLabel></th>
+                    <th className="header"><ControlLabel>Owner:</ControlLabel></th>
                     <td className="owner">
                       <UserAutocomplete
                           className="assignee ac-single"
@@ -492,7 +492,7 @@ export class IssueCompose extends React.Component<Props> {
   private reset() {
     const { issue } = this.props;
     if (issue) {
-      // TODO: load owner, cc, labels, links, etc.
+      // TODO: load owner, cc, links, etc.
       when('issue loaded', () => issue.loaded, () => {
         this.type = issue.type;
         this.issueState = issue.state;

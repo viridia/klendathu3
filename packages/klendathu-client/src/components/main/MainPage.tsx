@@ -6,6 +6,7 @@ import { SettingsView } from '../settings/SettingsView';
 import { ProjectListView } from '../projects/ProjectListView';
 import { SetupAccountDialog } from '../settings/SetupAccountDialog';
 import { EmailVerificationDialog } from '../settings/EmailVerificationDialog';
+import { HistoryListView } from '../history/HistoryListView';
 import { IssueCreateView } from '../issues/IssueCreateView';
 import { IssueEditView } from '../issues/IssueEditView';
 import { IssueListView } from '../issues/IssueListView';
@@ -98,6 +99,11 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
                                 path="/:account/:project/labels"
                                 exact={true}
                                 render={() => (<LabelListView {...models} />)}
+                            />
+                            <Route
+                                path="/:account/:project/history"
+                                exact={true}
+                                render={props => (<HistoryListView {...props} {...models}/>)}
                             />
                             <Route
                                 path="/:account/:project/settings/:tab?"

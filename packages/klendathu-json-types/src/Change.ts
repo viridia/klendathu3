@@ -47,6 +47,12 @@ export interface CustomFieldChange {
 export interface Change {
   id?: string;
 
+  /** Issue this change applies to. */
+  issue: string;
+
+  /** Project containing the change. */
+  project: string;
+
   /** ID of the user making this change. */
   by: string;
 
@@ -76,6 +82,13 @@ export interface Change {
 
   /** Changes to the issue attachment list. */
   attachments?: ListChange<string>;
+
+  /** Changes to comments. */
+  comments?: {
+    added: number;
+    updated: number;
+    removed: number;
+  };
 
   /** Changes to the list of custom fields. */
   custom?: CustomFieldChange[];

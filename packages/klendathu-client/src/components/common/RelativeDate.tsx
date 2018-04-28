@@ -58,7 +58,7 @@ export function humanAge(date: Date, brief = false): string {
     }
     return `${days} days ago`;
   }
-  return dateFormat(date, 'isoDate');
+  return `on ${dateFormat(date, 'isoDate')}`;
 }
 
 export function RelativeDate(

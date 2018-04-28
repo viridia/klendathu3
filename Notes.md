@@ -7,15 +7,14 @@
 * Issue Link Edit
 * Issue Edit
   * Edit form
-* Comments
 * Issue links
 * Sorting by custom fields. (Tricky without a database index - perhaps can't use ds lists.)
 * User Selector
 * Issue Compose (finish)
 * Issue Details
 * Update Project
-* Project prefs panels - columns, Workflow, etc.
-* Issue Grouping
+* Project prefs panels - Workflow, etc.
+* Issue Grouping - sprints, users, etc.
 * Workflow Edit
 * Error reporting for bad params in url path.
 * Issue Change History (global)
@@ -30,13 +29,13 @@
 * Nginx setup
 * HTTPS
 * Hierarchy view in issue list
+* Ajv error reporting?
 
 # Longer term:
 
 * Convert /names endpoint to use RPC instead.
 * Update to passport-github2
 * Investigate github webhooks
-* Investigate Jest
 * Think about using a record set rather than a record list for issue list - for sorting of
   custom fields.
 
@@ -50,25 +49,6 @@
 * ProjectInfoEdit
 * ProjectSettings
 * AddMemberDialog
-
-## Routes:
-
-/account/login
-/account/register
-/account/activate
-/account/pwreset
-/account/pwnew
-/settings/{tabname}
-/organizations/{organization}/settings/{tab}
-
-/ (dashboard)
-/{account}/ (profile page, including project list)
-/{account}/{project}/ (project summary)
-/{account}/{project}/new
-/{account}/{project}/{id}
-/{account}/{project}/edit/{id}
-/{account}/{project}/labels/{id}
-/{account}/{project}/settings/{tab}
 
 # More Ideas
 

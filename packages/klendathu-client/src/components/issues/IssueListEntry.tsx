@@ -93,7 +93,6 @@ export class IssueListEntry extends React.Component<Props> {
         </td>
       </tr>
     );
-    // TODO:
   }
 
   @action.bound

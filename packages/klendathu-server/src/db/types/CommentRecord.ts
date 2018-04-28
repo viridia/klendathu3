@@ -1,3 +1,5 @@
 import { Comment } from 'klendathu-json-types';
 
-export type CommentRecord = Comment;
+export interface CommentRecord extends Comment {
+  project: string;
+}

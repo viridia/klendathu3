@@ -45,7 +45,6 @@ interface Props {
 export class FilterTermEditor extends React.Component<Props> {
   public render() {
     const { index, term, termsUsed, project, children } = this.props;
-    // TODO:
     const items: React.ReactNode[] = [];
     Object.getOwnPropertyNames(descriptors).forEach(id => {
       const desc = descriptors[id];

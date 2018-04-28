@@ -16,8 +16,6 @@ interface Props extends RouteComponentProps<{ tab?: string }> {
   account: Account;
   project: Project;
   prefs: ObservableProjectPrefs;
-  // template: Template;
-  // workflow: Workflow;
 }
 
 // TODO: finish

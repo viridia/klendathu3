@@ -283,9 +283,15 @@ server.deepstream.record.listen('^issue.changes/.*', async (eventName, isSubscri
     response.accept();
     const query = url.parse(eventName, true);
     const [, account, project, id] = query.pathname.split('/', 4);
-    changesWatcher.subscribe(
-      eventName,
-      r.table('issueChanges').filter({ issue: `${account}/${project}/${id}` }));
+    if (!id) {
+      changesWatcher.subscribe(
+        eventName,
+        r.table('issueChanges').filter({ project: `${account}/${project}` }));
+    } else {
+      changesWatcher.subscribe(
+        eventName,
+        r.table('issueChanges').filter({ issue: `${account}/${project}/${id}` }));
+    }
   } else {
     changesWatcher.unsubscribe(eventName);
   }
