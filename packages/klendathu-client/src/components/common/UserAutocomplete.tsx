@@ -47,7 +47,7 @@ export class UserAutocomplete extends React.Component<Props> {
   @bind
   private onRenderSuggestion(user: Account): JSX.Element {
     return (
-      <span>
+      <span key={user.uid}>
         <span className="name">{user.display}</span>
         &nbsp;- <span className="username">{user.uname}</span>
       </span>
@@ -57,7 +57,7 @@ export class UserAutocomplete extends React.Component<Props> {
   @bind
   private onRenderSelection(user: Account): JSX.Element {
     return (
-      <Chip>
+      <Chip key={user.uid}>
         <span className="name">{user.display}</span>
         &nbsp;- <span className="username">{user.uname}</span>
       </Chip>
@@ -66,7 +66,7 @@ export class UserAutocomplete extends React.Component<Props> {
 
   @bind
   private onGetValue(user: Account): string {
-    return user.uname;
+    return user.uname || user.uid;
   }
 
   @bind

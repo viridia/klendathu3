@@ -176,7 +176,7 @@ export class Autocomplete<S> extends React.Component<Props<S>> {
     const result = [];
     for (let i = 0; i < selection.length; i += 1) {
       const item = selection[i];
-      const value = this.props.onGetValue(item);
+      const value = this.props.onGetValue(item) || i;
       const last = (i === selection.length - 1) && this.textValue.length === 0;
       const chip = this.props.onRenderSelection(item);
       result.push(

@@ -5,7 +5,7 @@ import { session } from './Session';
 // TODO: Sort
 
 export class ObservableIssueLinks {
-  @observable public loaded = true;
+  @observable public loaded = false;
   @observable public readonly map = new ObservableMap<Relation>();
 
   private issueId: string;

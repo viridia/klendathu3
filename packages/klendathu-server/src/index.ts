@@ -10,6 +10,7 @@ import { server } from './Server';
 import './routes/auth';
 import './routes/accounts';
 import './routes/files';
+import './routes/health';
 import './routes/issues';
 import './routes/labels';
 import './routes/memberships';

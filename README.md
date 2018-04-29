@@ -1,5 +1,17 @@
 # Notes
 
+## Running locally
+
+```sh
+npm run server-up
+```
+and
+```sh
+npm run client
+```
+
+The browse to http://localhost:8180.
+
 ## Secrets
 
 Since we're not using docker swarm, we have to manage secrets ourselves. For local development,

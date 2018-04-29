@@ -26,6 +26,11 @@ services:
       DB_NAME: klendathu
       LOG_LEVEL: debug
       SECRETS_ENV: /usr/src/klendathu/secrets/.env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://server/api/health"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
     depends_on:
       - db
       - deepstream

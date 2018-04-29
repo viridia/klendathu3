@@ -13,7 +13,15 @@ import {
   Role,
   Workflow,
 } from 'klendathu-json-types';
-import { IssueListQuery, ObservableIssue, Project, session, Template } from '../../models';
+import {
+  accounts,
+  IssueListQuery,
+  ObservableIssue,
+  ObservableIssueLinks,
+  Project,
+  session,
+  Template,
+} from '../../models';
 import {
   CommentEdit,
   CustomEnumField,
@@ -41,7 +49,7 @@ import { getFileInfoList } from '../../network/requests';
 import { RouteComponentProps } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { UploadAttachments } from '../files/UploadAttachments';
-import { action, computed, IObservableArray, observable, toJS, when } from 'mobx';
+import { action, computed, IObservableArray, observable, ObservableMap, toJS, when } from 'mobx';
 import { observer } from 'mobx-react';
 import { toast } from 'react-toastify';
 
@@ -492,14 +500,13 @@ export class IssueCompose extends React.Component<Props> {
   private reset() {
     const { issue } = this.props;
     if (issue) {
-      // TODO: load owner, cc, links, etc.
       when('issue loaded', () => issue.loaded, () => {
         this.type = issue.type;
         this.issueState = issue.state;
         this.summary = issue.summary;
         this.description = issue.description;
-        // this.owner = issue.owner;
-        // this.cc = issue.cc;
+        this.owner = issue.owner ? accounts.byId(issue.owner) : null;
+        this.cc.replace((issue.cc || []).map(cc => accounts.byId(cc)));
         this.labels.replace(issue.labels);
         this.custom.clear();
         for (const key of Object.getOwnPropertyNames(issue.custom)) {
@@ -510,7 +517,10 @@ export class IssueCompose extends React.Component<Props> {
             this.attachments.replace(files);
           });
         }
-        // this.issueLinkMap.clear();
+      });
+      const links = new ObservableIssueLinks(issue.id);
+      when('links loaded', () => links.loaded, () => {
+        (this.issueLinkMap as any).replace(links.linkMap);
       });
     } else {
       this.resetType();

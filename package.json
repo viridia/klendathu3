@@ -13,8 +13,8 @@
   "main": "index.js",
   "scripts": {
     "client": "cd packages/klendathu-client && npm start",
-    "server-up": "docker-compose up --build",
-    "server-down": "docker-compose down",
+    "server-up": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build server",
+    "server-down": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml down server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Talin",

@@ -58,7 +58,7 @@ export function ChangeEntry({ change, project, account }:
 
   function stateName(state: string) {
     const st = project.template.getState(state);
-    return st.caption || state;
+    return st && st.caption || state;
   }
 
   return (
