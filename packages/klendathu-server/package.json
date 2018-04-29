@@ -4,9 +4,7 @@
   "description": "Server component for Klendathu.",
   "main": "src/index.ts",
   "scripts": {
-    "start": "nodemon --ext ts,graphql --exec ts-node -- ./src/index.ts",
-    "start-ds": "docker run --rm --name klendathu-ds -p 6020:6020 deepstreamio/deepstream.io:latest",
-    "upload": "ts-node ./src/script/upload-template.ts",
+    "start": "nodemon --ext ts --exec ts-node -- ./src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Talin",
@@ -35,7 +33,6 @@
     "qs": "^6.5.1",
     "rethinkdb": "^2.3.3",
     "rethinkdb-regrid": "^0.8.1",
-    "sharp": "^0.20.1",
     "ts-node": "^5.0.0",
     "winston": "^2.4.0"
   },

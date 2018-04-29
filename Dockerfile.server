@@ -1,0 +1,37 @@
+# Dockerfile which builds an image containing the director, the scheduler, and any dependencies.
+FROM node:8.9-alpine
+RUN apk add --no-cache \
+  bash \
+  coreutils \
+  git \
+  grep \
+  python \
+  sed
+
+ARG NODE_ENV
+ENV NODE_ENV $NODE_ENV
+
+RUN npm install -g lerna
+
+ENV SRC=/usr/src/klendathu
+RUN mkdir -p ${SRC}
+
+WORKDIR ${SRC}
+
+ADD package.json ${SRC}/
+ADD package-lock.json ${SRC}/
+ADD lerna.json ${SRC}/
+ADD tslint.json ${SRC}/
+
+RUN npm install
+
+ADD packages/klendathu-server ${SRC}/packages/klendathu-server
+ADD packages/klendathu-json-types ${SRC}/packages/klendathu-json-types
+ADD secrets ${SRC}/
+
+RUN lerna bootstrap
+
+WORKDIR ${SRC}/packages/klendathu-server
+
+ENTRYPOINT ["npm"]
+CMD ["start"]

@@ -44,7 +44,8 @@
     "svg-react-loader": "^0.4.5",
     "ts-loader": "^4.0.1",
     "url-loader": "^0.6.2",
-    "webpack": "^4.0.1"
+    "webpack": "^4.0.1",
+    "webpack-cli": "^2.0.15"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.3",

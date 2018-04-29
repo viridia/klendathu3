@@ -18,6 +18,9 @@
 
       tbody {
         border-bottom: 4px solid transparent;
+        tr:nth-child(even) {
+          background: lighten($bg0, 2%);
+        }
       }
 
       th {
@@ -25,6 +28,12 @@
       }
 
       td, th {
+        border-right: 1px solid lighten($cardBorder, 12%);
+        border-collapse: collapse;
+        vertical-align: top;
+        &:last-child {
+          border-right: none;
+        }
         vertical-align: top;
         a {
           padding: 5px 7px;
@@ -48,7 +57,7 @@
           justify-content: center;
           border-radius: 3px;
           padding: 4px 9px 5px 9px;
-          margin: 4px 0 0;
+          margin: 4px 4px 0;
           vertical-align: middle;
           line-height: 1.2em;
         }

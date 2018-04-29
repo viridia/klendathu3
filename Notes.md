@@ -1,5 +1,6 @@
 # TODO:
 
+* Issue Compose (finish)
 * Saved filters
 * Filter links in left nav
 * Issue changes aren't updating in issue list.
@@ -10,7 +11,6 @@
 * Issue links
 * Sorting by custom fields. (Tricky without a database index - perhaps can't use ds lists.)
 * User Selector
-* Issue Compose (finish)
 * Issue Details
 * Update Project
 * Project prefs panels - Workflow, etc.
@@ -30,6 +30,7 @@
 * HTTPS
 * Hierarchy view in issue list
 * Ajv error reporting?
+* History filter by date range
 
 # Longer term:
 

@@ -1,18 +1,9 @@
 version: '3.2'
 services:
-  client:
-    build:
-      context: .
-      dockerfile: Dockerfile.client
-    container_name: client
-    ports:
-      - 8180:80
-    depends_on:
-      - server
   server:
     build:
       context: .
-      dockerfile: Dockerfile.server
+      dockerfile: Dockerfile.dev
     container_name: server
     ports:
       - 8181:8181
@@ -25,15 +16,14 @@ services:
       NODE_ENV: development
       DB_NAME: klendathu
       LOG_LEVEL: debug
-      SECRETS_ENV: /usr/src/klendathu/secrets/.env
     depends_on:
       - db
       - deepstream
       - imaginary
     volumes:
-      # - type: volume
-      #   source: .
-      #   target: /usr/src/klendathu
+      - type: volume
+        source: .
+        target: /usr/src/klendathu
       - type: tmpfs
         target: /usr/tmp/uploads
   deepstream:

@@ -2,6 +2,9 @@ import * as path from 'path';
 import * as dotenv from 'dotenv';
 
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+if (process.env.SECRETS_ENV) {
+  dotenv.config({ path: process.env.SECRETS_ENV });
+}
 
 import { server } from './Server';
 import './routes/auth';
