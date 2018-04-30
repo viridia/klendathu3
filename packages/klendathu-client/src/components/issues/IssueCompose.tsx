@@ -49,7 +49,7 @@ import { getFileInfoList } from '../../network/requests';
 import { RouteComponentProps } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { UploadAttachments } from '../files/UploadAttachments';
-import { action, computed, IObservableArray, observable, ObservableMap, toJS, when } from 'mobx';
+import { action, computed, IObservableArray, observable, toJS, when } from 'mobx';
 import { observer } from 'mobx-react';
 import { toast } from 'react-toastify';
 

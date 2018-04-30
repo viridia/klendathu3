@@ -1,6 +1,6 @@
 @import '../../styles/colors';
 
-.changes-list {
+.changes-list, .history-list-entry {
   max-width: 40em;
   > section.comment {
     border: 1px solid lighten($cardBorder, 15%);
@@ -83,6 +83,10 @@
         .custom-value-none {
           font-style: italic;
           color: lighten($textDark, 20%);
+        }
+        .unassigned {
+          font-style: italic;
+          color: $textDarkDisabled;
         }
       }
     }

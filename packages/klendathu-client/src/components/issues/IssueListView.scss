@@ -67,6 +67,7 @@
         padding: 0;
         vertical-align: middle;
         position: relative;
+        white-space: nowrap;
         button {
           width: 100%;
           background-color: transparent;
@@ -80,7 +81,7 @@
           }
         }
         button.sort {
-          margin: 0 0 0 12px;
+          margin: 0 0 0 8px;
         }
       }
 

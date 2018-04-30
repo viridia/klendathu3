@@ -98,12 +98,18 @@ server.deepstream.record.listen('^issues/.*', async (eventName, isSubscribed, re
         descending = true;
         sortKey = sortKey.slice(1);
       }
-      if (sortKey === 'owner') {
-        sortKey = 'ownerSort';
-      } else if (sortKey === 'reporter') {
-        sortKey = 'reporterSort';
+      if (sortKey.startsWith('custom.')) {
+        // TODO: This doesn't work.
+        console.log('sort key', sortKey);
+        order = descending ? r.desc(sortKey) : r.asc(sortKey);
+      } else {
+        if (sortKey === 'owner') {
+          sortKey = 'ownerSort';
+        } else if (sortKey === 'reporter') {
+          sortKey = 'reporterSort';
+        }
+        order = descending ? { index: r.desc(sortKey) } : { index: r.asc(sortKey) };
       }
-      order = descending ? { index: r.desc(sortKey) } : { index: r.asc(sortKey) };
     }
     // console.log('order', order, eventName);
 

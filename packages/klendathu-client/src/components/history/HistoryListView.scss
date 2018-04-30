@@ -26,9 +26,9 @@
 
     .history-list-entry {
       .issue-header {
-        padding-bottom: 2px;
+        padding: 4px 8px;
         margin-bottom: 2px;
-        border-bottom: 1px solid #888;
+        background-color: $bg0;
       }
       .change-header {
         font-size: 1.7rem;

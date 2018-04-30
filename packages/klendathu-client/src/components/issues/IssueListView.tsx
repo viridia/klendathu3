@@ -56,7 +56,7 @@ export class IssueListView extends React.Component<Props> {
   }
 
   public componentWillReceiveProps(nextProps: Props) {
-    this.queryParams = qs.parse(location.search.slice(1));
+    this.queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
     this.updateQuery();
   }
 

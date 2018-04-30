@@ -41,28 +41,27 @@
 
 ## Files with unfinished pieces:
 * LoginForm
-* IssueEditView
-* IssueCompose - reset to edit
 * CustomSuggestField
 * ErrorDisplay
 * IssueDetailsView - attachments and comments.
-* ProjectInfoEdit
+* ProjectInfoEdit - save, display owner
 * ProjectSettings
-* AddMemberDialog
 
 # More Ideas
 
 * Separate issue state from checkin state. (Latter managed by github or other vcs webhook).
 * Comment attachments.
+* at-mentions in comments
 * A way to easily reference tickets in commit messages. (Just paste the url)
 * Make certain fields editable without going into edit mode.
 * Think about email spam. (Once we have email)
   * Aggregate changes; Don't show trivial changes.
 * Think about a global change history that would avoid the need for email spam.
+  * Partly done - need query by date
 * Gantt and ticket relationships.
 * Auto-linked tickets. (Add 'create linked' in sidebar actions.)
 * Think about how to make it easier to manage ticket relationships.
   * Drag links between cards?
   * Murally-style dragging of cards?  I kind of like that idea...
-* Cloudwatch-style collapsing columns.
+* Clubhouse.io-style collapsing columns.
 * Filter terms: multiple label clauses - each clause is OR, each term is AND.
