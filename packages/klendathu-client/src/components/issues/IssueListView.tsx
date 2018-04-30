@@ -95,11 +95,11 @@ export class IssueListView extends React.Component<Props> {
             <table className="issue">
               {this.renderHeader()}
               <tbody>
-                {issues.asList.map(i => (
+                {issues.sorted.map(issue => (
                   <IssueListEntry
                       {...this.props}
-                      key={i}
-                      issueId={i}
+                      key={issue.id}
+                      issue={issue}
                       columnRenderers={this.columnRenderers}
                       selection={this.selection}
                   />))}
@@ -195,8 +195,8 @@ export class IssueListView extends React.Component<Props> {
   @action.bound
   private onChangeSelectAll(e: any) {
     if (e.target.checked) {
-      for (const id of this.props.issues.asList) {
-        this.selection.add(id);
+      for (const issue of this.props.issues.asList) {
+        this.selection.add(issue.id);
       }
     } else {
       this.selection.clear();
@@ -264,8 +264,8 @@ export class IssueListView extends React.Component<Props> {
     if (this.selectAllEl) {
       const noneSelected = this.selection.size === 0;
       let allSelected = true;
-      for (const id of this.props.issues.asList) {
-        if (!this.selection.has(id)) {
+      for (const issue of this.props.issues.asList) {
+        if (!this.selection.has(issue.id)) {
           allSelected = false;
           break;
         }

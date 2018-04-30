@@ -14,9 +14,21 @@
   "scripts": {
     "client": "cd packages/klendathu-client && npm start",
     "server-up": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build server",
-    "server-down": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml down server",
+    "server-down": "docker-compose down server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Talin",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viridia/klendathu3.git"
+  },
+  "keywords": [
+    "bug",
+    "tracking"
+  ],
+  "bugs": {
+    "url": "https://github.com/viridia/klendathu3/issues"
+  },
+  "homepage": "https://github.com/viridia/klendathu3#readme"
 }

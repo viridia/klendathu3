@@ -3,6 +3,7 @@ import {
   Account,
   CustomValues,
   DataType,
+  Issue,
   IssueInput,
   IssueType,
   Role,
@@ -304,8 +305,8 @@ export class IssueDetails extends React.Component<Props> {
   }
 
   private adjacentIssueIds(id: string): [string, string] {
-    const list = this.props.issues.asList;
-    const index = list.indexOf(id);
+    const list = this.props.issues.sorted;
+    const index = list.findIndex(issue => issue.id === id);
     if (index < 0) {
       return [null, null];
     }
@@ -315,8 +316,8 @@ export class IssueDetails extends React.Component<Props> {
     ];
   }
 
-  private idToIndex(id: string): string {
-    return id.split('/')[2];
+  private idToIndex(issue: Issue): string {
+    return issue.id.split('/')[2];
   }
 
   private renderTemplateFields(issueType: IssueType, custom: CustomValues) {
@@ -380,7 +381,7 @@ export class IssueDetails extends React.Component<Props> {
       } else if (nextIssue) {
         history.replace({
           ...location,
-          pathname: `/${account.uname}/${project.uname}/issues/${nextIssue}`,
+          pathname: `/${account.uname}/${project.uname}/${nextIssue}`,
         });
       } else if (location.state && location.state.back) {
         history.replace(location.state.back);

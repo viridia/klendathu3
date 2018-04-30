@@ -1,10 +1,52 @@
 import { session } from './Session';
-import { action, computed, IObservableArray, observe, observable } from 'mobx';
+import { Issue } from 'klendathu-json-types';
+import { action, computed, ObservableMap, observe, observable } from 'mobx';
 import bind from 'bind-decorator';
 import * as qs from 'qs';
 
-function alphabeticalSort(a: string, b: string) {
-  return a.localeCompare(b);
+function alphabeticalSort(a: any, b: any) {
+  if (typeof a === 'string' && typeof b === 'string') {
+    return a.localeCompare(b);
+  }
+  if (a < b) {
+    return -1;
+  }
+  if (a > b) {
+    return 1;
+  }
+  if (a === undefined && b !== undefined) {
+    return -1;
+  }
+  if (b === undefined && a !== undefined) {
+    return 1;
+  }
+  if (a === null && b !== null) {
+    return -1;
+  }
+  if (b === null && a !== null) {
+    return 1;
+  }
+  return 0;
+}
+
+type Comparator = (a: Issue, b: Issue) => number;
+
+function alphabeticalSortOrder(field: string, descending: boolean): Comparator {
+  if (descending) {
+    return (a: Issue, b: Issue) => -alphabeticalSort((a as any)[field], (b as any)[field]);
+  } else {
+    return (a: Issue, b: Issue) => alphabeticalSort((a as any)[field], (b as any)[field]);
+  }
+}
+
+function customSortOrder(field: string, descending: boolean): Comparator {
+  if (descending) {
+    return (a: Issue, b: Issue) =>
+      -alphabeticalSort((a.custom as any || {})[field], (b.custom as any || {})[field]);
+  } else {
+    return (a: Issue, b: Issue) =>
+      alphabeticalSort((a.custom as any || {})[field], (b.custom as any || {})[field]);
+  }
 }
 
 export class IssueListQuery {
@@ -13,10 +55,10 @@ export class IssueListQuery {
   @observable public sort: string = 'id';
   @observable public filterParams: { [key: string]: any } = {};
   @observable public descending: boolean = true;
-  @observable.shallow private issues = [] as IObservableArray<string>;
+  @observable.shallow private issues = new ObservableMap<Issue>();
   private account: string;
   private project: string;
-  private list: deepstreamIO.List;
+  private record: deepstreamIO.Record;
 
   constructor(account: string, project: string) {
     this.account = account;
@@ -25,27 +67,37 @@ export class IssueListQuery {
   }
 
   public release() {
-    this.list.unsubscribe(this.onUpdate);
-    this.list.discard();
+    this.record.unsubscribe(this.onUpdate);
+    this.record.discard();
   }
 
   public get length(): number {
-    return this.issues.length;
+    return this.issues.size;
   }
 
-  public get asList(): string[] {
-    return this.issues;
+  public get asList(): Issue[] {
+    return this.issues.values();
+  }
+
+  @computed
+  public get sorted(): Issue[] {
+    const result = [...this.issues.values()];
+    result.sort(this.comparator);
+    return result;
+  }
+
+  @computed
+  public get comparator(): Comparator {
+    if (this.sort.startsWith('custom.')) {
+      return customSortOrder(this.sort.slice(7), this.descending);
+    }
+    return alphabeticalSortOrder(this.sort, this.descending);
   }
 
   // These are the query params that are sent to the API.
   @computed
   private get queryParams(): string {
     const query: any = { ...this.filterParams };
-    if (this.sort) {
-      if (this.sort !== 'id' || !this.descending) {
-        query.sort = `${this.descending ? '-' : ''}${this.sort}`;
-      }
-    }
     return qs.stringify(query, {
       addQueryPrefix: true,
       sort: alphabeticalSort,
@@ -55,19 +107,22 @@ export class IssueListQuery {
   }
 
   @action.bound
-  private onUpdate(elts: string[]) {
-    this.issues.replace(elts);
+  private onUpdate(data: { [id: string]: Issue }) {
+    this.issues.replace(
+      Object.getOwnPropertyNames(data)
+          .map(id => [id, data[id]] as [string, Issue])
+          .filter(v => v[1]));
     this.loaded = true;
   }
 
   @bind
   private onChangeQueryParams() {
-    if (this.list) {
+    if (this.record) {
       this.release();
     }
-    const newList = session.connection.record.getList(
+    const newList = session.connection.record.getRecord(
       `issues/${this.account}/${this.project}${this.queryParams}`);
-    this.list = newList;
-    this.list.subscribe(this.onUpdate, true);
+    this.record = newList;
+    this.record.subscribe(this.onUpdate, true);
   }
 }

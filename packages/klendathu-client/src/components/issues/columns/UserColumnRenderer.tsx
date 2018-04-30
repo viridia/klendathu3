@@ -1,10 +1,10 @@
-import { ObservableIssue } from '../../../models';
+import { Issue } from 'klendathu-json-types';
 import * as React from 'react';
 import { AbstractColumnRenderer } from './AbstractColumnRenderer';
 import { AccountName } from '../../common/AccountName';
 
 export class UserColumnRenderer extends AbstractColumnRenderer {
-  public render(issue: ObservableIssue) {
+  public render(issue: Issue) {
     const userId: string = (issue as any)[this.fieldName];
     if (!userId) {
       return (

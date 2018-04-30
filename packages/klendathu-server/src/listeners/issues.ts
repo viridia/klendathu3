@@ -14,7 +14,6 @@ import {
 } from '../db/encoders';
 import { escapeRegExp, zeroOrOne } from '../db/helpers';
 import { RecordWatcher } from './RecordWatcher';
-import { RecordListWatcher } from './RecordListWatcher';
 import { RecordSetWatcher } from './RecordSetWatcher';
 import { logger } from '../logger';
 import * as url from 'url';
@@ -22,7 +21,7 @@ import * as r from 'rethinkdb';
 
 const ds = server.deepstream;
 
-const issueListWatcher = new RecordListWatcher<IssueRecord, Issue>(encodeIssue);
+const issueListWatcher = new RecordSetWatcher<IssueRecord, Issue>(encodeIssue);
 const issueWatcher = new RecordWatcher<IssueRecord, Issue>(encodeIssue);
 const issueLinksWatcher = new RecordSetWatcher<IssueLinkRecord, IssueArc>(encodeIssueLink);
 const commentsWatcher = new RecordSetWatcher<CommentRecord, Comment>(encodeComment);
@@ -90,27 +89,28 @@ server.deepstream.record.listen('^issues/.*', async (eventName, isSubscribed, re
     const [, account, project] = topicUrl.pathname.split('/', 3);
 
     // Compute sort key
-    let order: r.Sort = { index: r.desc('id') };
-    let sortKey: string = topicUrl.query.sort as string;
-    if (sortKey) {
-      let descending = false;
-      if (sortKey.startsWith('-')) {
-        descending = true;
-        sortKey = sortKey.slice(1);
-      }
-      if (sortKey.startsWith('custom.')) {
-        // TODO: This doesn't work.
-        console.log('sort key', sortKey);
-        order = descending ? r.desc(sortKey) : r.asc(sortKey);
-      } else {
-        if (sortKey === 'owner') {
-          sortKey = 'ownerSort';
-        } else if (sortKey === 'reporter') {
-          sortKey = 'reporterSort';
-        }
-        order = descending ? { index: r.desc(sortKey) } : { index: r.asc(sortKey) };
-      }
-    }
+    const order: r.Sort = { index: r.desc('id') };
+    // let sortKey: string = topicUrl.query.sort as string;
+    // if (sortKey) {
+    //   let descending = false;
+    //   if (sortKey.startsWith('-')) {
+    //     descending = true;
+    //     sortKey = sortKey.slice(1);
+    //   }
+    //   if (sortKey.startsWith('custom.')) {
+    //     // Don't sort
+    //     // TODO: This doesn't work.
+    //     // console.log('sort key', sortKey);
+    //     // order = descending ? r.desc(sortKey) : r.asc(sortKey);
+    //   } else {
+    //     if (sortKey === 'owner') {
+    //       sortKey = 'ownerSort';
+    //     } else if (sortKey === 'reporter') {
+    //       sortKey = 'reporterSort';
+    //     }
+    //     order = descending ? { index: r.desc(sortKey) } : { index: r.asc(sortKey) };
+    //   }
+    // }
     // console.log('order', order, eventName);
 
     let dbQuery = r.table('issues')
@@ -239,9 +239,7 @@ server.deepstream.record.listen('^issues/.*', async (eventName, isSubscribed, re
     }
 
     // Run database query and set up changefeed.
-    issueListWatcher.subscribe(
-      eventName,
-      dbQuery.pluck('id').limit(50));
+    issueListWatcher.subscribe(eventName, dbQuery.limit(5000));
   } else {
     issueListWatcher.unsubscribe(eventName);
   }
@@ -253,7 +251,7 @@ server.deepstream.record.listen('^issue/.*', async (eventName, isSubscribed, res
     const [, account, project, issue] = eventName.split('/', 4);
     issueWatcher.subscribe(eventName, r.table('issues').get(`${account}/${project}/${issue}`));
   } else {
-    issueListWatcher.unsubscribe(eventName);
+    issueWatcher.unsubscribe(eventName);
   }
 });
 

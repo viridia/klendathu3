@@ -1,4 +1,5 @@
-import { ObservableIssue, Template } from '../../../models';
+import { Issue } from 'klendathu-json-types';
+import { Template } from '../../../models';
 import * as React from 'react';
 import { AbstractColumnRenderer } from './AbstractColumnRenderer';
 
@@ -10,7 +11,7 @@ export class StateColumnRenderer extends AbstractColumnRenderer {
     this.template = template;
   }
 
-  public render(issue: ObservableIssue) {
+  public render(issue: Issue) {
     const stateInfo = this.template.states.find(s => s.id === issue.state);
     if (!stateInfo) {
       return <td className="state pad" key="state">{issue.state}</td>;

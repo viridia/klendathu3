@@ -1,4 +1,4 @@
-import { ObservableIssue } from '../../../models';
+import { Issue } from 'klendathu-json-types';
 import * as React from 'react';
 import { ColumnSort } from '../../common/ColumnSort';
 import { ColumnRenderer } from './ColumnRenderer';
@@ -33,5 +33,5 @@ export abstract class AbstractColumnRenderer implements ColumnRenderer {
     );
   }
 
-  public abstract render(issue: ObservableIssue): JSX.Element;
+  public abstract render(issue: Issue): JSX.Element;
 }

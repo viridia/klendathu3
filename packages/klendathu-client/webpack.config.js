@@ -25,7 +25,7 @@ module.exports = {
       },
     }),
     new webpack.LoaderOptionsPlugin({ minimize: !debug, debug }),
-    new ForkTsCheckerWebpackPlugin({ tslint: path.resolve(__dirname, '../../tslint.json') }),
+    // new ForkTsCheckerWebpackPlugin({ tslint: path.resolve(__dirname, '../../tslint.json') }),
   ],
   module: {
     rules: [
@@ -45,7 +45,7 @@ module.exports = {
           },
           {
             loader: 'ts-loader',
-            options: { transpileOnly: true }
+            // options: { transpileOnly: true }
           }
         ]
       },
