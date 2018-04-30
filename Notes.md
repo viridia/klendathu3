@@ -9,6 +9,7 @@
   * Edit form
 * Issue links
 * Sorting by custom fields. (Tricky without a database index - perhaps can't use ds lists.)
+  * Do sorting and paginating on the client.
 * User Selector
 * Issue Details
 * Update Project

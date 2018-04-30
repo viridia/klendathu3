@@ -78,10 +78,11 @@
             display: inline-block;
             width: 12px;
             color: desaturate(lighten($bg6, 25%), 20%);
+            margin-right: 4px;
           }
         }
         button.sort {
-          margin: 0 0 0 8px;
+          margin: 0 0 0 6px;
         }
       }
 
