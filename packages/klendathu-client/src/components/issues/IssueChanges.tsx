@@ -28,7 +28,7 @@ function Comment({ comment }: { comment: Comment }) {
       <header className="comment-header">
         <AccountName id={comment.author} full={true} />
         &nbsp;commented&nbsp;
-        <RelativeDate date={comment.created} />
+        <RelativeDate date={comment.created} withPrefix={true} />
         :
       </header>
       {renderBody(comment.body)}

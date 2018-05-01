@@ -30,7 +30,7 @@
     },
     "ownerSort": {
       "description": "Sort key for issue owners.",
-      "type": "string"
+      "type": ["string", "null"]
     },
     "cc": {
       "description": "Issue watchers.",

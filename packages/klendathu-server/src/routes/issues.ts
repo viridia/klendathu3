@@ -241,7 +241,16 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
 
     if ('owner' in input && input.owner !== existing.owner) {
       record.owner = input.owner;
-      record.ownerSort = input.ownerSort || null;
+      if (!record.owner) {
+        record.ownerSort = null;
+      } else {
+        record.ownerSort = input.ownerSort || null;
+        const owner = await r.table('accounts').get<AccountRecord>(input.owner).run(server.conn);
+        if (owner) {
+          record.ownerSort = owner.uname;
+        }
+      }
+
       change.owner = { before: existing.owner, after: input.owner };
       change.at = record.updated;
     }
@@ -399,10 +408,10 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
     if (input.linked) {
       // Find all the link records (in both directions)
       const [fwdLinks, rvsLinks]: [IssueLinkRecord[], IssueLinkRecord[]] = await Promise.all([
-        r.table('issueLinks').filter({ project: projectId, from: issueId })
+        r.table('issueLinks').filter({ from: issueId })
             .run(server.conn)
             .then(cursor => cursor.toArray()),
-        r.table('issueLinks').filter({ project: projectId, to: issueId })
+        r.table('issueLinks').filter({ to: issueId })
             .run(server.conn)
             .then(cursor => cursor.toArray()),
       ]);

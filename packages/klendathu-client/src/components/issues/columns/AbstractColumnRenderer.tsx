@@ -33,5 +33,14 @@ export abstract class AbstractColumnRenderer implements ColumnRenderer {
     );
   }
 
+  public renderGroupHeader(value: any): JSX.Element {
+    return (
+      <header className="group-header">
+        <span className="title">{this.title}: </span>
+        <span className="value">{value}</span>
+      </header>
+    );
+  }
+
   public abstract render(issue: Issue): JSX.Element;
 }

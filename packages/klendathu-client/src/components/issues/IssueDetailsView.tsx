@@ -215,7 +215,7 @@ export class IssueDetails extends React.Component<Props> {
               )}
               <tr>
                 <th className="header">Created:</th>
-                <td className="changes"><RelativeDate date={issue.created} /></td>
+                <td className="changes"><RelativeDate date={issue.created} withPrefix={true} /></td>
               </tr>
               <tr>
                 <th className="header">Reporter:</th>

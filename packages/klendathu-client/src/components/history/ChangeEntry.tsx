@@ -66,7 +66,7 @@ export function ChangeEntry({ change, project, account }:
       <header className="change-header">
         <AccountName id={change.by} full={true} />
         &nbsp;made changes&nbsp;
-        <RelativeDate date={change.at} />
+        <RelativeDate date={change.at} withPrefix={true} />
         :
       </header>
       <ul className="field-change-list">

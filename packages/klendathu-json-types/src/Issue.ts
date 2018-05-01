@@ -23,6 +23,9 @@ export interface IssueBase {
   /** Username of current owner of this issue. */
   owner: string;
 
+  /** Sort key for owners. */
+  ownerSort?: string;
+
   /** Users who wish to be informed when this issue is updated. */
   cc: string[];
 
@@ -51,6 +54,9 @@ export interface Issue extends IssueBase {
 
   /** Username of user that originally reported this issue. */
   reporter: string;
+
+  /** Sort key for reporters. */
+  reporterSort?: string;
 
   /** History of changes for this issue. */
   // changes?: Change[];

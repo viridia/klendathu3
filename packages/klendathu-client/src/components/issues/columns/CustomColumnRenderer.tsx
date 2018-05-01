@@ -38,6 +38,15 @@ export class CustomColumnRenderer implements ColumnRenderer {
     );
   }
 
+  public renderGroupHeader(value: any): JSX.Element {
+    return (
+      <header className="group-header">
+        <span className="title">{this.title}: </span>
+        <span className="value">{value}</span>
+      </header>
+    );
+  }
+
   public render(issue: Issue) {
     if (issue.custom && this.field.id in issue.custom) {
       return <td key={this.field.id} className={this.className}>{issue.custom[this.field.id]}</td>;

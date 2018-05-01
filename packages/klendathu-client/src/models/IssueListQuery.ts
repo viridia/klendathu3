@@ -49,10 +49,17 @@ function customSortOrder(field: string, descending: boolean): Comparator {
   }
 }
 
+export interface GroupedIssues {
+  groupKey: string;
+  groupValue: string;
+  issues: Issue[];
+}
+
 export class IssueListQuery {
   @observable public loaded = false;
   @observable public error: string = null;
   @observable public sort: string = 'id';
+  @observable public group: string = '';
   @observable public filterParams: { [key: string]: any } = {};
   @observable public descending: boolean = true;
   @observable.shallow private issues = new ObservableMap<Issue>();
@@ -87,9 +94,39 @@ export class IssueListQuery {
   }
 
   @computed
+  public get grouped(): GroupedIssues[] {
+    const groupMap = new Map<string, GroupedIssues>();
+    let fieldName = this.group;
+    if (this.group === 'owner') {
+      fieldName = 'ownerSort';
+    } else if (this.group === 'reporter') {
+      fieldName = 'reporterSort';
+    }
+    for (const issue of this.sorted) {
+      const groupValue = (issue as any)[this.group];
+      const groupKey = (issue as any)[fieldName];
+      const group = groupMap.get(groupKey);
+      if (!group) {
+        groupMap.set(groupKey, { groupKey, groupValue, issues: [issue] });
+      } else {
+        group.issues.push(issue);
+      }
+    }
+    const keys = [...groupMap.keys()];
+    keys.sort(alphabeticalSort);
+    return keys.map(key => groupMap.get(key));
+  }
+
+  @computed
   public get comparator(): Comparator {
     if (this.sort.startsWith('custom.')) {
       return customSortOrder(this.sort.slice(7), this.descending);
+    }
+    if (this.sort === 'owner') {
+      return alphabeticalSortOrder('ownerSort', this.descending);
+    }
+    if (this.sort === 'reporter') {
+      return alphabeticalSortOrder('reporterSort', this.descending);
     }
     return alphabeticalSortOrder(this.sort, this.descending);
   }

@@ -75,12 +75,15 @@ section.filter-params {
         align-self: flex-start;
       }
 
+      > .dropdown-toggle {
+        margin-right: 8px;
+      }
+
       .dropdown-toggle {
         min-width: 12em;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-right: 8px;
       }
 
       > .filter-value {

@@ -5,6 +5,18 @@
   flex: 1;
   overflow-y: auto;
 
+  .issue-group > header {
+    margin: 8px 0;
+    .value {
+      font-weight: bold;
+    }
+
+    .unassigned {
+      font-style: italic;
+      color: $textDarkDisabled;
+    }
+  }
+
   .card {
     margin: 0;
 
@@ -114,6 +126,10 @@
       .selected, .id, .type, .state, .owner, .created, .updated {
         text-align: center;
         white-space: nowrap;
+      }
+
+      .type, .owner, .reporter, .state, .created, .updated {
+        min-width: 11rem;
       }
 
       .date {

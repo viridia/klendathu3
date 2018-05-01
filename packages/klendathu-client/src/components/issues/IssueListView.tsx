@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Account, Role } from 'klendathu-json-types';
+import { Account, Issue, Role } from 'klendathu-json-types';
 import {
   IssueListQuery,
   ObservableProjectPrefs,
@@ -91,28 +91,50 @@ export class IssueListView extends React.Component<Props> {
         <section className="kdt content issue-list">
           <FilterParams {...this.props} />
           <MassEdit project={project} selection={this.selection} />
-          <div className="card issue">
-            <table className="issue">
-              {this.renderHeader()}
-              <tbody>
-                {issues.sorted.map(issue => (
-                  <IssueListEntry
-                      {...this.props}
-                      key={issue.id}
-                      issue={issue}
-                      columnRenderers={this.columnRenderers}
-                      selection={this.selection}
-                  />))}
-              </tbody>
-            </table>
-          </div>
+          {this.renderIssues()}
         </section>
       );
     }
   }
 
+  private renderIssues() {
+    const { issues } = this.props;
+    if (issues.group) {
+      const column = this.columnRenderers.get(issues.group);
+      if (column && column.renderGroupHeader) {
+        return issues.grouped.map(gr => (
+          <section className="issue-group" key={gr.groupValue}>
+            {column.renderGroupHeader(gr.groupValue)}
+            {this.renderIssueTable(gr.issues)}
+          </section>
+        ));
+      }
+    }
+    return this.renderIssueTable(issues.sorted);
+  }
+
+  private renderIssueTable(issues: Issue[]) {
+    return (
+      <div className="card issue">
+        <table className="issue">
+          {this.renderHeader()}
+          <tbody>
+            {issues.map(issue => (
+              <IssueListEntry
+                  {...this.props}
+                  key={issue.id}
+                  issue={issue}
+                  columnRenderers={this.columnRenderers}
+                  selection={this.selection}
+              />))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
   private renderHeader() {
-    const { account, project, prefs } = this.props;
+    const { account, project } = this.props;
     const { sort, descending } = this.sortOrder();
     return (
       <thead>
@@ -139,7 +161,7 @@ export class IssueListView extends React.Component<Props> {
               #
             </ColumnSort>
           </th>
-          {prefs.columns.map(cname => {
+          {this.columns.map(cname => {
             const cr = this.columnRenderers.get(cname);
             if (cr) {
               return cr.renderHeader(sort, descending, this.onChangeSort);
@@ -204,6 +226,12 @@ export class IssueListView extends React.Component<Props> {
   }
 
   @computed
+  private get columns(): string[] {
+    const { prefs } = this.props;
+    return prefs.columns;
+  }
+
+  @computed
   private get columnRenderers(): Map<string, ColumnRenderer> {
     const { project } = this.props;
     const columnRenderers = new Map<string, ColumnRenderer>();
@@ -245,6 +273,7 @@ export class IssueListView extends React.Component<Props> {
     issues.descending = descending;
     issues.filterParams = {};
     issues.filterParams.search = this.queryParams.search;
+    issues.group = this.queryParams.group;
     for (const key of Object.getOwnPropertyNames(this.queryParams)) {
       if (key in descriptors || key.startsWith('custom.') || key.startsWith('pred.')) {
         const desc = descriptors[key];

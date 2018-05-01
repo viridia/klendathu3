@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Button, Collapse, Form, FormControl } from 'react-bootstrap';
+import { Button, Collapse, DropdownButton, Form, FormControl, MenuItem } from 'react-bootstrap';
 import { DiscloseButton } from '../common/DiscloseButton';
 import { Project, IssueListQuery } from '../../models';
 import { FilterTermEditor } from './FilterTermEditor';
@@ -16,6 +16,19 @@ import './FilterParams.scss';
 
 import CloseIcon from '../../../icons/ic_close.svg';
 
+interface GroupTerm {
+  caption: string;
+  field: string;
+}
+
+const GROUP_TERMS: GroupTerm[] = [
+  { caption: '(none)', field: '' },
+  { caption: 'Owner', field: 'owner' },
+  { caption: 'Reporter', field: 'reporter' },
+  { caption: 'Type', field: 'type' },
+  { caption: 'State', field: 'state' },
+];
+
 interface Props extends RouteComponentProps<{}> {
   project: Project;
   issues: IssueListQuery;
@@ -25,6 +38,7 @@ interface Props extends RouteComponentProps<{}> {
 export class FilterParams extends React.Component<Props> {
   @observable private expanded = false;
   @observable private search = '';
+  @observable private group = '';
   @observable private showSaveDialog = false;
   @observable private terms = [] as IObservableArray<FilterTerm>;
 
@@ -65,6 +79,7 @@ export class FilterParams extends React.Component<Props> {
 
   private renderFilterTerms() {
     const { project, location } = this.props;
+    const selectedGroup = GROUP_TERMS.find(gr => gr.field === this.group);
     return (
       <Collapse in={this.expanded}>
         <section className="term-list">
@@ -84,6 +99,17 @@ export class FilterParams extends React.Component<Props> {
               onRemove={this.onRemoveTerm}
               onChange={this.onChangeTerm}
           >
+            <DropdownButton
+                bsSize="small"
+                title={selectedGroup && selectedGroup.field
+                    ? `Group by ${selectedGroup.caption}` : 'Group by...'}
+                id="group-by"
+                onSelect={this.onSelectGroup}
+            >
+              {GROUP_TERMS.map(gt => (
+                <MenuItem eventKey={gt.field} key={gt.field}>{gt.caption}</MenuItem>
+              ))}
+            </DropdownButton>
             <Button
                 bsStyle="default"
                 bsSize="small"
@@ -147,6 +173,11 @@ export class FilterParams extends React.Component<Props> {
   }
 
   @action.bound
+  private onSelectGroup(group: any) {
+    this.group = group;
+  }
+
+  @action.bound
   private onRemoveTerm(index: number) {
     this.terms.splice(index, 1);
   }
@@ -201,6 +232,9 @@ export class FilterParams extends React.Component<Props> {
     if (this.search) {
       newQuery.search = this.search;
     }
+    if (this.group) {
+      newQuery.group = this.group;
+    }
     // Add new terms
     this.terms.forEach(term => {
       term.descriptor.buildQuery(newQuery, term);
@@ -218,6 +252,7 @@ export class FilterParams extends React.Component<Props> {
     const { project } = this.props;
     const query = qs.parse(search, { ignoreQueryPrefix: true });
     this.search = query.search || '';
+    this.group = query.group || '';
     const terms: FilterTerm[] = [];
     for (const key of Object.getOwnPropertyNames(query)) {
       const descriptor = getDescriptor(project, key);
