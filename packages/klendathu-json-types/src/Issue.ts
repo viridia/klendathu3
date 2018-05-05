@@ -43,6 +43,9 @@ export interface IssueBase {
 
   /** X / Y position of issue in mural view. */
   position?: [number, number];
+
+  /** Milestone that we plan to address this issue in. */
+  milestone?: string;
 }
 
 export interface Issue extends IssueBase {
@@ -57,9 +60,6 @@ export interface Issue extends IssueBase {
 
   /** Sort key for reporters. */
   reporterSort?: string;
-
-  /** History of changes for this issue. */
-  // changes?: Change[];
 
   /** Date and time when the issue was created. */
   created: string;

@@ -29,6 +29,7 @@ import { AccountName } from '../common/AccountName';
 import { ShowAttachments } from '../files/ShowAttachments';
 import { LabelName } from '../common/LabelName';
 import { RelativeDate } from '../common/RelativeDate';
+import { CopyLink } from '../common/CopyLink';
 import { displayErrorToast } from '../common/displayErrorToast';
 import { deleteIssue, updateIssue } from '../../network/requests';
 import { action, observable } from 'mobx';
@@ -145,6 +146,7 @@ export class IssueDetails extends React.Component<Props> {
               {issueType.caption}
             </div>)}
         </div>
+        <CopyLink url={window.location.toString()} title="Copy issue link to clipboard" />
         <ButtonGroup className="issue-actions">
           <LinkContainer
               to={{

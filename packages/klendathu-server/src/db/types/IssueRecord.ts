@@ -21,4 +21,5 @@ export interface IssueRecord {
   attachments: string[];
   isPublic?: boolean;
   position?: [number, number];
+  milestone?: string;
 }

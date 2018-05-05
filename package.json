@@ -5,6 +5,7 @@
     "tslint-react": "^3.5.1"
   },
   "dependencies": {
+    "copy-to-clipboard": "^3.0.8",
     "typescript": "^2.7.2"
   },
   "name": "klendathu",

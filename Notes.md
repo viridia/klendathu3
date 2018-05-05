@@ -1,31 +1,31 @@
 # TODO:
 
-* Copy link to clipboard
+* Milestones
+* Commenting
 * Saved filters
 * Filter links in left nav
-* Issue changes aren't updating in issue list.
+** Issue changes aren't updating in issue list.
 * Issue Autocomplete / project-specific
 * Issue Link Edit
 * User Selector
-* Update Project
+** Update Project
 * Project prefs panels - Workflow, etc.
 * Issue Grouping - custom fields - sprints, priority, etc.
 * Workflow Edit
 * Error reporting for bad params in url path.
-* Issue Change History (global)
-* Remove deleted issues from selection set. (Or issues not in query).
+* Paginate Global History - by date range
+** Remove deleted issues from selection set. (Or issues not in query).
 * Graph view
-* State view
 * Deepstream Valves
-* Milestones
 * AND / Or search for labels
+* Search by relative date (last 2 weeks)
 * Clone issue
 * Create linked issue
-* Nginx setup
-* HTTPS
 * Hierarchy view in issue list
 * Ajv error reporting?
-* History filter by date range
+* Email notifications
+* Nginx setup
+* HTTPS
 * Deploy!
 
 # Longer term:
@@ -37,7 +37,7 @@
 ## Files with unfinished pieces:
 
 * LoginForm
-* CustomSuggestField
+* CustomSuggestField - suggestion search not implemented
 * ErrorDisplay
 * IssueDetailsView - attachments and comments.
 * ProjectInfoEdit - save, display owner

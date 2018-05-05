@@ -3,6 +3,7 @@
 .kdt.label-list {
   flex: 1;
   overflow-y: auto;
+  max-width: 100rem;
 
   table {
     thead {
