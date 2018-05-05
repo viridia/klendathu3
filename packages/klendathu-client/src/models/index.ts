@@ -1,5 +1,7 @@
 export { AccountStore, accounts } from './AccountStore';
-export { IssueListQuery } from './IssueListQuery';
+export { FilterTerm } from './FilterTerm';
+export { FilterTermDescriptor, descriptors, getDescriptor } from './FilterTermDescriptor';
+export { IssueListQuery, IssueGroup } from './IssueListQuery';
 export { IssueStore, issues } from './IssueStore';
 export { Memberships } from './Memberships';
 export { LabelListQuery } from './LabelListQuery';

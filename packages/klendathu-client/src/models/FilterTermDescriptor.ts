@@ -1,11 +1,8 @@
-import {
-  accounts,
-  session,
-  Project,
-  OperandType,
-  ObservableSet,
-  defaultOperandValue,
-} from '../../models';
+import { accounts } from './AccountStore';
+import { session } from './Session';
+import { Project } from './Project';
+import { OperandType, defaultOperandValue } from './OperandType';
+import { ObservableSet } from './ObservableSet';
 import { Account, DataType, FieldType, Predicate } from 'klendathu-json-types';
 import { FilterTerm } from './FilterTerm';
 

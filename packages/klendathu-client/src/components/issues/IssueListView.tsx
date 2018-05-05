@@ -1,16 +1,16 @@
 import * as React from 'react';
+import * as qs from 'qs';
 import { Account, Issue, Role } from 'klendathu-json-types';
 import {
   IssueListQuery,
   ObservableProjectPrefs,
   ObservableSet,
-  OperandType,
   Project,
-  session,
 } from '../../models';
 import { ColumnSort } from '../common/ColumnSort';
 import { RouteComponentProps } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
+import { GroupHeader } from './GroupHeader';
 import { IssueListEntry } from './IssueListEntry';
 import { MassEdit } from '../massedit/MassEdit';
 import { FilterParams } from '../filters/FilterParams';
@@ -22,12 +22,10 @@ import {
   TypeColumnRenderer,
   UserColumnRenderer,
 } from './columns';
-import { descriptors } from '../filters/FilterTermDescriptor';
 import { Checkbox, Dropdown, MenuItem } from 'react-bootstrap';
 import { action, computed, observable } from 'mobx';
 import { observer } from 'mobx-react';
 import bind from 'bind-decorator';
-import * as qs from 'qs';
 
 import MenuIcon from '../../../icons/ic_menu.svg';
 
@@ -49,19 +47,16 @@ export class IssueListView extends React.Component<Props> {
   @observable private selection = new ObservableSet();
 
   public componentWillMount() {
-    const { location } = this.props;
-    this.queryParams = qs.parse(location.search.slice(1));
-    this.updateQuery();
+    const { location, issues, project } = this.props;
+    this.queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
+    issues.setFromQuery(project, this.queryParams);
     this.updateSelectAll();
   }
 
   public componentWillReceiveProps(nextProps: Props) {
+    const { location, issues, project } = nextProps;
     this.queryParams = qs.parse(location.search, { ignoreQueryPrefix: true });
-    this.updateQuery();
-  }
-
-  public componentDidUpdate() {
-    this.updateSelectAll();
+    issues.setFromQuery(project, this.queryParams);
   }
 
   public render() {
@@ -73,7 +68,7 @@ export class IssueListView extends React.Component<Props> {
       return (
         <section className="kdt content issue-list">
           <div className="card issue">
-            <div className="no-issues">Loading&hellip;</div>
+            <div className="empty-list">Loading&hellip;</div>
           </div>
         </section>
       );
@@ -82,7 +77,7 @@ export class IssueListView extends React.Component<Props> {
         <section className="kdt content issue-list">
           <FilterParams {...this.props} />
           <div className="card issue">
-            <div className="no-issues">No issues found</div>
+            <div className="empty-list">No issues found</div>
           </div>
         </section>
       );
@@ -98,17 +93,16 @@ export class IssueListView extends React.Component<Props> {
   }
 
   private renderIssues() {
-    const { issues } = this.props;
+    const { issues, project } = this.props;
     if (issues.group) {
-      const column = this.columnRenderers.get(issues.group);
-      if (column && column.renderGroupHeader) {
-        return issues.grouped.map(gr => (
-          <section className="issue-group" key={gr.groupValue}>
-            {column.renderGroupHeader(gr.groupValue)}
-            {this.renderIssueTable(gr.issues)}
-          </section>
-        ));
-      }
+      return issues.grouped.map(gr => (
+        <section className="issue-group" key={gr.value}>
+          <header className="group-header">
+            <GroupHeader group={gr} project={project} />
+          </header>
+          {this.renderIssueTable(gr.issues)}
+        </section>
+      ));
     }
     return this.renderIssueTable(issues.sorted);
   }
@@ -134,8 +128,7 @@ export class IssueListView extends React.Component<Props> {
   }
 
   private renderHeader() {
-    const { account, project } = this.props;
-    const { sort, descending } = this.sortOrder();
+    const { account, project, issues } = this.props;
     return (
       <thead>
         <tr>
@@ -154,8 +147,8 @@ export class IssueListView extends React.Component<Props> {
             <ColumnSort
                 column="id"
                 className="sort"
-                sortKey={sort}
-                descending={descending}
+                sortKey={issues.sort}
+                descending={issues.descending}
                 onChangeSort={this.onChangeSort}
             >
               #
@@ -164,7 +157,7 @@ export class IssueListView extends React.Component<Props> {
           {this.columns.map(cname => {
             const cr = this.columnRenderers.get(cname);
             if (cr) {
-              return cr.renderHeader(sort, descending, this.onChangeSort);
+              return cr.renderHeader(issues.sort, issues.descending, this.onChangeSort);
             }
             return <th className="custom center" key={cname}>--</th>;
           })}
@@ -173,8 +166,8 @@ export class IssueListView extends React.Component<Props> {
               <ColumnSort
                   column="summary"
                   className="sort"
-                  sortKey={sort}
-                  descending={descending}
+                  sortKey={issues.sort}
+                  descending={issues.descending}
                   onChangeSort={this.onChangeSort}
               >
                 Summary
@@ -253,39 +246,6 @@ export class IssueListView extends React.Component<Props> {
       }
     }
     return columnRenderers;
-  }
-
-  private sortOrder(): { sort: string, descending: boolean } {
-    if (this.queryParams.sort) {
-      if (this.queryParams.sort.startsWith('-')) {
-        return { sort: this.queryParams.sort.slice(1), descending: true };
-      }
-      return { sort: this.queryParams.sort, descending: false };
-    }
-    return { sort: 'id', descending: true };
-  }
-
-  @action
-  private updateQuery() {
-    const { issues, project } = this.props;
-    const { sort, descending } = this.sortOrder();
-    issues.sort = sort;
-    issues.descending = descending;
-    issues.filterParams = {};
-    issues.filterParams.search = this.queryParams.search;
-    issues.group = this.queryParams.group;
-    for (const key of Object.getOwnPropertyNames(this.queryParams)) {
-      if (key in descriptors || key.startsWith('custom.') || key.startsWith('pred.')) {
-        const desc = descriptors[key];
-        let value: any = this.queryParams[key];
-        if (desc && desc.type === OperandType.USER && value === 'me') {
-          value = session.account.uname;
-        } else if (desc && desc.type === OperandType.STATE_SET && value === 'open') {
-          value = project.template.states.filter(st => !st.closed).map(st => st.id);
-        }
-        issues.filterParams[key] = value;
-      }
-    }
   }
 
   // Checkbox 'indeterminate' state can only be set programmatically.

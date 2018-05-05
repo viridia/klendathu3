@@ -1,10 +1,15 @@
 import * as React from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import { Predicate } from 'klendathu-json-types';
-import { Project, OperandType, defaultOperandValue } from '../../models';
+import {
+  descriptors,
+  getDescriptor,
+  FilterTerm,
+  Project,
+  OperandType,
+  defaultOperandValue,
+} from '../../models';
 import { EditOperand } from '../massedit/EditOperand';
-import { FilterTerm } from './FilterTerm';
-import { descriptors, getDescriptor } from './FilterTermDescriptor';
 import { action } from 'mobx';
 import { observer } from 'mobx-react';
 

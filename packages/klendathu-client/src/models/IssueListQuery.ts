@@ -1,5 +1,8 @@
 import { session } from './Session';
 import { Issue } from 'klendathu-json-types';
+import { descriptors } from './FilterTermDescriptor';
+import { OperandType } from './OperandType';
+import { Project } from './Project';
 import { action, computed, ObservableMap, observe, observable } from 'mobx';
 import bind from 'bind-decorator';
 import * as qs from 'qs';
@@ -49,9 +52,18 @@ function customSortOrder(field: string, descending: boolean): Comparator {
   }
 }
 
-export interface GroupedIssues {
-  groupKey: string;
-  groupValue: string;
+/** A group of issues having some property in common. */
+export interface IssueGroup {
+  /** what field we are grouping on. */
+  field: string;
+
+  /** Used in ordering the groups. */
+  sortKey: string;
+
+  /** Display value. */
+  value: string;
+
+  /** List of issues. */
   issues: Issue[];
 }
 
@@ -60,8 +72,8 @@ export class IssueListQuery {
   @observable public error: string = null;
   @observable public sort: string = 'id';
   @observable public group: string = '';
-  @observable public filterParams: { [key: string]: any } = {};
   @observable public descending: boolean = true;
+  @observable private filterParams: { [key: string]: any } = {};
   @observable.shallow private issues = new ObservableMap<Issue>();
   private account: string;
   private project: string;
@@ -76,6 +88,10 @@ export class IssueListQuery {
   public release() {
     this.record.unsubscribe(this.onUpdate);
     this.record.discard();
+  }
+
+  public get(id: string) {
+    return this.issues.get(id);
   }
 
   public get length(): number {
@@ -94,8 +110,8 @@ export class IssueListQuery {
   }
 
   @computed
-  public get grouped(): GroupedIssues[] {
-    const groupMap = new Map<string, GroupedIssues>();
+  public get grouped(): IssueGroup[] {
+    const groupMap = new Map<string, IssueGroup>();
     let fieldName = this.group;
     if (this.group === 'owner') {
       fieldName = 'ownerSort';
@@ -103,11 +119,11 @@ export class IssueListQuery {
       fieldName = 'reporterSort';
     }
     for (const issue of this.sorted) {
-      const groupValue = (issue as any)[this.group];
-      const groupKey = (issue as any)[fieldName];
-      const group = groupMap.get(groupKey);
+      const value = (issue as any)[this.group];
+      const sortKey = (issue as any)[fieldName];
+      const group = groupMap.get(sortKey);
       if (!group) {
-        groupMap.set(groupKey, { groupKey, groupValue, issues: [issue] });
+        groupMap.set(sortKey, { field: this.group, sortKey, value, issues: [issue] });
       } else {
         group.issues.push(issue);
       }
@@ -129,6 +145,38 @@ export class IssueListQuery {
       return alphabeticalSortOrder('reporterSort', this.descending);
     }
     return alphabeticalSortOrder(this.sort, this.descending);
+  }
+
+  @action
+  public setFromQuery(project: Project, queryParams: { [param: string]: string; }) {
+    if (queryParams.sort) {
+      if (queryParams.sort.startsWith('-')) {
+        this.sort = queryParams.sort.slice(1);
+        this.descending = true;
+      } else {
+        this.sort = queryParams.sort;
+        this.descending = false;
+      }
+    } else {
+      this.sort = 'id';
+      this.descending = true;
+    }
+
+    this.filterParams = {};
+    this.filterParams.search = queryParams.search;
+    this.group = queryParams.group;
+    for (const key of Object.getOwnPropertyNames(queryParams)) {
+      if (key in descriptors || key.startsWith('custom.') || key.startsWith('pred.')) {
+        const desc = descriptors[key];
+        let value: any = queryParams[key];
+        if (desc && desc.type === OperandType.USER && value === 'me') {
+          value = session.account.uname;
+        } else if (desc && desc.type === OperandType.STATE_SET && value === 'open') {
+          value = project.template.states.filter(st => !st.closed).map(st => st.id);
+        }
+        this.filterParams[key] = value;
+      }
+    }
   }
 
   // These are the query params that are sent to the API.

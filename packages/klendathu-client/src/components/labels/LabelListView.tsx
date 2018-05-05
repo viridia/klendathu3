@@ -90,7 +90,7 @@ export class LabelListView extends React.Component<Props> {
     if (this.query.length === 0) {
       return (
         <div className="card internal">
-          {this.query.loaded && <div className="no-labels">No labels defined</div>}
+          {this.query.loaded && <div className="empty-list">No labels defined</div>}
         </div>
       );
     }

@@ -11,16 +11,6 @@ export class StateColumnRenderer extends AbstractColumnRenderer {
     this.template = template;
   }
 
-  public renderGroupHeader(value: any): JSX.Element {
-    const stateInfo = this.template.states.find(s => s.id === value);
-    return (
-      <header className="group-header">
-        <span className="title">{this.title}: </span>
-        <span className="value">{stateInfo ? stateInfo.caption : value}</span>
-      </header>
-    );
-  }
-
   public render(issue: Issue) {
     const stateInfo = this.template.states.find(s => s.id === issue.state);
     if (!stateInfo) {

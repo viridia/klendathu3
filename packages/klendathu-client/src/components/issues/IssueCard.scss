@@ -1,0 +1,60 @@
+@import '../../styles/colors';
+
+$cardShadow: rgba(0,0,0,0.14);
+$cardBg: #fff;
+
+.issue-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid $bg1;
+  border-radius: 5px;
+  background-color: $cardBg;
+  box-shadow: 0px 2px 3px 0 $cardShadow;
+  overflow: hidden;
+  padding: 4px;
+  width: 24rem;
+  min-height: 12rem;
+  text-align: left;
+
+  > header {
+    display: flex;
+    padding-bottom: 4px;
+    border-bottom: 1px solid $bg0;
+
+    .index {
+      font-weight: bold;
+      margin-right: 4px;
+    }
+
+    .type {
+      padding: 2px 4px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      border-radius: 3px;
+    }
+  }
+
+  .body {
+    margin-top: 2px;
+    flex: 1;
+    font-size: 1.7rem;
+    font-weight: bold;
+
+    .summary {
+      margin-right: 4px;
+    }
+
+    .label-name {
+      margin-right: auto;
+      margin-left: 0;
+      margin-bottom: 3px;
+    }
+  }
+
+  > footer {
+    .unassigned {
+      font-style: italic;
+      color: $textDarkDisabled;
+    }
+  }
+}

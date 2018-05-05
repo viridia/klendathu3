@@ -21,11 +21,23 @@ $leftNavFg: #482848;
 
 $contentBg: #E9DBEB;
 
-$cardBg: #fcf7fc;
+// Cards
+// $cardBg: #fcf7fc;
 $cardBgAlt: #f6ecf8;
 $cardBorder: #C3A1C9;
 $cardHeaderBg: lighten($bg1, 10%);
 
+$cardBg: lighten($bg0, 5%);
+$cardShadow: rgba(0,0,0,0.14);
+$cardHeaderDividerColor: darken($bg1, 5%);
+$cardFooterDividerColor: darken($bg1, 5%);
+
+$accentedCardHeaderBg: $bg2;
+
+$internalCardBg: lighten($bg0, 15%);
+$internalCardBorder: lighten($cardBorder, 10%);
+
+// Mass edit
 $massEditBg: #c7b8e6;
 
 // Default button

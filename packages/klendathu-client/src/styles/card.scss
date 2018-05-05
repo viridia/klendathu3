@@ -1,15 +1,5 @@
 @import './colors';
 
-$cardBg: lighten($bg0, 5%);
-$cardShadow: rgba(0,0,0,0.14);
-$cardHeaderDividerColor: darken($bg1, 5%);
-$cardFooterDividerColor: darken($bg1, 5%);
-
-$accentedCardHeaderBg: $bg2;
-
-$internalCardBg: lighten($bg0, 15%);
-$internalCardBorder: lighten($cardBorder, 10%);
-
 .card {
   background: $cardBg;
   border: 1px solid $cardBorder;

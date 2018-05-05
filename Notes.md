@@ -1,18 +1,15 @@
 # TODO:
 
+* Copy link to clipboard
 * Saved filters
 * Filter links in left nav
 * Issue changes aren't updating in issue list.
 * Issue Autocomplete / project-specific
 * Issue Link Edit
-* Issue Edit
-  * Edit form
-* Issue links
 * User Selector
-* Issue Details
 * Update Project
 * Project prefs panels - Workflow, etc.
-* Issue Grouping - sprints, users, etc.
+* Issue Grouping - custom fields - sprints, priority, etc.
 * Workflow Edit
 * Error reporting for bad params in url path.
 * Issue Change History (global)
@@ -29,16 +26,16 @@
 * Hierarchy view in issue list
 * Ajv error reporting?
 * History filter by date range
+* Deploy!
 
 # Longer term:
 
 * Convert /names endpoint to use RPC instead.
 * Update to passport-github2
 * Investigate github webhooks
-* Think about using a record set rather than a record list for issue list - for sorting of
-  custom fields.
 
 ## Files with unfinished pieces:
+
 * LoginForm
 * CustomSuggestField
 * ErrorDisplay
@@ -64,3 +61,18 @@
   * Murally-style dragging of cards?  I kind of like that idea...
 * Clubhouse.io-style collapsing columns.
 * Filter terms: multiple label clauses - each clause is OR, each term is AND.
+
+## Thoughts on milestones:
+
+Milestones aren't merely labels because you can group by them, they are exclusive (like an enum).
+We need a project milestones table.
+
+interface Milestone {
+  id: string;
+  project: string;
+  name: string;
+  targetDate: Date;
+  ?? color?
+}
+
+Idea: Milestones don't show up unless they have been added to project.

@@ -1,0 +1,79 @@
+@import '../../styles/colors';
+
+.progress-view {
+  overflow-y: auto;
+
+  .progress-table-view {
+    overflow-x: auto;
+    position: relative;
+    margin: 0 8px;
+    padding: 0 0 4px 0;
+  }
+
+  .progress-table {
+    margin: 0;
+    min-height: 30rem;
+  }
+
+  thead.group-header {
+    th {
+      padding: 12px 0;
+      text-align: left;
+      .title {
+        font-weight: normal;
+      }
+      .unassigned {
+        font-style: italic;
+      }
+    }
+  }
+
+  thead.state-header {
+    background-color: $cardHeaderBg;
+    border: 1px solid $cardHeaderDividerColor;
+    box-shadow: 0px 3px 2px 0 $cardShadow;
+  }
+
+  tbody {
+    background-color: lighten($bg0, 4%);
+    border: 1px solid $cardHeaderDividerColor;
+    box-shadow: 0px 2px 2px 0 $cardShadow;
+  }
+
+  td, th {
+    border-right: 2px dashed $bg2;
+    text-align: center;
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+
+  th {
+    vertical-align: bottom;
+    padding: 4px 8px;
+    &.dragOver {
+      background-color: $bg1;
+    }
+  }
+
+  td {
+    vertical-align: top;
+    padding: 6px 4px 4px 4px;
+    .issue-card {
+      margin: 0 4px 8px 4px;
+      user-select: none;
+      cursor: move;
+    }
+    &.dragOver {
+      background-color: $bg0;
+    }
+  }
+
+  .progress-column-label {
+    color: $textDarkDisabled;
+    writing-mode: vertical-lr;
+    white-space: nowrap;
+    margin: auto;
+  }
+}

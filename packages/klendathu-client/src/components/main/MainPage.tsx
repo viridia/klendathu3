@@ -5,6 +5,7 @@ import { LeftNav } from '../nav/LeftNav';
 import { SettingsView } from '../settings/SettingsView';
 import { ProjectListView } from '../projects/ProjectListView';
 import { SetupAccountDialog } from '../settings/SetupAccountDialog';
+import { DependenciesView } from '../dependencies/DependenciesView';
 import { EmailVerificationDialog } from '../settings/EmailVerificationDialog';
 import { HistoryListView } from '../history/HistoryListView';
 import { IssueCreateView } from '../issues/IssueCreateView';
@@ -12,6 +13,8 @@ import { IssueEditView } from '../issues/IssueEditView';
 import { IssueListView } from '../issues/IssueListView';
 import { IssueDetailsView } from '../issues/IssueDetailsView';
 import { LabelListView } from '../labels/LabelListView';
+import { ProgressView } from '../progress/ProgressView';
+import { SavedFiltersView } from '../filters/SavedFiltersView';
 import { ProjectSettings } from '../projects/settings';
 import { AccountProvider } from '../common/AccountProvider';
 import { ProjectProvider } from '../common/ProjectProvider';
@@ -101,9 +104,24 @@ export class MainPage extends React.Component<RouteComponentProps<{}>> {
                                 render={() => (<LabelListView {...models} />)}
                             />
                             <Route
+                                path="/:account/:project/filters"
+                                exact={true}
+                                render={props => (<SavedFiltersView {...props} {...models}/>)}
+                            />
+                            <Route
                                 path="/:account/:project/history"
                                 exact={true}
                                 render={props => (<HistoryListView {...props} {...models}/>)}
+                            />
+                            <Route
+                                path="/:account/:project/progress"
+                                exact={true}
+                                render={props => (<ProgressView {...props} {...models}/>)}
+                            />
+                            <Route
+                                path="/:account/:project/dependencies"
+                                exact={true}
+                                render={props => (<DependenciesView {...props} {...models}/>)}
                             />
                             <Route
                                 path="/:account/:project/settings/:tab?"

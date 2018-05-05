@@ -11,16 +11,6 @@ export class TypeColumnRenderer extends AbstractColumnRenderer {
     this.template = template;
   }
 
-  public renderGroupHeader(value: any): JSX.Element {
-    const typeInfo = this.template.types.find(t => t.id === value);
-    return (
-      <header className="group-header">
-        <span className="title">{this.title}: </span>
-        <span className="value">{typeInfo ? typeInfo.caption : value}</span>
-      </header>
-    );
-  }
-
   public render(issue: Issue) {
     const typeInfo = this.template.types.find(t => t.id === issue.type);
     if (!typeInfo) {
