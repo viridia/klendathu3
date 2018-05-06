@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as classNames from 'classnames';
 import { Issue } from 'klendathu-json-types';
 import {
   ObservableProjectPrefs,
@@ -31,7 +32,9 @@ export class IssueCard extends React.Component<Props> {
           {this.renderIssueType()}
         </header>
         <div className="body">
-          <span className="summary">{issue.summary}</span>
+          <span className={classNames('summary', this.summarySize)}>
+            {issue.summary}
+          </span>
           {issue.labels
             .filter(l => prefs.showLabel(l))
             .map(l => <LabelName label={l} key={l} />)}
@@ -41,6 +44,17 @@ export class IssueCard extends React.Component<Props> {
         </footer>
       </div>
     );
+  }
+
+  private get summarySize(): string {
+    const { issue } = this.props;
+    if (issue.summary.length < 32) {
+      return 'large';
+    }
+    if (issue.summary.length < 100) {
+      return 'medium';
+    }
+    return 'small';
   }
 
   private renderIssueType() {

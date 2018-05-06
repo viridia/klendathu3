@@ -42,6 +42,10 @@ $cardBg: #fff;
 
     .summary {
       margin-right: 4px;
+
+      &.large { font-size: 1.9rem; }
+      &.medium { font-size: 1.7rem; }
+      &.small { font-size: 1.4rem; }
     }
 
     .label-name {

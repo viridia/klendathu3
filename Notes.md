@@ -1,8 +1,8 @@
 # TODO:
 
 * Milestones
-* Commenting
 * Saved filters
+* Profile photos
 * Filter links in left nav
 ** Issue changes aren't updating in issue list.
 * Issue Autocomplete / project-specific
@@ -14,7 +14,6 @@
 * Workflow Edit
 * Error reporting for bad params in url path.
 * Paginate Global History - by date range
-** Remove deleted issues from selection set. (Or issues not in query).
 * Graph view
 * Deepstream Valves
 * AND / Or search for labels
@@ -23,7 +22,11 @@
 * Create linked issue
 * Hierarchy view in issue list
 * Ajv error reporting?
+* Double-click on issue card to go to details
 * Email notifications
+  * Agent that runs periodically
+  * Different rates based on user preferences
+* Project landing page
 * Nginx setup
 * HTTPS
 * Deploy!
@@ -39,7 +42,7 @@
 * LoginForm
 * CustomSuggestField - suggestion search not implemented
 * ErrorDisplay
-* IssueDetailsView - attachments and comments.
+* IssueDetailsView - attachments.
 * ProjectInfoEdit - save, display owner
 * ProjectSettings
 
@@ -69,10 +72,26 @@ We need a project milestones table.
 
 interface Milestone {
   id: string;
-  project: string;
+  project: string; account/project
   name: string;
   targetDate: Date;
   ?? color?
 }
 
 Idea: Milestones don't show up unless they have been added to project.
+
+## Thoughts on dependency view:
+
+First, what cards should be shown? Ideally, we would want to show all cards that are open,
+plus any cards that are not open that are linked to them.
+
+Issues to solve:
+
+* Conflict between auto-layout and manual layout. Manual layout suffers from the fact that
+  issues are constantly being added and removed, which means that any manual arrangement will
+  quickly become obsolete. Automatic layout suffers from the fact that we can't know what the
+  user's intent is as far as grouping things.
+
+## Schema validations
+
+[{"keyword":"type","dataPath":".owner","schemaPath":"#/properties/owner/type","params":{"type":"string"},"message":"should be string"}]

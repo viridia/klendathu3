@@ -355,10 +355,10 @@ export class IssueDetails extends React.Component<Props> {
 
   @action.bound
   private onAddComment(newComment: string) {
-    // const { project, issue } = this.props;
-    // return addComment(project.id, issue.id, newComment).then(() => {
-    //   this.props.data.refetch();
-    // });
+    const { issue } = this.props;
+    updateIssue(issue.id, {
+      comments: [newComment],
+    });
   }
 
   @action.bound

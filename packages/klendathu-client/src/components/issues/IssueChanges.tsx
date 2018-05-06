@@ -63,13 +63,8 @@ export class IssueChanges extends React.Component<Props> {
     }
     if (changes) {
       changes.forEach(c => {
-        const { ...changesWithoutComments } = c;
-        delete changesWithoutComments.comments;
-        // Don't include change records that only have comment changes.
-        if (Object.getOwnPropertyNames(changesWithoutComments).length > 0) {
-          result.push([c.at,
-            <ChangeEntry change={c} key={c.id} project={project} account={account} />]);
-        }
+        result.push([c.at,
+          <ChangeEntry change={c} key={c.id} project={project} account={account} />]);
       });
     }
     // TODO: Make this computed

@@ -27,14 +27,14 @@ export class HistoryListView extends React.Component<Props> {
 
   public componentWillMount() {
     const { project } = this.props;
-    this.changes = new ObservableChanges(`${project.account}/${project.uname}`);
+    this.changes = new ObservableChanges(`${project.account}/${project.uname}`, true);
   }
 
   public componentWillReceiveProps(nextProps: Props) {
     if (nextProps.project !== this.props.project) {
       const { project } = nextProps;
       this.changes.release();
-      this.changes = new ObservableChanges(`${project.account}/${project.uname}`);
+      this.changes = new ObservableChanges(`${project.account}/${project.uname}`, true);
     }
   }
 

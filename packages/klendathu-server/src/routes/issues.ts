@@ -396,7 +396,7 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
           created: now,
           updated: now,
         };
-        r.table('comment').insert(comment).run(server.conn);
+        await r.table('comments').insert(comment).run(server.conn);
         if (!change.comments) {
           change.comments = { added: 0, updated: 0, removed: 0 };
           change.at = record.updated;
