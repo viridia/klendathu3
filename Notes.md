@@ -1,9 +1,11 @@
 # TODO:
 
 * Milestones
-* Saved filters
-* Profile photos
 * Filter links in left nav
+  * Saved filters
+  * Include name of view in filter
+* Profile photos
+  * Need account prefs
 ** Issue changes aren't updating in issue list.
 * Issue Autocomplete / project-specific
 * Issue Link Edit
@@ -74,8 +76,10 @@ interface Milestone {
   id: string;
   project: string; account/project
   name: string;
-  targetDate: Date;
-  ?? color?
+  description: string;
+  startDate: Date;
+  endDate: Date;
+  status: pending | active | concluded
 }
 
 Idea: Milestones don't show up unless they have been added to project.

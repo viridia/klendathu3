@@ -23,6 +23,7 @@ export async function connect(): Promise<r.Connection> {
     'issueLinks',
     'labels',
     'memberships',
+    'milestones',
     'projects',
     'projectPrefs',
     'templates',

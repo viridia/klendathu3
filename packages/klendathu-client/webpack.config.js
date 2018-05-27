@@ -74,6 +74,7 @@ module.exports = {
         loader: 'url-loader',
         options: {
           mimetype: 'image/png',
+          limit: 4096,
         },
       },
     ],

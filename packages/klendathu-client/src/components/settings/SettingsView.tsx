@@ -3,6 +3,7 @@ import { Nav, NavItem } from 'react-bootstrap';
 import { Switch, Route } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { UserAccountForm } from './UserAccountForm';
+import { OrganizationForm } from './OrganizationForm';
 import { observer } from 'mobx-react';
 
 import './SettingsView.scss';
@@ -31,6 +32,7 @@ export class SettingsView extends React.Component<undefined> {
         </Nav>
         <Switch>
           <Route path="/settings/account" component={UserAccountForm} />
+          <Route path="/settings/orgs" component={OrganizationForm} />
         </Switch>
       </section>
     );

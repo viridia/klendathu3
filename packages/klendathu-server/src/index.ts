@@ -15,6 +15,7 @@ import './routes/issues';
 import './routes/labels';
 import './routes/memberships';
 import './routes/names';
+import './routes/photo';
 import './routes/projects';
 import './routes/projectPrefs';
 import './routes/version';

@@ -6,6 +6,7 @@ import { Tab, Tabs } from 'react-bootstrap';
 import { RouteComponentProps } from 'react-router-dom';
 import { ColumnSettings } from './columns/ColumnSettings';
 import { ProjectMemberList } from './members/ProjectMemberList';
+import { ProjectMilestonesEdit } from './milestones/ProjectMilestonesEdit';
 import { ProjectInfoEdit } from './ProjectInfoEdit';
 // import { ProjectTemplateEdit } from './ProjectTemplateEdit';
 import { WorkflowEdit } from './workflow/WorkflowEdit';
@@ -45,6 +46,9 @@ export class ProjectSettings extends React.Component<Props> {
           <Tab eventKey="members" title="Members">
             <ProjectMemberList {...this.props} />
           </Tab>
+          {project.role >= Role.DEVELOPER && (<Tab eventKey="milestones" title="Milestones">
+            <ProjectMilestonesEdit {...this.props} />
+          </Tab>)}
           {project.role >= Role.MANAGER && (<Tab eventKey="templates" title="Issue Templates">
             {/*<ProjectTemplateEdit {...this.props} />*/}
           </Tab>)}

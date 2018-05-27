@@ -7,6 +7,7 @@ import {
 } from '../../models';
 import { LabelName } from '../common/LabelName';
 import { AccountName } from '../common/AccountName';
+import { Avatar } from '../common/Avatar';
 import { RouteComponentProps } from 'react-router-dom';
 import { observer } from 'mobx-react';
 import bind from 'bind-decorator';
@@ -40,6 +41,7 @@ export class IssueCard extends React.Component<Props> {
             .map(l => <LabelName label={l} key={l} />)}
       </div>
         <footer>
+          <Avatar id={issue.owner} />
           <AccountName id={issue.owner} />
         </footer>
       </div>

@@ -1,0 +1,30 @@
+@import '../../styles/colors';
+
+.user-account-panel {
+  display: flex;
+
+  .photo {
+    border: none;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    background-size: cover;
+    border-radius: 50%;
+    width: 12rem;
+    height: 12rem;
+
+    .caption {
+      font-size: 80%;
+    }
+  }
+}
+
+.user-account-form {
+  width: 32rem;
+  margin-right: 3rem;
+
+  > footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

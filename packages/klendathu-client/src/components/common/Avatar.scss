@@ -1,0 +1,15 @@
+@import '../../styles/colors';
+
+$avatarSize: 24px;
+
+.avatar {
+  width: $avatarSize;
+  height: $avatarSize;
+  border-radius: 50%;
+  background-size: cover;
+
+  &.unassigned {
+    border: 1px solid $bg0;
+    background-color: lighten($bg0, 5%);
+  }
+}

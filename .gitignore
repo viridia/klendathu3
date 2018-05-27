@@ -9,3 +9,4 @@ lerna-debug.log
 /data
 /.env
 /secrets/.env
+/.vscode

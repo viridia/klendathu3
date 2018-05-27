@@ -56,6 +56,12 @@ $cardBg: #fff;
   }
 
   > footer {
+    display: flex;
+    align-items: center;
+    margin-top: 4px;
+    .avatar {
+      margin-right: 4px;
+    }
     .unassigned {
       font-style: italic;
       color: $textDarkDisabled;

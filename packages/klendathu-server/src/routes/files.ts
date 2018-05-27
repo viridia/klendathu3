@@ -25,7 +25,7 @@ function shouldCreateThumbnail(type: string) {
   }
 }
 
-const upload = multer({ dest: process.env.UPLOADS_DIR });
+export const upload = multer({ dest: process.env.UPLOADS_DIR });
 
 // Upload attachments.
 server.api.post('/file/:account/:project',

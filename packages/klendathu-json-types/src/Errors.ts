@@ -21,4 +21,5 @@ export enum Errors {
   PASSWORD_TOO_SHORT = 'password-too-short',
   INCORRECT_PASSWORD = 'incorrect-password',
   INVALID_TOKEN = 'invalid-token',
+  INVALID_PHOTO = 'invalid-photo',
 }
