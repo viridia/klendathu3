@@ -2,13 +2,13 @@ const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 const config = require('./webpack.config.js');
 
-const CLIENT_PORT = 8180;
-const SERVER_PORT = 8181;
+const KDT_CLIENT_PORT = 8180;
+const KDT_SERVER_PORT = 8181;
 const DEEPSTREAM_PORT = 6020;
 
 // Adjust the config for hot reloading.
 config.entry = [
-  `webpack-dev-server/client?http://127.0.0.1:${CLIENT_PORT}`,
+  `webpack-dev-server/client?http://127.0.0.1:${KDT_CLIENT_PORT}`,
   'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors
   './src/index.tsx', // Your appʼs entry point
 ];
@@ -25,11 +25,11 @@ const server = new WebpackDevServer(compiler, {
   watchOptions: { poll: 1000 },
   proxy: {
     '/api': {
-      target: `http://localhost:${SERVER_PORT}`,
+      target: `http://localhost:${KDT_SERVER_PORT}`,
       secure: false
     },
     '/auth': {
-      target: `http://localhost:${SERVER_PORT}`,
+      target: `http://localhost:${KDT_SERVER_PORT}`,
       secure: false
     },
     '/deepstream': {
@@ -39,4 +39,4 @@ const server = new WebpackDevServer(compiler, {
     }
   }
 });
-server.listen(CLIENT_PORT, 'localhost');
+server.listen(KDT_CLIENT_PORT, 'localhost');

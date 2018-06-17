@@ -34,11 +34,14 @@ export class Server {
   }
 
   public async start() {
-    const port = parseInt(process.env.SERVER_PORT, 10) || 80;
+    const port = parseInt(process.env.KDT_SERVER_PORT, 10) || 80;
     this.conn = await connect();
-    this.httpServer = this.express.listen(port);
-    this.deepstream.login({ Authorization: `Token ${process.env.SERVER_AUTH_SECRET}` });
     this.bucket = await connectBucket();
+    this.httpServer = this.express.listen(port, () => {
+      // Since Deepstream calls us back for authentication, wait until we are listening.
+      this.deepstream.login({ Authorization: `Token ${process.env.SERVER_AUTH_SECRET}` });
+    });
+    logger.info('KDT server listening on port', port);
   }
 
   public stop() {

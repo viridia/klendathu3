@@ -17,7 +17,10 @@ services:
     ports:
       - 8181:8181
     environment:
-      SERVER_PORT: 8181
+      KDT_CLIENT_HOSTNAME: localhost
+      # KDT_CLIENT_HTTPS: "true"
+      KDT_CLIENT_PORT: 8180
+      KDT_SERVER_PORT: 8181
       DEEPSTREAM_URL: "ws://deepstream:6020"
       RETHINKDB_URL: "rethinkdb://db:28015"
       IMGPROC_URL: http://imaginary:9000
@@ -36,9 +39,6 @@ services:
       - deepstream
       - imaginary
     volumes:
-      # - type: volume
-      #   source: .
-      #   target: /usr/src/klendathu
       - type: tmpfs
         target: /usr/tmp/uploads
   deepstream:

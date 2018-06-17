@@ -1,7 +1,7 @@
 import { Strategy as FacebookStrategy } from 'passport-facebook';
-import { Strategy as GithubStrategy } from 'passport-github';
+import { Strategy as GithubStrategy } from 'passport-github2';
 import { Strategy as AnonymousStrategy } from 'passport-anonymous';
-import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth2';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import { AccountRecord } from '../db/types';
 import { Errors } from 'klendathu-json-types';
@@ -26,13 +26,13 @@ const accountsTable = r.db(process.env.DB_NAME).table('accounts');
 
 function makeCallbackUrl(pathname: string, next?: string): string {
   const url = new URL(`http://placeholder`);
-  if (process.env.USE_HTTPS) {
+  if (process.env.KDT_CLIENT_HTTPS && process.env.KDT_CLIENT_HTTPS !== 'false') {
     url.protocol = 'https';
   }
-  url.hostname = process.env.CLIENT_HOSTNAME;
+  url.hostname = process.env.KDT_CLIENT_HOSTNAME;
   url.pathname = pathname;
-  if (process.env.CLIENT_PORT && process.env.CLIENT_PORT !== '80') {
-    url.port = process.env.CLIENT_PORT;
+  if (process.env.KDT_CLIENT_PORT && process.env.KDT_CLIENT_PORT !== '80') {
+    url.port = process.env.KDT_CLIENT_PORT;
   }
   if (next) {
     url.search = `next=${encodeURIComponent(next)}`;
@@ -42,13 +42,13 @@ function makeCallbackUrl(pathname: string, next?: string): string {
 
 function makeSessionUrl(session: SessionState, next?: string): string {
   const url = new URL(next || 'http://placeholder');
-  if (process.env.USE_HTTPS) {
+  if (process.env.KDT_CLIENT_HTTPS && process.env.KDT_CLIENT_HTTPS !== 'false') {
     url.protocol = 'https';
   }
-  url.hostname = process.env.CLIENT_HOSTNAME;
+  url.hostname = process.env.KDT_CLIENT_HOSTNAME;
   // url.pathname = pathname;
-  if (process.env.CLIENT_PORT && process.env.CLIENT_PORT !== '80') {
-    url.port = process.env.CLIENT_PORT;
+  if (process.env.KDT_CLIENT_PORT && process.env.KDT_CLIENT_PORT !== '80') {
+    url.port = process.env.KDT_CLIENT_PORT;
   }
   const query: any = {
     token: jwt.encode(session, jwtOpts.secretOrKey),
@@ -58,22 +58,6 @@ function makeSessionUrl(session: SessionState, next?: string): string {
   }
   url.search = `?${qs.stringify(query)}`;
   return url.toString();
-}
-
-interface UserToken {
-  id: string;
-  displayName: string;
-}
-
-function createToken(emails: Array<{ value: string }>, displayName: string): UserToken {
-  if (emails.length > 0) {
-    const id = emails[0].value;
-    return {
-      id,
-      displayName,
-    };
-  }
-  return null;
 }
 
 interface SessionState {
@@ -115,16 +99,15 @@ passport.use(new JwtStrategy(jwtOpts, (payload: SessionState, done) => {
 passport.use(new AnonymousStrategy());
 
 // Google OAuth2 login.
-// TODO: This doesn't work because google doesn't allow dynamic callback urls.
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: makeCallbackUrl('/auth/google/callback'),
-  }, (accessToken, refreshToken, profile, done) => {
-    const token = createToken(profile.emails, profile.displayName);
-    if (token) {
-      done(null, jwt.encode(token, jwtOpts.secretOrKey));
+  }, async (accessToken, refreshToken, profile, done) => {
+    if (profile.emails.length > 0) {
+      const session = await getOrCreateUserAccount(profile.emails[0].value, true);
+      done(null, session);
     } else {
       done(Error('missing email'));
     }
@@ -141,19 +124,16 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
 
   server.express.get('/auth/google/callback',
     (req, res, next) => {
-      const returnTo = req.query.next || '/';
-      const options = {
+      passport.authenticate('google', {
         session: false,
-        scope: ['openid', 'email', 'profile'],
-        callbackURL: makeCallbackUrl('/auth/google/callback', req.query.next),
-        successRedirect: `${returnTo}?session=${req.user}`,
         failureRedirect: '/account/login',
         failureFlash: 'Login failed.',
-      };
-      passport.authenticate('google', options as passport.AuthenticateOptions)(req, res, next);
-    },
-    (req, res) => {
-      res.redirect(`/?session=${req.user}`);
+      }, (err: any, session: SessionState) => {
+        if (err) {
+          return next(err);
+        }
+        res.redirect(makeSessionUrl(session, req.query.next));
+      })(req, res, next);
     });
 }
 
@@ -422,6 +402,7 @@ server.express.post('/auth/verify', handleAsyncErrors(async (req, res) => {
 server.express.post('/auth-user', (req, res, next) => {
   const { Authorization } = req.body.authData;
   const { remoteAddress } = req.body.connectionData;
+  // Note: Be careful not to leak credentials into log files here.
   if (!Authorization) {
     logger.warn('Deepstream authorization failed: missing authorization header', {
       authData: req.body.authData,

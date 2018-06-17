@@ -13,9 +13,9 @@
   "description": "Flexible bug-tracking and project management system.",
   "main": "index.js",
   "scripts": {
-    "client": "cd packages/klendathu-client && npm start",
-    "server-up": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build server",
-    "server-down": "docker-compose down server",
+    "dev-client": "cd packages/klendathu-client && npm start",
+    "dev-server": "docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up --build server",
+    "dev-services": "docker-compose -f docker-compose.yaml up db deepstream imaginary",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Talin",

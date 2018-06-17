@@ -32,25 +32,7 @@ export class LoginForm extends React.Component<RouteComponentProps<{}>> {
   public componentWillMount() {
     // Make sure there's no stored token, so that social login doesn't get confused.
     session.logout();
-    // const { location } = this.props;
     this.visible = true;
-    // auth.getRedirectResult().then(result => {
-    //   if (result.user) {
-    //     const query: { next?: string } = qs.parse(this.props.location.search.slice(1));
-    //     this.props.history.replace({ pathname: query.next || '/' });
-    //   } else {
-    //     this.visible = true;
-    //   }
-    // }).catch(error => {
-    //   // Handle Errors here.
-    //   const errorCode = error.code;
-    //   const errorMessage = error.message;
-    //   // The firebase.auth.AuthCredential type that was used.
-    //   const credential = error.credential;
-    //   // ...
-    //   console.error('redirect error', errorCode, errorMessage, credential);
-    //   this.visible = true;
-    // });
   }
 
   public render() {

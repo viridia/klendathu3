@@ -4,8 +4,6 @@
 * Filter links in left nav
   * Saved filters
   * Include name of view in filter
-* Profile photos
-  * Need account prefs
 ** Issue changes aren't updating in issue list.
 * Issue Autocomplete / project-specific
 * Issue Link Edit
@@ -29,19 +27,17 @@
   * Agent that runs periodically
   * Different rates based on user preferences
 * Project landing page
-* Nginx setup
+* Facebook login
 * HTTPS
 * Deploy!
 
 # Longer term:
 
 * Convert /names endpoint to use RPC instead.
-* Update to passport-github2
 * Investigate github webhooks
 
 ## Files with unfinished pieces:
 
-* LoginForm
 * CustomSuggestField - suggestion search not implemented
 * ErrorDisplay
 * IssueDetailsView - attachments.
@@ -64,7 +60,6 @@
 * Think about how to make it easier to manage ticket relationships.
   * Drag links between cards?
   * Murally-style dragging of cards?  I kind of like that idea...
-* Clubhouse.io-style collapsing columns.
 * Filter terms: multiple label clauses - each clause is OR, each term is AND.
 
 ## Thoughts on milestones:
@@ -98,4 +93,12 @@ Issues to solve:
 
 ## Schema validations
 
-[{"keyword":"type","dataPath":".owner","schemaPath":"#/properties/owner/type","params":{"type":"string"},"message":"should be string"}]
+Ajv output:
+
+[{
+  "keyword":"type",
+  "dataPath":".owner",
+  "schemaPath":"#/properties/owner/type",
+  "params":{"type":"string"},
+  "message":"should be string"
+}]
