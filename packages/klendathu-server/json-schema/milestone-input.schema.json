@@ -1,0 +1,37 @@
+{
+  "$id": "http://viridia.org/schemas/klendathu/milestone-input.json",
+  "type": "object",
+  "title": "MilestoneInput",
+  "description": "Used to create or update a milestone.",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "description": "Milestone name.",
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "description": "Milestone status.",
+      "type": "string",
+      "enum": ["pending", "active", "concluded", "static"]
+    },
+    "description": {
+      "description": "Issue description.",
+      "type": "string"
+    },
+    "startDate": {
+      "description": "Starting date of the milestone.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "endDate": {
+      "description": "Ending date of the milestone.",
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "name",
+    "status"
+  ]
+}

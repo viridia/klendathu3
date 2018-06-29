@@ -74,10 +74,13 @@ interface Milestone {
   description: string;
   startDate: Date;
   endDate: Date;
-  status: pending | active | concluded
+  status: pending | active | concluded | static
 }
 
-Idea: Milestones don't show up unless they have been added to project.
+Idea: Milestones don't show up in compose form unless they have been added to project.
+
+How do we build an efficient milestone selector? Milestone names tend to be similar,
+so autocomplete doesn't work very well. What we need is to group them by status in some way.
 
 ## Thoughts on dependency view:
 

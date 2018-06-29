@@ -79,6 +79,7 @@ server.api.post('/issues/:account/:project', async (req, res) => {
       updated: now,
       cc: (input.cc || []),
       labels: input.labels || [],
+      milestone: input.milestone,
       custom: input.custom,
       isPublic: !!input.isPublic,
       position: input.position || null,
@@ -236,6 +237,12 @@ server.api.patch('/issues/:account/:project/:id', async (req, res) => {
     if ('description' in input && input.description !== existing.description) {
       record.description = input.description;
       change.description = { before: existing.description, after: input.description };
+      change.at = record.updated;
+    }
+
+    if ('milestone' in input && input.milestone !== existing.milestone) {
+      record.milestone = input.milestone;
+      change.milestone = { before: existing.milestone, after: input.milestone };
       change.at = record.updated;
     }
 

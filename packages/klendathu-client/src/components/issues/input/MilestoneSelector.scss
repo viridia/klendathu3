@@ -1,0 +1,44 @@
+@import '../../../styles/colors';
+
+.milestone-selector {
+  display: flex;
+  > button {
+    margin-left: 4px;
+  }
+}
+
+div.choose-milestone-dialog {
+  width: 30rem;
+  .modal-body {
+    overflow-y: scroll;
+  }
+}
+
+.milestone-list {
+  width: 100%;
+  tr.selected {
+    background-color: $bg1;
+  }
+  td, th {
+    text-align: left;
+    padding: 2px 4px 2px 8px;
+    cursor: pointer;
+    > .mstatus {
+      margin: 2px;
+      padding: 6px 10px;
+      border-radius: 4px;
+    }
+    &.static > .mstatus {
+      background-color: #ddd;
+    }
+    &.active > .mstatus {
+      background-color: #aea;
+    }
+    &.concluded > .mstatus {
+      background-color: #ccf;
+    }
+    &.pending > .mstatus {
+      background-color: #fea;
+    }
+  }
+}

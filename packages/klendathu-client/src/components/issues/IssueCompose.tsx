@@ -12,6 +12,7 @@ import {
   Relation,
   Role,
   Workflow,
+  Milestone,
 } from 'klendathu-json-types';
 import {
   accounts,
@@ -21,6 +22,7 @@ import {
   Project,
   session,
   Template,
+  MilestoneListQuery,
 } from '../../models';
 import {
   CommentEdit,
@@ -28,6 +30,7 @@ import {
   CustomSuggestField,
   IssueSelector,
   LabelSelector,
+  MilestoneSelector,
   TypeSelector,
   StateSelector,
 } from './input';
@@ -68,6 +71,7 @@ interface Props extends RouteComponentProps<{}> {
   account: Account;
   project: Project;
   issues: IssueListQuery;
+  milestones: MilestoneListQuery;
   issue?: ObservableIssue;
   onSave: (input: IssueInput) => Promise<any>;
 }
@@ -83,6 +87,7 @@ export class IssueCompose extends React.Component<Props> {
   @observable private owner: Account = null;
   @observable.shallow private cc = [] as IObservableArray<Account>;
   @observable.shallow private labels = [] as IObservableArray<string>;
+  @observable private milestone: string = '';
   @observable private relation: Relation = Relation.BLOCKED_BY;
   @observable private issueToLink: Issue = null;
   @observable.shallow private issueLinkMap = new Map<string, Relation>();
@@ -105,7 +110,7 @@ export class IssueCompose extends React.Component<Props> {
   }
 
   public render() {
-    const { issue, project } = this.props;
+    const { issue, project, milestones } = this.props;
     const template = this.template;
     if (!template) {
       return null;
@@ -208,6 +213,20 @@ export class IssueCompose extends React.Component<Props> {
                       </div>
                     </td>
                   </tr>
+                  {milestones && (<tr>
+                    <th className="header"><ControlLabel>Milestone:</ControlLabel></th>
+                    <td>
+                      <div className="ac-multi-group">
+                        <MilestoneSelector
+                            className="milestones ac-multi"
+                            project={this.props.project}
+                            milestones={milestones}
+                            selection={this.milestone}
+                            onSelectionChange={this.onChangeMilestone}
+                        />
+                      </div>
+                    </td>
+                  </tr>)}
                   {this.renderTemplateFields()}
                   <tr>
                     <th className="header"><ControlLabel>Linked Issues:</ControlLabel></th>
@@ -403,6 +422,11 @@ export class IssueCompose extends React.Component<Props> {
   }
 
   @action.bound
+  private onChangeMilestone(milestone: Milestone) {
+    this.milestone = milestone ? milestone.id : null;
+  }
+
+  @action.bound
   private onChangeIssueToLink(selection: Issue) {
     this.issueToLink =  selection;
   }
@@ -471,6 +495,7 @@ export class IssueCompose extends React.Component<Props> {
       ownerSort: this.owner ? this.owner.uname : undefined,
       cc: this.cc.map(cc => cc.uid),
       labels: this.labels,
+      milestone: this.milestone,
       linked,
       custom,
       comments: toJS(this.comments),
@@ -508,6 +533,7 @@ export class IssueCompose extends React.Component<Props> {
         this.owner = issue.owner ? accounts.byId(issue.owner) : null;
         this.cc.replace((issue.cc || []).map(cc => accounts.byId(cc)));
         this.labels.replace(issue.labels);
+        this.milestone = issue.milestone;
         this.custom.clear();
         for (const key of Object.getOwnPropertyNames(issue.custom)) {
           this.custom.set(key, issue.custom[key]);
@@ -529,6 +555,7 @@ export class IssueCompose extends React.Component<Props> {
       this.owner = null;
       this.cc.replace([]);
       this.labels.replace([]);
+      this.milestone = '';
       this.custom.clear();
       this.issueLinkMap.clear();
       this.comments.clear();

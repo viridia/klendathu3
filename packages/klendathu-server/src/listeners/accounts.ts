@@ -70,7 +70,7 @@ ds.rpc.provide('accounts.search', async (args: any, response: deepstreamIO.RPCRe
       );
 
     // Limit to 10 results
-    query = query.orderBy(['display', 'uname']).limit(limit);
+    query = query.orderBy('display', 'uname').limit(limit);
 
     // Database search
     const cursor = await query.run(server.conn);

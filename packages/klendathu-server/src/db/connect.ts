@@ -29,7 +29,10 @@ export async function connect(): Promise<r.Connection> {
     'templates',
   ]);
   await ensureIndicesExist(connection, process.env.DB_NAME, {
-    issues: ['created', 'updated', 'type', 'state', 'summary', 'ownerSort', 'reporterSort'],
+    issues: [
+      'created', 'updated', 'type', 'state', 'summary', 'ownerSort', 'reporterSort',
+      'milestone',
+    ],
     projects: ['name'],
     accounts: ['uname'],
     labels: ['project'],

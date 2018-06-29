@@ -1,0 +1,12 @@
+div.edit-milestone {
+  width: 40rem;
+  > .modal-content {
+    > .modal-body {
+      display: flex;
+      .autocomplete {
+        margin-right: 8px;
+        width: 15em;
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IssueListQuery, Project } from '../../models';
+import { IssueListQuery, Project, MilestoneListQuery } from '../../models';
 import { RouteComponentProps } from 'react-router-dom';
 import { createIssue } from '../../network/requests';
 import { IssueCompose } from './IssueCompose';
@@ -11,6 +11,7 @@ interface Props extends RouteComponentProps<{}> {
   account: Account;
   project: Project;
   issues: IssueListQuery;
+  milestones: MilestoneListQuery;
 }
 
 export class IssueCreateView extends React.Component<Props> {

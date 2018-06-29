@@ -45,7 +45,7 @@ ds.rpc.provide('labels.search', async (args: any, response: deepstreamIO.RPCResp
     // Limit by search token
     query = query.filter((user: any) => user('name').match(pattern));
 
-    // Limit to 10 results
+    // Limit number of results
     query = query.orderBy('name').limit(limit);
 
     // Database search

@@ -13,6 +13,7 @@ export interface IssueChangeRecord {
   owner?: ScalarChange;
   cc?: ListChange<string>;
   labels?: ListChange<string>;
+  milestone?: ScalarChange;
   attachments?: {
     added?: string[];
     removed?: string[];

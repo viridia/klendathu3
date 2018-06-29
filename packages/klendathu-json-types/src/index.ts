@@ -13,6 +13,7 @@ export { Errors } from './Errors';
 export { IssueLink, IssueArc } from './IssueLink';
 export { Label, LabelInput } from './Label';
 export { Membership } from './Membership';
+export { Milestone, MilestoneInput, MilestoneStatus } from './Milestone';
 export { Predicate } from './Predicate';
 export { Project } from './Project';
 export { ProjectPrefs, ProjectPrefsInput, Filter } from './ProjectPrefs';

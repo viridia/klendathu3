@@ -46,6 +46,10 @@
         "type": "string"
       }
     },
+    "milestone": {
+      "description": "Milestone this issue is assigned to.",
+      "type": "string"
+    },
     "linked": {
       "description": "List of linked issues.",
       "type": "array",

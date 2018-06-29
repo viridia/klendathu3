@@ -12,6 +12,7 @@ export class ObservableIssue implements IssueBase {
   @observable public owner: string;
   @observable public cc: string[];
   @observable public labels: string[];
+  @observable public milestone: string;
   @observable public attachments: string[];
   @observable public custom: CustomValues;
   @observable public created: Date;
@@ -62,6 +63,7 @@ export class ObservableIssue implements IssueBase {
       this.owner = recordData.owner;
       this.cc = recordData.cc;
       this.labels = recordData.labels;
+      this.milestone = recordData.milestone;
       this.custom = recordData.custom;
       this.attachments = recordData.attachments || [];
       this.created = new Date(recordData.created);

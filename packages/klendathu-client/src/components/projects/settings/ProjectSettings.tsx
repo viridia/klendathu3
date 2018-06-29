@@ -1,6 +1,6 @@
 import bind from 'bind-decorator';
 import { Account, Role } from 'klendathu-json-types';
-import { Project, ObservableProjectPrefs } from '../../../models';
+import { Project, ObservableProjectPrefs, MilestoneListQuery } from '../../../models';
 import * as React from 'react';
 import { Tab, Tabs } from 'react-bootstrap';
 import { RouteComponentProps } from 'react-router-dom';
@@ -17,6 +17,7 @@ interface Props extends RouteComponentProps<{ tab?: string }> {
   account: Account;
   project: Project;
   prefs: ObservableProjectPrefs;
+  milestones: MilestoneListQuery;
 }
 
 // TODO: finish
@@ -29,7 +30,7 @@ export class ProjectSettings extends React.Component<Props> {
     const activeKey = match.params.tab || 'info';
     return (
       <section className="kdt content project-settings">
-        <header>Project settings</header>
+        <header>Project settings for: {project.title}</header>
         <Tabs
             activeKey={activeKey}
             onSelect={this.handleSelect}

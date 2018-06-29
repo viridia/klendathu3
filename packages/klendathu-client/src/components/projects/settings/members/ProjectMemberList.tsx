@@ -50,7 +50,7 @@ export class ProjectMemberList extends React.Component<Props> {
               onHide={this.onHideRemoveMember}
           />)}
         <header>
-          <div className="title">Project members for: {project.title}</div>
+          <div className="title">Project members</div>
           {project.role >= Role.DEVELOPER &&
             <Button onClick={this.onShowAddMember}>Add Member</Button>}
         </header>

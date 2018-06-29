@@ -1,0 +1,38 @@
+.project-milestone-list {
+  white-space: nowrap;
+
+  .name {
+    white-space: normal;
+  }
+
+  .completion {
+    .progress {
+      width: 15rem;
+      margin-bottom: 0;
+    }
+  }
+
+  .status {
+    > .mstatus {
+      margin: 2px;
+      padding: 6px 10px;
+      border-radius: 4px;
+    }
+    &.static > .mstatus {
+      background-color: #ddd;
+    }
+    &.active > .mstatus {
+      background-color: #aea;
+    }
+    &.concluded > .mstatus {
+      background-color: #ccf;
+    }
+    &.pending > .mstatus {
+      background-color: #fea;
+    }
+  }
+
+  .actions > button {
+    margin-left: 4px;
+  }
+}

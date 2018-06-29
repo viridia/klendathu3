@@ -6,6 +6,7 @@ import {
   IssueInput,
   Label,
   LabelInput,
+  MilestoneInput,
   Role,
   ProjectPrefsInput,
 } from 'klendathu-json-types';
@@ -197,4 +198,23 @@ export function getFileInfoList(
       callback(resp);
     }
   });
+}
+
+export function createMilestone(
+    account: string, project: string, milestone: MilestoneInput): Promise<Label> {
+  return request.post(`/api/projects/${account}/${project}/milestones`, milestone).then(resp => {
+    return resp.data;
+  }, handleAxiosError);
+}
+
+export function updateMilestone(milestoneId: string, label: MilestoneInput): Promise<Label> {
+  return request.patch(`/api/milestones/${milestoneId}`, label).then(resp => {
+    return resp.data;
+  }, handleAxiosError);
+}
+
+export function deleteMilestone(milestoneId: string): Promise<any> {
+  return request.delete(`/api/milestones/${milestoneId}`).then(resp => {
+    return resp.data;
+  }, handleAxiosError);
 }

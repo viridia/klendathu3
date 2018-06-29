@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IssueListQuery, ObservableIssue, Project } from '../../models';
+import { IssueListQuery, ObservableIssue, Project, MilestoneListQuery } from '../../models';
 import { RouteComponentProps } from 'react-router-dom';
 import { IssueProvider } from './IssueProvider';
 import { updateIssue } from '../../network/requests';
@@ -11,6 +11,7 @@ interface Props extends RouteComponentProps<{ project: string; id: string }> {
   account: Account;
   project: Project;
   issues: IssueListQuery;
+  milestones: MilestoneListQuery;
 }
 
 export class IssueEditView extends React.Component<Props> {

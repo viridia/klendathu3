@@ -1,5 +1,5 @@
 import { server } from '../Server';
-import { Label, Role } from 'klendathu-json-types';
+import { Label, Role, Errors } from 'klendathu-json-types';
 import { AccountRecord } from '../db/types';
 import { getProjectAndRole } from '../db/userRole';
 import { logger } from '../logger';
@@ -25,13 +25,13 @@ server.api.post('/labels/:account/:project', async (req, res) => {
     res.status(404).json({ error: 'not-found' });
   } else if (role < Role.DEVELOPER) {
     logger.error(`create label: user has insufficient privileges.`, details);
-    res.status(403).json({ error: 'forbidden' });
+    res.status(403).json({ error: Errors.FORBIDDEN });
   } else if (!input.name) {
     logger.error(`create label: missing field 'name'.`, details);
-    res.status(400).json({ error: 'missing-name' });
+    res.status(400).json({ error: Errors.MISSING_NAME });
   } else if (!input.color) {
     logger.error(`create label: missing field 'color'.`, details);
-    res.status(400).json({ error: 'missing-name' });
+    res.status(400).json({ error: Errors.MISSING_NAME });
   } else {
     // Increment the label id counter.
     const projectId = `${account}/${project}`;
@@ -78,10 +78,10 @@ server.api.patch('/labels/:account/:project/:label', async (req, res) => {
     } else {
       logger.error(`create label: project ${project} not found.`, details);
     }
-    res.status(404).json({ error: 'not-found' });
+    res.status(404).json({ error: Errors.NOT_FOUND });
   } else if (role < Role.DEVELOPER) {
     logger.error(`create label: user has insufficient privileges.`, details);
-    res.status(403).json({ error: 'forbidden' });
+    res.status(403).json({ error: Errors.FORBIDDEN });
   } else {
     const labelId = `${account}/${project}/${label}`;
     const record: Partial<Label> = {
@@ -122,10 +122,10 @@ server.api.delete('/labels/:account/:project/:label', async (req, res) => {
     } else {
       logger.error(`create label: project ${project} not found.`, details);
     }
-    res.status(404).json({ error: 'not-found' });
+    res.status(404).json({ error: Errors.NOT_FOUND });
   } else if (role < Role.DEVELOPER) {
     logger.error(`create label: user has insufficient privileges.`, details);
-    res.status(403).json({ error: 'forbidden' });
+    res.status(403).json({ error: Errors.FORBIDDEN });
   } else {
     const projectId = `${account}/${project}`;
     const labelId = `${account}/${project}/${label}`;
@@ -147,7 +147,7 @@ server.api.delete('/labels/:account/:project/:label', async (req, res) => {
         .delete()
         .run(server.conn);
     if (resp.deleted !== 1) {
-      res.status(404).json({ error: 'not-found' });
+      res.status(404).json({ error: Errors.NOT_FOUND });
     } else {
       res.json(labelId);
     }

@@ -7,12 +7,14 @@ import {
   Project,
   ObservableProjectPrefs,
   projects,
+  MilestoneListQuery,
 } from '../../models';
 
 interface OutProps {
   account: Account;
   project: Project;
   issues: IssueListQuery;
+  milestones: MilestoneListQuery;
   prefs: ObservableProjectPrefs;
 }
 
@@ -29,11 +31,13 @@ export class ProjectProvider extends React.Component<Props> {
   private project: Project = null;
   private issues: IssueListQuery = null;
   private prefs: ObservableProjectPrefs = null;
+  private milestones: MilestoneListQuery = null;
 
   public componentWillMount() {
     const { account, project, memberships } = this.props;
     this.project = projects.get(account.uid, project, memberships);
     this.prefs = new ObservableProjectPrefs(account.uid, project);
+    this.milestones = new MilestoneListQuery(account.uid, project);
     this.issues = new IssueListQuery(account.uid, project);
   }
 
@@ -42,8 +46,10 @@ export class ProjectProvider extends React.Component<Props> {
     if (this.project.account !== account.uid || this.project.uname !== project) {
       this.project.release();
       this.prefs.release();
+      this.milestones.release();
       this.project = projects.get(account.uid, project, memberships);
       this.prefs = new ObservableProjectPrefs(account.uid, project);
+      this.milestones = new MilestoneListQuery(account.uid, project);
       this.issues = new IssueListQuery(account.uid, project);
     }
   }
@@ -51,6 +57,7 @@ export class ProjectProvider extends React.Component<Props> {
   public componentWillUnmount() {
     this.project.release();
     this.prefs.release();
+    this.milestones.release();
   }
 
   public render() {
@@ -58,6 +65,8 @@ export class ProjectProvider extends React.Component<Props> {
     const project = this.project;
     const issues = this.issues;
     const prefs = this.prefs;
-    return project && project.loaded ? children({ project, account, issues, prefs }) : null;
+    const milestones = this.milestones;
+    return project && project.loaded ?
+        children({ project, account, issues, prefs, milestones }) : null;
   }
 }

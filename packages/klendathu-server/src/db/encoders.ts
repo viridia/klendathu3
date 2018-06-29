@@ -8,6 +8,7 @@ import {
   Membership,
   Project,
   ProjectPrefs,
+  Milestone,
 } from 'klendathu-json-types';
 import {
   AccountRecord,
@@ -19,6 +20,7 @@ import {
   MembershipRecord,
   ProjectRecord,
   ProjectPrefsRecord,
+  MilestoneRecord,
 } from './types';
 
 export const encodeAccount: (record: AccountRecord) => Account = record => ({
@@ -47,6 +49,7 @@ export const encodeIssue: (record: IssueRecord) => Issue = record => ({
   attachments: record.attachments,
   custom: record.custom,
   isPublic: record.isPublic,
+  milestone: record.milestone,
 });
 
 export const encodeLabel: (record: LabelRecord) => Label = record => ({
@@ -87,5 +90,9 @@ export function encodeIssueChange(record: IssueChangeRecord): Change {
 }
 
 export function encodeMembership(record: MembershipRecord): Membership {
+  return record;
+}
+
+export function encodeMilestone(record: MilestoneRecord): Milestone {
   return record;
 }
